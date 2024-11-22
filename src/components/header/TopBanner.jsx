@@ -1,5 +1,5 @@
 import React from 'react';
-import { Picker } from '@react-native-picker/picker';
+// import { Picker } from '@react-native-picker/picker';
 import { useTranslation } from "react-i18next";
 import styled from 'styled-components/native';
 
@@ -30,11 +30,11 @@ const SelectContainer = styled.View`
   })}
 `;
 
-const StyledPicker = styled(Picker)`
-  width: 100%;
-  height: 100%;
-  color: ${props => props.theme.colors.white};
-`;
+// const StyledPicker = styled(Picker)`
+//   width: 100%;
+//   height: 100%;
+//   color: ${props => props.theme.colors.white};
+// `;
 
 export default function TopBanner(props) {
   const { t, i18n } = useTranslation();
@@ -48,6 +48,7 @@ export default function TopBanner(props) {
       <BannerText>
         {t("Welcome")} {props.name}!
       </BannerText>
+      {/* Remove this section:
       <SelectContainer>
         <StyledPicker
           selectedValue={i18n.language}
@@ -58,6 +59,7 @@ export default function TopBanner(props) {
           <StyledPicker.Item label={t("English")} value="en-US" />
         </StyledPicker>
       </SelectContainer>
+      */}
     </BannerContainer>
   );
 }

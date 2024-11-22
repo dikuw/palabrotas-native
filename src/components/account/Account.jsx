@@ -8,7 +8,7 @@ import styled from 'styled-components/native';
 import Banner from '../header/Banner';
 import AccountGrid from './AccountGrid';
 import Streak from './Streak';
-import NoPermission from '../shared/NoPermission';
+import NoPermission from '../shared/NoPermissionDiv';
 
 const Container = styled.View`
   width: 90%;

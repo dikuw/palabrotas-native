@@ -5,14 +5,14 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import styled from 'styled-components/native';
 
 // Import stores
-import { useAuthStore } from './store/auth';
-import { useContentStore } from './store/content';
+import { useAuthStore } from './src/store/auth';
+import { useContentStore } from './src/store/content';
 
 // Import components
 import TopBanner from './src/components/header/TopBanner';
 import Header from './src/components/header/Header';
 import Navigation from './src/components/navigation/Navigation';
-import SearchBar from './src/components/header/SearchBar';
+import SearchBar from './src/components/header/Searchbar';
 import Grid from './src/components/main/Grid';
 import Content from './src/components/content/Content';
 import AddContent from './src/components/content/AddContent';
@@ -46,15 +46,15 @@ function App() {
   const { authStatus, loginUser, logoutUser, getCurrentUser } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    setIsLoading(true);
-    async function initialize() {
-      await getContentsSortedByVoteDesc();
-      await getCurrentUser();
-      setIsLoading(false);
-    }
-    initialize();
-  }, [getContents, getContentsSortedByVoteDesc]);
+  // useEffect(() => {
+  //   setIsLoading(true);
+  //   async function initialize() {
+  //     await getContentsSortedByVoteDesc();
+  //     await getCurrentUser();
+  //     setIsLoading(false);
+  //   }
+  //   initialize();
+  // }, [getContents, getContentsSortedByVoteDesc]);
 
   return (
     <NavigationContainer>
