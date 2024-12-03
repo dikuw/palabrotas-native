@@ -46,6 +46,11 @@ const theme = {
     medium: 16,
     large: 18,
     xlarge: 24
+  },
+  borderRadius: {  // Add this new section
+    small: 4,
+    medium: 8,
+    large: 16
   }
 };
 
