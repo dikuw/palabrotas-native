@@ -1,62 +1,63 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-
-const FormWrapper = styled.div`
-  margin-top: 20px;
-`;
-
-const StyledForm = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-
-const StyledTextarea = styled.textarea`
-  width: 100%;
-  height: 100px;
-  margin-bottom: 10px;
-  padding: 10px;
-  border: 1px solid var(--primary);
-  border-radius: 4px;
-`;
-
-const SubmitButton = styled.button`
-  align-self: flex-end;
-  padding: 10px 20px;
-  background-color: var(--primary);
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: var(--secondary);
-  }
-`;
+import CustomText from '../CustomText'; // Assuming you have a custom text component for consistent styling
 
 const CommentForm = ({ onSubmit }) => {
   const [comment, setComment] = useState('');
   const { t } = useTranslation();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     onSubmit(comment);
     setComment('');
   };
 
   return (
-    <FormWrapper>
-      <StyledForm onSubmit={handleSubmit}>
-        <StyledTextarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder={t('Add a comment...')}
-          required
-        />
-        <SubmitButton type="submit">{t('Submit')}</SubmitButton>
-      </StyledForm>
-    </FormWrapper>
+    <View style={styles.formWrapper}>
+      <TextInput
+        value={comment}
+        onChangeText={setComment}
+        placeholder={t('Add a comment...')}
+        placeholderTextColor="#666"
+        multiline
+        style={styles.textInput}
+      />
+      <TouchableOpacity 
+        style={styles.submitButton}
+        onPress={handleSubmit}
+      >
+        <CustomText style={styles.buttonText}>{t('Submit')}</CustomText>
+      </TouchableOpacity>
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  formWrapper: {
+    marginTop: 20,
+    padding: 10,
+  },
+  textInput: {
+    height: 100,
+    borderWidth: 1,
+    borderColor: '#007AFF', // iOS primary color, adjust as needed
+    borderRadius: 4,
+    padding: 10,
+    marginBottom: 10,
+    textAlignVertical: 'top',
+    color: '#000', // Ensure text is visible
+  },
+  submitButton: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#007AFF',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 4,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 16,
+  }
+});
 
 export default CommentForm;

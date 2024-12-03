@@ -1,59 +1,65 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { View, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
 import { useLocation } from 'react-router-dom';
-import styled from 'styled-components';
+import { useAppStore } from '../../store/app';
 import NavMenu from './NavMenu';
 import AdminNavMenu from './AdminNavMenu';
 
-import { useAppStore } from '../../store/app';
-
-const StyledBurger = styled.div`
-  width: 2rem;
-  height: 2rem;
-  z-index: 20;
-  display: none;
-  @media (max-width: 768px) {
-    display: flex;
-    justify-content: space-around;
-    flex-flow: column nowrap;
-  }
-  div {
-    width: 2rem;
-    height: 0.25rem;
-    background-color: ${({ $menuOpen }) => $menuOpen ? '#ccc' : '#333'};
-    border-radius: 10px;
-    transform-origin: 1px;
-    transition: all 0.3s linear;
-    &:nth-child(1) {
-      transform: ${({ $menuOpen }) => $menuOpen ? 'rotate(45deg)' : 'rotate(0)'};
-    }
-    &:nth-child(2) {
-      transform: ${({ $menuOpen }) => $menuOpen ? 'translateX(100%)' : 'translateX(0)'};
-      opacity: ${({ $menuOpen }) => $menuOpen ? 0 : 1};
-    }
-    &:nth-child(3) {
-      transform: ${({ $menuOpen }) => $menuOpen ? 'rotate(-45deg)' : 'rotate(0)'};
-    }
-  }
-`;
+const { width } = Dimensions.get('window');
 
 export default function Burger(props) {
   const { menuOpen, setMenuOpen } = useAppStore();
   const location = useLocation();
   const currentRoute = location.pathname;
 
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
+
   return (
     <>
-      <StyledBurger $menuOpen={menuOpen} onClick={() => setMenuOpen(!menuOpen)} >
-        <div />
-        <div />
-        <div />
-      </StyledBurger>
+      <TouchableOpacity style={styles.burger} onPress={toggleMenu}>
+        <View style={[styles.line, menuOpen && styles.line1Open]} />
+        <View style={[styles.line, menuOpen && styles.line2Open]} />
+        <View style={[styles.line, menuOpen && styles.line3Open]} />
+      </TouchableOpacity>
       {(currentRoute === "/admin" || currentRoute === "/contents") ? (
-          <AdminNavMenu isLoggedIn={props.isLoggedIn} isAdmin={props.isAdmin} />
-        ) : (
-          <NavMenu isLoggedIn={props.isLoggedIn} isAdmin={props.isAdmin} logoutUser={props.logoutUser} />
-       )
-      }
+        <AdminNavMenu isLoggedIn={props.isLoggedIn} isAdmin={props.isAdmin} />
+      ) : (
+        <NavMenu isLoggedIn={props.isLoggedIn} isAdmin={props.isAdmin} logoutUser={props.logoutUser} />
+      )}
     </>
   );
 }
+
+const styles = StyleSheet.create({
+  burger: {
+    width: 32,
+    height: 32,
+    zIndex: 20,
+    display: 'none',
+    justifyContent: 'space-around',
+    flexDirection: 'column',
+    alignItems: 'center',
+    // Show burger on smaller screens
+    display: width <= 768 ? 'flex' : 'none',
+  },
+  line: {
+    width: 32,
+    height: 4,
+    backgroundColor: '#333',
+    borderRadius: 10,
+    transition: 'all 0.3s linear',
+  },
+  line1Open: {
+    transform: [{ rotate: '45deg' }],
+    position: 'absolute',
+  },
+  line2Open: {
+    opacity: 0,
+  },
+  line3Open: {
+    transform: [{ rotate: '-45deg' }],
+    position: 'absolute',
+  },
+});

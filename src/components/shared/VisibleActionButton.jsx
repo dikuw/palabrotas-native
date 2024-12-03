@@ -1,28 +1,45 @@
 import React from 'react';
-import styled from 'styled-components';
+import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 
-const StyledButton = styled.button`
-  font-size: 1.2em;
-  text-transform: uppercase;
-  font-weight: 400;
-  font-style: normal;
-  background: var(--primary);
-  border-color: var(--primary);
-  border-radius: 2px;
-  border: 0;
-  color: #ffffff;
-  display: inline-block;
-  height: 45px;
-  letter-spacing: 1px;
-  line-height: 45px;
-  margin: 0.25rem;
-  padding: 0 25px;
-  transition: background-color 300ms ease-out;
-  width: auto;
-`;
-
-export default function InvisibleActionButton(props) {
+export default function VisibleActionButton({ clickHandler, buttonLabel }) {
   return (
-    <StyledButton onClick={props.clickHandler ? props.clickHandler : null}>{props.buttonLabel}</StyledButton>
-  )
-};
+    <TouchableOpacity 
+      style={styles.button}
+      onPress={clickHandler}
+      activeOpacity={0.7}
+    >
+      <Text style={styles.buttonText}>{buttonLabel}</Text>
+    </TouchableOpacity>
+  );
+}
+
+const styles = StyleSheet.create({
+  button: {
+    backgroundColor: '#007AFF', // iOS primary blue, adjust to match your --primary color
+    borderRadius: 4,
+    height: 45,
+    paddingHorizontal: 25,
+    marginVertical: 4,
+    marginHorizontal: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // Shadow for iOS
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    // Shadow for Android
+    elevation: 5,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    textTransform: 'uppercase',
+    fontWeight: '400',
+    letterSpacing: 1,
+    textAlign: 'center',
+  },
+});

@@ -1,53 +1,47 @@
 import React from 'react';
-import { FaGoogle } from "react-icons/fa6";
-import { useNavigate } from 'react-router-dom';
+import { TouchableOpacity, Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components';
-import { VisibleActionButton } from '../shared/index.js';
+import styled from 'styled-components/native';
+import Icon from 'react-native-vector-icons/FontAwesome'; // Using FontAwesome instead of Fa6
 import { useAuthStore } from '../../store/auth';
 import { useNotificationStore } from '../../store/notification';
 
-const GoogleButton = styled.button`
+const GoogleButton = styled.TouchableOpacity`
   background-color: #4285f4;
-  color: white;
-  display: flex;
+  flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 12px;
   margin-top: 16px;
   padding: 10px 24px;
-  width: fit-content;
-  min-width: 220px;
   align-self: center;
-  font-size: 14px;
-  
-  &:hover {
-    background-color: #357ae8;
-  }
-  
-  svg {
-    width: 18px;
-    height: 18px;
-    flex-shrink: 0;
-  }
+  border-radius: 4px;
+  min-width: 220px;
+`;
 
-  span {
-    display: flex;
-    align-items: center;
-    white-space: nowrap;
-  }
+const ButtonText = styled.Text`
+  color: white;
+  font-size: 14px;
+  margin-left: 12px;
+`;
+
+const IconContainer = styled.View`
+  width: 18px;
+  height: 18px;
+  justify-content: center;
+  align-items: center;
 `;
 
 export default function GoogleLogin() {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const navigation = useNavigation();
   const { googleLogin } = useAuthStore();
   const addNotification = useNotificationStore(state => state.addNotification);
 
   const handleGoogleLogin = async () => {
     try {
       await googleLogin();
-      navigate("/");
+      navigation.navigate('Home');
       addNotification(t('Logged in successfully!'), 'success');
     } catch (error) {
       addNotification(t('Login failed. Please try again.'), 'error');
@@ -55,9 +49,11 @@ export default function GoogleLogin() {
   };
 
   return (
-    <GoogleButton onClick={handleGoogleLogin}>
-      <FaGoogle />
-      <span>{t("Continue with Google")}</span>
+    <GoogleButton onPress={handleGoogleLogin}>
+      <IconContainer>
+        <Icon name="google" size={18} color="white" />
+      </IconContainer>
+      <ButtonText>{t("Continue with Google")}</ButtonText>
     </GoogleButton>
   );
 }

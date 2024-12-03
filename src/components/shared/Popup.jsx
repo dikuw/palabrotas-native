@@ -1,60 +1,61 @@
 import React from 'react';
-import styled from 'styled-components';
+import { View, Text, Image, StyleSheet, Modal } from 'react-native';
 
-const StyledPopupDiv = styled.div`
-  display: flex;
-  position: fixed;  
-  width: 100%;  
-  height: 100%;  
-  top: 0;  
-  left: 0;  
-  right: 0;  
-  bottom: 0;  
-  margin: auto;  
-  background-color: rgba(0,0,0, 0.5);  
-  z-index: 76;
-`;
-
-const StyledPopupWrapperDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: absolute;  
-  width: 25%;
-  left: 25%;  
-  right: 25%;  
-  top: 25%;  
-  padding: 12px 0px;
-  margin: auto;   
-  background: white;
-  z-index: 77;
-  border-radius: 4px;
-`;
-
-const StyledPopupHeaderDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  margin: 1rem;
-  background: white;
-  h1 {
-    text-align: center;
-    font-size: 1em;
-  }
-  img {
-    width: 14rem;
-  }
-`;
-
-export default function Popup(props) {
+export default function Popup({ visible, popupText }) {
   return (
-    <StyledPopupDiv >  
-      <StyledPopupWrapperDiv>  
-        <StyledPopupHeaderDiv>
-          <h1>{props.popupText}</h1>  
-          <img src="images/spinner.gif" alt="uploading" />
-        </StyledPopupHeaderDiv>
-      </StyledPopupWrapperDiv>  
-    </StyledPopupDiv>  
-  ); 
-};
+    <Modal
+      transparent={true}
+      visible={visible}
+      animationType="fade"
+    >
+      <View style={styles.overlay}>
+        <View style={styles.popupContainer}>
+          <View style={styles.popupHeader}>
+            <Text style={styles.popupText}>{popupText}</Text>
+            <Image
+              source={require('../../assets/images/spinner.gif')}
+              style={styles.spinner}
+              alt="uploading"
+            />
+          </View>
+        </View>
+      </View>
+    </Modal>
+  );
+}
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.5)',
+  },
+  popupContainer: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 4,
+    padding: 20,
+    alignItems: 'center',
+    elevation: 5, // for Android shadow
+    shadowColor: '#000', // for iOS shadow
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  popupHeader: {
+    alignItems: 'center',
+  },
+  popupText: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 10,
+  },
+  spinner: {
+    width: 56, // Adjust size as needed
+    height: 56,
+  },
+});

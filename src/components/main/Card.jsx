@@ -1,85 +1,18 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FaEdit, FaPlus, FaChevronUp, FaChevronDown  } from 'react-icons/fa';
-import ReactCountryFlag from "react-country-flag";
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { useTranslation } from "react-i18next";
-import styled from 'styled-components';
 
 import { useAuthStore } from '../../store/auth';
 import { useContentStore } from '../../store/content'; 
 import { useFlashcardStore } from '../../store/flashcard';
 import { useVoteStore } from '../../store/vote';
 import { useNotificationStore } from '../../store/notification';
-
-const StyledGridFigure = styled.figure`
-  width: 100%;
-  margin: 0 0 2rem 0;
-  padding: 2rem;
-  border: 1px solid var(--primary);
-  background: var(--almostWhite);
-  box-shadow: 0 0 0 5px rgba(0,0,0,0.03);
-  position: relative;
-  display: flex;
-  align-items: center;
-`;
-
-const StyledFlagIcon = styled(ReactCountryFlag)`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-size: 1rem !important;
-`;
-
-const StyledEditIcon = styled(FaEdit)`
-  position: absolute;
-  top: 70px;
-  right: 10px;
-  font-size: 1rem;
-  text-transform: uppercase;
-  font-weight: 400;
-  cursor: pointer;
-`;
-
-const StyledAddToFlashcardIcon = styled(FaPlus)`
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  font-size: 1rem;
-  cursor: pointer;
-  color: var(--primary);
-  &:hover {
-    color: var(--secondary);
-  }
-`;
-
-const StyledAuthorText = styled.span`
-  position: absolute;
-  bottom: 10px;
-  right: 40px; // Positioned to the left of the add icon
-  font-size: 0.6rem;
-  color: var(--gray);
-  font-style: italic; 
-`;
-
-const VoteIcons = styled.div`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
-const VoteIcon = styled.div`
-  cursor: pointer;
-  color: var(--primary);
-  &:hover {
-    color: var(--secondary);
-  }
-`;
+import CustomText from '../CustomText'; // Assuming you have this component
 
 export default function Card({ item, showEditIcon }) {
-  const navigate = useNavigate();
+  const navigation = useNavigation();
   const { t } = useTranslation();
   const { addFlashcard } = useFlashcardStore(); 
   const { authStatus } = useAuthStore(); 
@@ -87,17 +20,15 @@ export default function Card({ item, showEditIcon }) {
   const { getContentsSortedByVoteDesc } = useContentStore();
   const addNotification = useNotificationStore(state => state.addNotification);
 
-  const handleClick = () => {
-    navigate(`/content/${item._id}`);
+  const handlePress = () => {
+    navigation.navigate('ContentDetail', { id: item._id });
   };
 
-  const handleEdit = (e) => {
-    e.stopPropagation();
-    navigate(`/editContent/${item._id}`);
+  const handleEdit = () => {
+    navigation.navigate('EditContent', { id: item._id });
   };
 
-  const handleAddToFlashcard = async (e) => {
-    e.stopPropagation();
+  const handleAddToFlashcard = async () => {
     try {
       const result = await addFlashcard({ userId: authStatus.user._id, contentId: item._id });
       if (result.success) {
@@ -132,32 +63,118 @@ export default function Card({ item, showEditIcon }) {
   };
 
   return (
-    <StyledGridFigure onClick={handleClick}>
+    <TouchableOpacity style={styles.card} onPress={handlePress}>
       {item.country && (
-        <StyledFlagIcon countryCode={item.country} svg />
+        <View style={styles.flagContainer}>
+          <CustomText>{item.country}</CustomText>
+        </View>
       )}
+      
       {showEditIcon && (
-        <StyledEditIcon onClick={handleEdit} title={t('Edit')} />
+        <TouchableOpacity 
+          style={styles.editIcon} 
+          onPress={handleEdit}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Icon name="edit" size={20} color="#007AFF" />
+        </TouchableOpacity>
       )}
-      <figcaption>
-        <p>{item.title}</p>
-        <p>{item.description}</p>
-      </figcaption>
-      <StyledAuthorText>{t('created by')}: {item.author}</StyledAuthorText> 
+
+      <View style={styles.content}>
+        <CustomText style={styles.title}>{item.title}</CustomText>
+        <CustomText style={styles.description}>{item.description}</CustomText>
+      </View>
+
+      <CustomText style={styles.authorText}>
+        {t('created by')}: {item.author}
+      </CustomText>
+
       {authStatus.isLoggedIn && (
-        <StyledAddToFlashcardIcon 
-          onClick={handleAddToFlashcard} 
-          title={t('Add to Flashcards')}
-        />
+        <TouchableOpacity 
+          style={styles.addIcon}
+          onPress={handleAddToFlashcard}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Icon name="plus" size={20} color="#007AFF" />
+        </TouchableOpacity>
       )}
-      <VoteIcons>
-        <VoteIcon onClick={(e) => { e.stopPropagation(); handleVote('upvote'); }}>
-          <FaChevronUp />
-        </VoteIcon>
-        <VoteIcon onClick={(e) => { e.stopPropagation(); handleVote('downvote'); }}>
-          <FaChevronDown />
-        </VoteIcon>
-      </VoteIcons>
-    </StyledGridFigure>
+
+      <View style={styles.voteContainer}>
+        <TouchableOpacity 
+          onPress={() => handleVote('upvote')}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Icon name="chevron-up" size={20} color="#007AFF" />
+        </TouchableOpacity>
+        <TouchableOpacity 
+          onPress={() => handleVote('downvote')}
+          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+        >
+          <Icon name="chevron-down" size={20} color="#007AFF" />
+        </TouchableOpacity>
+      </View>
+    </TouchableOpacity>
   );
-};
+}
+
+const styles = StyleSheet.create({
+  card: {
+    width: '100%',
+    marginBottom: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: '#007AFF',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    position: 'relative',
+  },
+  flagContainer: {
+    position: 'absolute',
+    top: 10,
+    left: 10,
+  },
+  editIcon: {
+    position: 'absolute',
+    top: 70,
+    right: 10,
+  },
+  content: {
+    flex: 1,
+    marginVertical: 10,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  description: {
+    fontSize: 16,
+  },
+  authorText: {
+    position: 'absolute',
+    bottom: 10,
+    right: 40,
+    fontSize: 12,
+    color: '#666',
+    fontStyle: 'italic',
+  },
+  addIcon: {
+    position: 'absolute',
+    bottom: 10,
+    right: 10,
+  },
+  voteContainer: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    alignItems: 'center',
+  },
+});

@@ -1,71 +1,12 @@
 import React, { useEffect } from 'react';
-import styled from 'styled-components';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView } from 'react-native';
+import { useTranslation } from 'react-i18next';
 
 import { useAuthStore } from '../../store/auth';
 import { useTagStore } from '../../store/tag';
 
-const PopupOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-`;
-
-const PopupContent = styled.div`
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  max-width: 500px;
-  width: 90%;
-  max-height: 80vh;
-  overflow-y: auto;
-`;
-
-const TagGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 10px;
-  margin: 15px 0;
-`;
-
-const TagItem = styled.div`
-  padding: 8px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  text-align: center;
-  background: ${props => props.selected ? '#e0e0e0' : 'white'};
-  &:hover {
-    background: #f0f0f0;
-  }
-`;
-
-const ButtonRow = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 15px;
-`;
-
-const Button = styled.button`
-  padding: 8px 16px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  background: ${props => props.$primary ? '#007bff' : '#6c757d'};
-  color: white;
-  &:hover {
-    opacity: 0.9;
-  }
-`;
-
-function AddTagToContent({ contentId, onClose }) {
+export default function AddTagToContent({ contentId, visible, onClose }) {
+  const { t } = useTranslation();
   const { getTags, tags, addTagToContent } = useTagStore();
   const { authStatus: { user } } = useAuthStore();
   const [selectedTags, setSelectedTags] = React.useState([]);
@@ -90,27 +31,137 @@ function AddTagToContent({ contentId, onClose }) {
   };
 
   return (
-    <PopupOverlay onClick={onClose}>
-      <PopupContent onClick={e => e.stopPropagation()}>
-        <h3>Select Tags</h3>
-        <TagGrid>
-          {tags.map(tag => (
-            <TagItem 
-              key={tag._id}
-              selected={selectedTags.includes(tag._id)}
-              onClick={() => handleTagClick(tag._id)}
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
+      <TouchableOpacity 
+        style={styles.overlay}
+        activeOpacity={1}
+        onPress={onClose}
+      >
+        <View 
+          style={styles.popupContent}
+          onStartShouldSetResponder={() => true}
+          onTouchEnd={e => e.stopPropagation()}
+        >
+          <Text style={styles.title}>{t('Select Tags')}</Text>
+          
+          <ScrollView style={styles.scrollContainer}>
+            <View style={styles.tagGrid}>
+              {tags.map(tag => (
+                <TouchableOpacity
+                  key={tag._id}
+                  style={[
+                    styles.tagItem,
+                    selectedTags.includes(tag._id) && styles.tagItemSelected
+                  ]}
+                  onPress={() => handleTagClick(tag._id)}
+                >
+                  <Text style={styles.tagText}>{tag.name}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
+
+          <View style={styles.buttonRow}>
+            <TouchableOpacity 
+              style={[styles.button, styles.cancelButton]}
+              onPress={onClose}
             >
-              {tag.name}
-            </TagItem>
-          ))}
-        </TagGrid>
-        <ButtonRow>
-          <Button onClick={onClose}>Cancel</Button>
-          <Button $primary onClick={handleSave}>Save</Button>
-        </ButtonRow>
-      </PopupContent>
-    </PopupOverlay>
+              <Text style={styles.buttonText}>{t('Cancel')}</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity 
+              style={[styles.button, styles.saveButton]}
+              onPress={handleSave}
+            >
+              <Text style={styles.buttonText}>{t('Save')}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableOpacity>
+    </Modal>
   );
 }
 
-export default AddTagToContent;
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popupContent: {
+    backgroundColor: 'white',
+    borderRadius: 8,
+    padding: 20,
+    width: '90%',
+    maxHeight: '80%',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  scrollContainer: {
+    maxHeight: '70%',
+  },
+  tagGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+    gap: 10,
+    padding: 5,
+  },
+  tagItem: {
+    padding: 8,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 4,
+    minWidth: 100,
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
+  tagItemSelected: {
+    backgroundColor: '#e0e0e0',
+  },
+  tagText: {
+    fontSize: 14,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+    marginTop: 15,
+  },
+  button: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 4,
+    minWidth: 80,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#6c757d',
+  },
+  saveButton: {
+    backgroundColor: '#007bff',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+});

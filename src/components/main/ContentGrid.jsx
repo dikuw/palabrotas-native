@@ -1,26 +1,37 @@
 import React from 'react';
-import styled from 'styled-components';
+import { View, FlatList, StyleSheet, Dimensions } from 'react-native';
 import Card from '../main/Card';
 
-const GridContainer = styled.div`
-  display: grid;
-  min-height: 500px;
-  display: flex;
-  flex-wrap: wrap;
-  width: 90%;
-  max-width: 1000px;
-  margin: 30px auto;
-  justify-content: center; 
-`;
-
 const ContentGrid = ({ contents, showEditIcon }) => {
+  const renderItem = ({ item }) => (
+    <Card item={item} showEditIcon={showEditIcon} />
+  );
+
   return (
-    <GridContainer>
-      {contents.map(item => (
-        <Card key={item._id} item={item} showEditIcon={showEditIcon} />
-      ))}
-    </GridContainer>
+    <View style={styles.container}>
+      <FlatList
+        data={contents}
+        renderItem={renderItem}
+        keyExtractor={item => item._id}
+        contentContainerStyle={styles.gridContainer}
+        showsVerticalScrollIndicator={false}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+      />
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    width: '100%',
+  },
+  gridContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 30,
+  },
+});
 
 export default ContentGrid;
