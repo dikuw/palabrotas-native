@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Platform } from 'react-native';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -63,38 +63,45 @@ export default function SearchBar() {
   const { searchContents, clearSearch, filterByCountries, filterByTags } = useContentStore();
   const { getTags, tags } = useTagStore();
 
+  // Use useEffect with proper dependency array
   useEffect(() => {
     getTags();
-  }, []);
+  }, []); // Empty dependency array means this only runs once on mount
 
-  const countryOptions = countries.map(country => ({
-    label: t(`${country.name}`),
-    value: country.code
-  }));
+  // Memoize handlers to prevent unnecessary re-renders
+  const handleCountryChange = useCallback((items) => {
+    setSelectedCountries(items);
+    filterByCountries(items);
+  }, [filterByCountries]);
 
-  const tagOptions = tags.map(tag => ({
-    label: tag.name,
-    value: tag._id
-  }));
+  const handleTagChange = useCallback((items) => {
+    setSelectedTags(items);
+    filterByTags(items);
+  }, [filterByTags]);
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     if (searchTerm.trim()) {
       searchContents(searchTerm);
       setSearchTerm('');
     } else {
       clearSearch();
     }
-  };
+  }, [searchTerm, searchContents, clearSearch]);
 
-  const handleCountryChange = (items) => {
-    setSelectedCountries(items);
-    filterByCountries(items);
-  };
+  // Memoize options to prevent recreating on every render
+  const countryOptions = React.useMemo(() => 
+    countries.map(country => ({
+      label: t(`${country.name}`),
+      value: country.code
+    }))
+  , [t]);
 
-  const handleTagChange = (items) => {
-    setSelectedTags(items);
-    filterByTags(items);
-  };
+  const tagOptions = React.useMemo(() => 
+    tags.map(tag => ({
+      label: tag.name,
+      value: tag._id
+    }))
+  , [tags]);
 
   return (
     <SearchBarContainer>
