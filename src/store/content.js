@@ -99,6 +99,12 @@ export const useContentStore = create((set, get) => ({
     const filtered = contents.filter(content => countries.includes(content.country));
     set({ searchResults: filtered });
   },
+  // TODO: Implement filterByTags
+  filterByTags: (tags) => {
+    const { contents } = get();
+    const filtered = contents.filter(content => tags.includes(content.tags));
+    set({ searchResults: filtered });
+  },
   clearSearch: () => set({ 
     searchResults: [],
     isSearching: false
