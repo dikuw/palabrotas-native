@@ -1,5 +1,5 @@
 {
-  "name": "Palabrotas",
+  "name": "palabrotas",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -18,7 +18,6 @@
     "react-native": "0.76.2",
     "react-native-country-flag": "^2.0.2",
     "react-native-dropdown-picker": "^5.4.6",
-    "react-native-reanimated": "^3.16.3",
     "react-native-safe-area-context": "^4.14.0",
     "react-native-screens": "^4.3.0",
     "react-native-vector-icons": "^10.2.0",
