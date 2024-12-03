@@ -2,7 +2,11 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
-// ... existing react configuration block stays the same ...
+project.ext.vectoricons = [
+    iconFontNames: [ 'FontAwesome.ttf' ] // Add other fonts if needed
+]
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 def enableProguardInReleaseBuilds = false
 def jscFlavor = 'org.webkit:android-jsc:+'
