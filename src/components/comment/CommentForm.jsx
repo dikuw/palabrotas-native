@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import CustomText from '../CustomText'; // Assuming you have a custom text component for consistent styling
 
 const CommentForm = ({ onSubmit }) => {
   const [comment, setComment] = useState('');
@@ -26,7 +25,7 @@ const CommentForm = ({ onSubmit }) => {
         style={styles.submitButton}
         onPress={handleSubmit}
       >
-        <CustomText style={styles.buttonText}>{t('Submit')}</CustomText>
+        <Text style={styles.buttonText}>{t('Submit')}</Text>
       </TouchableOpacity>
     </View>
   );
