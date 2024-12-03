@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './src/i18n';
 import { SafeAreaView, View, Text, StatusBar } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -26,6 +27,27 @@ import NotificationContainer from './src/components/notifications/NotificationCo
 import Footer from './src/components/Footer';
 import AddFeedback from './src/components/feedback/AddFeedback';
 import AddTag from './src/components/tag/AddTag';
+
+import { ThemeProvider } from 'styled-components/native';
+
+const theme = {
+  colors: {
+    background: '#ffffff',
+    text: '#000000',
+  },
+  spacing: {
+    small: 8,
+    medium: 16,
+    large: 24,
+  },
+  typography: {
+    small: 12,
+    regular: 14,
+    medium: 16,
+    large: 18,
+    xlarge: 24
+  }
+};
 
 const Stack = createNativeStackNavigator();
 
@@ -56,9 +78,10 @@ function App() {
   //   initialize();
   // }, [getContents, getContentsSortedByVoteDesc]);
 
-  return (
-    <NavigationContainer>
-      <SafeAreaView style={{ flex: 1 }}>
+  return (  
+    <ThemeProvider theme={theme}>
+      <NavigationContainer>
+        <SafeAreaView style={{ flex: 1 }}>
         <StatusBar barStyle="dark-content" />
         <AppContainer>
           <TopBanner 
@@ -151,7 +174,8 @@ function App() {
           <Footer />
         </AppContainer>
       </SafeAreaView>
-    </NavigationContainer>
+      </NavigationContainer>
+    </ThemeProvider>
   );
 }
 

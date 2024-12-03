@@ -4,8 +4,8 @@ import styled from 'styled-components/native';
 import Logo from './Logo';
 
 const HeaderContainer = styled.View`
-  margin-bottom: ${props => props.theme.spacing.medium}px;
-  background-color: ${props => props.theme.colors.background};
+  margin-bottom: ${({ theme }) => theme.spacing.medium}px;
+  background-color: ${({ theme }) => theme.colors.background};
   ${Platform.select({
     ios: `
       shadow-color: #000;
@@ -20,7 +20,7 @@ const HeaderContainer = styled.View`
 `;
 
 const HeaderContent = styled.View`
-  padding: ${props => props.theme.spacing.small}px;
+  padding: ${({ theme }) => theme.spacing.small}px;
   align-items: center;
 `;
 
