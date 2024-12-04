@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TouchableOpacity, Animated, StyleSheet, Dimensions } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from "react-i18next";
 import CustomText from '../CustomText';
@@ -9,8 +9,7 @@ import { useAppStore } from '../../store/app';
 import { useContentStore } from '../../store/content';
 import { useNotificationStore } from '../../store/notification';
 
-const { width, height } = Dimensions.get('window');
-const MENU_WIDTH = 150;
+const { width } = Dimensions.get('window');
 
 export default function NavMenu({ isLoggedIn, isAdmin }) {
   const navigation = useNavigation();
@@ -19,16 +18,6 @@ export default function NavMenu({ isLoggedIn, isAdmin }) {
   const { menuOpen, setMenuOpen } = useAppStore();
   const { clearSearch } = useContentStore();
   const addNotification = useNotificationStore(state => state.addNotification);
-
-  const slideAnim = React.useRef(new Animated.Value(-MENU_WIDTH)).current;
-
-  React.useEffect(() => {
-    Animated.timing(slideAnim, {
-      toValue: menuOpen ? 0 : -MENU_WIDTH,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, [menuOpen]);
 
   const handleNavigation = (route) => {
     setMenuOpen(false);
@@ -78,29 +67,42 @@ export default function NavMenu({ isLoggedIn, isAdmin }) {
     </>
   );
 
-  return (
-    <>
-      {/* Desktop Menu */}
+  if (width > 768) {
+    return (
       <View style={styles.desktopMenu}>
         <MenuContent />
       </View>
+    );
+  }
 
-      {/* Mobile Menu */}
-      <Animated.View
-        style={[
-          styles.mobileMenu,
-          {
-            transform: [{ translateX: slideAnim }],
-          }
-        ]}
-      >
+  if (!menuOpen) {
+    return null;
+  }
+
+  return (
+    <>
+      <TouchableOpacity 
+        style={styles.overlay} 
+        activeOpacity={1} 
+        onPress={() => setMenuOpen(false)}
+      />
+      <View style={styles.mobileMenu}>
         <MenuContent />
-      </Animated.View>
+      </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 998,
+  },
   desktopMenu: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -108,23 +110,18 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 50,
     backgroundColor: '#FFFFFF',
-    // Only show on larger screens
-    display: width > 768 ? 'flex' : 'none',
   },
   mobileMenu: {
     position: 'absolute',
     top: 0,
     left: 0,
-    height: height,
-    width: MENU_WIDTH,
-    backgroundColor: '#FAFAFA',
+    bottom: 0,
+    width: 200,
+    backgroundColor: '#FFFFFF',
     borderRightWidth: 1,
-    borderRightColor: '#000',
-    paddingTop: 100,
-    paddingHorizontal: 12,
-    // Only show on mobile screens
-    display: width <= 768 ? 'flex' : 'none',
-    zIndex: 10,
+    borderRightColor: '#DDDDDD',
+    paddingTop: 60,
+    zIndex: 999,
     elevation: 5,
     shadowColor: '#000',
     shadowOffset: {
@@ -137,11 +134,9 @@ const styles = StyleSheet.create({
   menuItem: {
     paddingVertical: 15,
     paddingHorizontal: 20,
-    width: width <= 768 ? '100%' : 'auto',
   },
   menuText: {
     fontSize: 16,
-    color: '#000',
-    textAlign: width <= 768 ? 'right' : 'center',
+    color: '#000000',
   },
 });
