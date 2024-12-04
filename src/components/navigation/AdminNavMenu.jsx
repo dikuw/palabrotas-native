@@ -2,7 +2,6 @@ import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Animated, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from "react-i18next";
-import CustomText from '../CustomText'; // Assuming you have this component
 import { useAppStore } from '../../store/app';
 
 const { width } = Dimensions.get('window');
@@ -38,7 +37,7 @@ export default function AdminNavMenu({ isLoggedIn, isAdmin }) {
           style={styles.menuItem} 
           onPress={() => handleNavigation('Login')}
         >
-          <CustomText style={styles.menuText}>{t("Log In")}</CustomText>
+          <text style={styles.menuText}>{t("Log In")}</text>
         </TouchableOpacity>
       );
     }
