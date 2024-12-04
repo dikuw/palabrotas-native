@@ -58,6 +58,7 @@ const Stack = createNativeStackNavigator();
 
 const AppContainer = styled.View`
   flex: 1;
+  height: 100%;
   background-color: ${props => props.theme.colors.background};
 `;
 
@@ -73,15 +74,19 @@ function App() {
   const { authStatus, loginUser, logoutUser, getCurrentUser } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
 
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   async function initialize() {
-  //     await getContentsSortedByVoteDesc();
-  //     await getCurrentUser();
-  //     setIsLoading(false);
-  //   }
-  //   initialize();
-  // }, [getContents, getContentsSortedByVoteDesc]);
+  useEffect(() => {
+    setIsLoading(true);
+    console.log('App component rendered');
+    async function initialize() {
+      console.log('initialize');
+      await getContentsSortedByVoteDesc();
+      console.log('getContentsSortedByVoteDesc');
+      await getCurrentUser();
+      console.log('getCurrentUser');
+      setIsLoading(false);
+    }
+    initialize();
+  }, [getContents, getContentsSortedByVoteDesc]);
 
   return (  
     <ThemeProvider theme={theme}>
