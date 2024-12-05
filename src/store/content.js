@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { API_URL } from '../config/env';
 
 export const useContentStore = create((set, get) => ({
   contents: [],
@@ -8,7 +9,7 @@ export const useContentStore = create((set, get) => ({
   MAX_DESCRIPTION_LENGTH: 1000,
   setContents: (contents) => set({ contents }),
   addContent: async (newContent) => {
-    const res = await fetch("/api/content/addContent", {
+    const res = await fetch(`${API_URL}/api/content/addContent`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -20,7 +21,7 @@ export const useContentStore = create((set, get) => ({
     return data;
   },
   updateContent: async (updatedContent) => {
-    const res = await fetch("/api/content/updateContent", {
+    const res = await fetch(`${API_URL}/api/content/updateContent`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -32,7 +33,7 @@ export const useContentStore = create((set, get) => ({
     return data;
   },
   deleteContent: async (updatedContent) => {
-    const res = await fetch(`/api/content/deleteContent`, {
+    const res = await fetch(`${API_URL}/api/content/deleteContent`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -44,31 +45,36 @@ export const useContentStore = create((set, get) => ({
     return data;
   },
   getContents: async () => {
-    const res = await fetch("/api/content/getContents", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-    const data = await res.json();
-    const visibleContents = data.data.filter(content => content.show === true);
-    set({ contents: visibleContents });
-  }, 
+    try {
+      const res = await fetch(`${API_URL}/api/content/getContents`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      const visibleContents = data.data.filter(content => content.show === true);
+      set({ contents: visibleContents });
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
+  },
   getContentsSortedByVoteDesc: async () => {
-    console.log('getContentsSortedByVoteDesc in store');
-    const res = await fetch("/api/content/getContentsSortedByVoteDesc", {
+    const res = await fetch(`${API_URL}/api/content/getContentsSortedByVoteDesc`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
-    })
+    });
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`);
+    }
     const data = await res.json();
-    console.log('data', data);
     const visibleContents = data.data.filter(content => content.show === true);
     set({ contents: visibleContents });
   },
   getContentById: async (id) => {
-    const res = await fetch(`/api/content/getContentById/${id}`, {
+    const res = await fetch(`${API_URL}/api/content/getContentById/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -78,7 +84,7 @@ export const useContentStore = create((set, get) => ({
     return data;
   },
   getContentsByUserId: async (userId) => {
-    const res = await fetch(`/api/content/getContents/${userId}`, {
+    const res = await fetch(`${API_URL}/api/content/getContents/${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

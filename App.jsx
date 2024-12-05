@@ -78,11 +78,8 @@ function App() {
     setIsLoading(true);
     console.log('App component rendered');
     async function initialize() {
-      console.log('initialize');
       await getContentsSortedByVoteDesc();
-      console.log('getContentsSortedByVoteDesc');
       await getCurrentUser();
-      console.log('getCurrentUser');
       setIsLoading(false);
     }
     initialize();
