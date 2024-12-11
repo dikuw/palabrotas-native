@@ -4,7 +4,7 @@ export const useCommentStore = create((set, get) => ({
   comments: [],
   setComments: (comments) => set({ comments }),
   addComment: async (contentId, userId, text) => {
-    const res = await fetch("/api/comment/addComment", {
+    const res = await fetch(`${API_URL}/api/comment/addComment`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -17,7 +17,7 @@ export const useCommentStore = create((set, get) => ({
   },
   getCommentsByContentId: async (contentId) => {
     try {
-      const res = await fetch(`/api/comment/getCommentsByContentId/${contentId}`);
+      const res = await fetch(`${API_URL}/api/comment/getCommentsByContentId/${contentId}`);
       const data = await res.json();
       set({ comments: Array.isArray(data) ? data : [] });
     } catch (error) {

@@ -6,7 +6,7 @@ export const useUserStore = create((set, get) => ({
   error: null,
 
   updateStreak: async (userId) => {
-    const res = await fetch(`/api/user/updateStreak/${userId}`, {
+    const res = await fetch(`${API_URL}/api/user/updateStreak/${userId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -17,7 +17,7 @@ export const useUserStore = create((set, get) => ({
   },
 
   getCurrentStreak: async (userId) => {
-    const res = await fetch(`/api/user/getCurrentStreak/${userId}`, {
+    const res = await fetch(`${API_URL}/api/user/getCurrentStreak/${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -28,7 +28,7 @@ export const useUserStore = create((set, get) => ({
   }, 
 
   getLongestStreak: async (userId) => {
-    const res = await fetch(`/api/user/getLongestStreak/${userId}`, {
+    const res = await fetch(`${API_URL}/api/user/getLongestStreak/${userId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

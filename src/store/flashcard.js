@@ -6,7 +6,7 @@ export const useFlashcardStore = create((set, get) => ({
   setFlashcards: (flashcards) => set({ flashcards }),
   addFlashcard: async (newFlashcard) => {
     try {
-      const res = await fetch("/api/flashcard/addFlashcard", {
+      const res = await fetch(`${API_URL}/api/flashcard/addFlashcard`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,19 +34,19 @@ export const useFlashcardStore = create((set, get) => ({
     }
   },
   getFlashcards: async (userId) => {
-    const res = await fetch(`/api/flashcard/getFlashcards/${userId}`);
+    const res = await fetch(`${API_URL}/api/flashcard/getFlashcards/${userId}`);
     const data = await res.json();
     set({ flashcards: data });
     return data;
   },
   getDueFlashcards: async (userId) => {
-    const res = await fetch(`/api/flashcard/getDueFlashcards/${userId}`);
+    const res = await fetch(`${API_URL}/api/flashcard/getDueFlashcards/${userId}`);
     const data = await res.json();
     set({ dueFlashcards: data });
     return data;
   },
   updateFlashcardReview: async (flashcardId, quality) => {
-    const res = await fetch(`/api/flashcard/updateFlashcardReview/${flashcardId}`, {
+    const res = await fetch(`${API_URL}/api/flashcard/updateFlashcardReview/${flashcardId}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

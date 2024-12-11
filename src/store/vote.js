@@ -4,7 +4,7 @@ export const useVoteStore = create((set, get) => ({
   votes: [],
   setVotes: (votes) => set({ votes }),
   addVote: async (contentId, userId, voteType) => {
-    const res = await fetch("/api/vote/addVote", {
+    const res = await fetch(`${API_URL}/api/vote/addVote`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -17,7 +17,7 @@ export const useVoteStore = create((set, get) => ({
   },
   getVotesByContentId: async (contentId) => {
     try {
-      const res = await fetch(`/api/vote/getVotesByContentId/${contentId}`);
+      const res = await fetch(`${API_URL}/api/vote/getVotesByContentId/${contentId}`);
       const data = await res.json();
       set({ votes: Array.isArray(data) ? data : [] });
     } catch (error) {

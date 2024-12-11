@@ -4,7 +4,7 @@ export const useTagStore = create((set) => ({
   tags: [],
   MAX_TAG_LENGTH: 20,
   getTags: async () => {
-    const res = await fetch("/api/tag/getTags", {
+    const res = await fetch(`${API_URL}/api/tag/getTags`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -14,7 +14,7 @@ export const useTagStore = create((set) => ({
     set({ tags: data.data });
   },
   getTagsForContent: async (contentId) => {
-    const res = await fetch(`/api/tag/getTagsForContent/${contentId}`, {
+    const res = await fetch(`${API_URL}/api/tag/getTagsForContent/${contentId}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -24,7 +24,7 @@ export const useTagStore = create((set) => ({
     set({ tags: data.data });
   },
   addTag: async (newTag) => {
-    const res = await fetch("/api/tag/addTag", {
+    const res = await fetch(`${API_URL}/api/tag/addTag`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +36,7 @@ export const useTagStore = create((set) => ({
     return data;
   },
   addTagToContent: async (contentId, tagId, userId) => {
-    const res = await fetch(`/api/tag/addTagToContent`, {
+    const res = await fetch(`${API_URL}/api/tag/addTagToContent`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

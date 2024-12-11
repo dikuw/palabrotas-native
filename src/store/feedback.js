@@ -4,7 +4,7 @@ export const useFeedbackStore = create((set, get) => ({
   feedback: [],
   setFeedback: (feedback) => set({ feedback }),
   addFeedback: async (newFeedback) => {
-    const res = await fetch("/api/feedback/addFeedback", {
+    const res = await fetch(`${API_URL}/api/feedback/addFeedback`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
