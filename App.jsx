@@ -76,7 +76,6 @@ function App() {
 
   useEffect(() => {
     setIsLoading(true);
-    console.log('App component rendered');
     async function initialize() {
       await getContentsSortedByVoteDesc();
       await getCurrentUser();
