@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { TouchableOpacity, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Nav = styled.View`
   width: 100%;
@@ -23,11 +22,6 @@ const Nav = styled.View`
 
 const MenuButton = styled(TouchableOpacity)`
   padding: ${({ theme }) => theme.spacing.small}px;
-`;
-
-const MenuIcon = styled(Icon)`
-  font-size: 24px;
-  color: ${({ theme }) => theme.colors.text};
 `;
 
 const MenuContainer = styled.View`
@@ -57,8 +51,9 @@ const MenuItem = styled(TouchableOpacity)`
 `;
 
 const MenuText = styled.Text`
+  font-size: 24px;
+  font-weight: bold;
   color: ${({ theme }) => theme.colors.text};
-  font-size: ${({ theme }) => theme.typography.regular}px;
 `;
 
 export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
@@ -79,7 +74,7 @@ export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
   return (
     <Nav>
       <MenuButton onPress={() => setIsOpen(!isOpen)}>
-        <MenuIcon name={isOpen ? 'close' : 'menu'} />
+        <MenuText>{isOpen ? "X" : "☰"}</MenuText>
       </MenuButton>
 
       {isOpen && (
