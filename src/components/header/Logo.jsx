@@ -21,7 +21,7 @@ export default function Logo() {
     <LogoContainer>
       <TouchableOpacity onPress={() => navigation.navigate('Home')}>
         <StyledImage 
-          source={require('../../assets/images/logo.svg')} 
+          source={require('../../assets/images/logo.png')} 
           accessibilityLabel="Palabrotas Logo"
         />
       </TouchableOpacity>
