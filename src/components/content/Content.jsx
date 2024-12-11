@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Platform } from 'react-native';
-import styled from 'styled-components/native';
+import { ScrollView, Platform, ActivityIndicator } from 'react-native';
+import styled, { useTheme } from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ReactCountryFlag from "react-native-country-flag";
@@ -128,6 +128,7 @@ const LoadingText = styled.Text`
 
 export default function Content({ route }) {
   const { t } = useTranslation();
+  const theme = useTheme();
   const { id } = route.params;
   const { authStatus } = useAuthStore();
   const { getContentById } = useContentStore();
