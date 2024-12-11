@@ -66,9 +66,6 @@ export const useContentStore = create((set, get) => ({
         "Content-Type": "application/json",
       },
     });
-    if (!res.ok) {
-      throw new Error(`HTTP error! status: ${res.status}`);
-    }
     const data = await res.json();
     const visibleContents = data.data.filter(content => content.show === true);
     set({ contents: visibleContents });

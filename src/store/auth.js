@@ -1,10 +1,11 @@
 import { create } from 'zustand';
+import { API_URL } from '../config/env';
 
 export const useAuthStore = create(
     (set, get) => ({
       authStatus: { isLoggedIn: false, user: null, isLoading: true },
       registerUser: async (newUser) => {
-        const res = await fetch("/api/user/register", {
+        const res = await fetch(`${API_URL}/api/user/register`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -26,13 +27,13 @@ export const useAuthStore = create(
         }
       },
       googleLogin: async () => {
-        const res = await fetch("/api/auth/google", {
+        const res = await fetch(`${API_URL}/api/auth/google`, {
           method: "GET",
           credentials: 'include',
         })
       },
       loginUser: async (credentials) => {
-        const res = await fetch("/api/auth/login", {
+        const res = await fetch(`${API_URL}/api/auth/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -56,7 +57,7 @@ export const useAuthStore = create(
       },
       logoutUser: async () => {
         try {
-          const data = await fetch('/api/auth/logout', {
+          const data = await fetch(`${API_URL}/api/auth/logout`, {
             method: 'POST',
             credentials: 'include',
           });
@@ -67,7 +68,7 @@ export const useAuthStore = create(
         }
       },
       getCurrentUser: async () => {
-        const res = await fetch("/api/auth/getUser", {
+        const res = await fetch(`${API_URL}/api/auth/getUser`, {
           method: "GET",
           credentials: 'include',
         })
@@ -93,7 +94,7 @@ export const useAuthStore = create(
         return data;
       },
       updateUser: async (user) => {
-        const res = await fetch("/api/user/update", {
+        const res = await fetch(`${API_URL}/api/user/update`, {
           method: "POST",
           credentials: 'include',
           body: JSON.stringify(user),
