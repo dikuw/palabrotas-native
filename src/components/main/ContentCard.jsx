@@ -1,7 +1,7 @@
 import React from 'react';
 import { TouchableOpacity, Platform, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import styled from 'styled-components/native';
+import styled, { useTheme } from 'styled-components/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Card = styled.View`
@@ -62,6 +62,7 @@ const EditButton = styled.TouchableOpacity`
 
 export default function ContentCard({ content, showEditIcon = false }) {
   const navigation = useNavigation();
+  const theme = useTheme();
   const cardWidth = (Dimensions.get('window').width / Math.floor(Dimensions.get('window').width / 300)) - 32;
 
   const handlePress = () => {

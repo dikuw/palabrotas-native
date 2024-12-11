@@ -104,7 +104,7 @@ function App() {
           <Stack.Navigator>
             <Stack.Screen name="Home">
               {props => (
-                <View>
+                <View style={{ flex: 1 }}>
                   <SearchBar />
                   {isLoading ? (
                     <LoadingText>Finding latest content...</LoadingText>

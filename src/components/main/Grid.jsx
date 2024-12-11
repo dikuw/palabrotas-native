@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, Dimensions, ActivityIndicator } from 'react-native';
+import { FlatList, Dimensions, ActivityIndicator, StyleSheet, View } from 'react-native';
 import styled from 'styled-components/native';
 import { useContentStore } from '../../store/content';
 import ContentCard from './ContentCard';
@@ -7,9 +7,19 @@ import NoResults from './NoResults';
 
 const GridContainer = styled.View`
   flex: 1;
-  padding: ${({ theme }) => theme.spacing.medium}px;
   background-color: ${({ theme }) => theme.colors.background};
 `;
+
+const styles = StyleSheet.create({
+  flatListContent: {
+    padding: 8,
+    minHeight: '100%', 
+  },
+  itemContainer: {
+    width: '100%',
+    marginVertical: 8,
+  }
+});
 
 const LoadingContainer = styled.View`
   flex: 1;
@@ -26,9 +36,7 @@ const LoadingText = styled.Text`
 
 export default function Grid() {
   const { contents, isSearching, searchResults, isLoading } = useContentStore();
-  
   const displayContents = searchResults.length > 0 ? searchResults : contents;
-  const numColumns = Math.floor(Dimensions.get('window').width / 300); // Adjust card width as needed
 
   if (isLoading) {
     return (
@@ -43,12 +51,16 @@ export default function Grid() {
     return <NoResults />;
   }
 
-  const renderItem = ({ item }) => (
-    <ContentCard 
-      content={item}
-      showEditIcon={false}
-    />
-  );
+  const renderItem = ({ item }) => {
+    return (
+      <View style={styles.itemContainer}>
+        <ContentCard 
+          content={item}
+          showEditIcon={false}
+        />
+      </View>
+    );
+  };
 
   return (
     <GridContainer>
@@ -56,15 +68,13 @@ export default function Grid() {
         data={displayContents}
         renderItem={renderItem}
         keyExtractor={item => item._id}
-        numColumns={numColumns}
-        columnWrapperStyle={numColumns > 1 ? { justifyContent: 'space-between' } : null}
-        contentContainerStyle={{ padding: 8 }}
+        contentContainerStyle={styles.flatListContent}
         showsVerticalScrollIndicator={false}
-        initialNumToRender={6}
-        maxToRenderPerBatch={10}
-        windowSize={5}
-        onEndReachedThreshold={0.5}
-        removeClippedSubviews={true}
+        ListEmptyComponent={() => (
+          <LoadingContainer>
+            <LoadingText>No content available</LoadingText>
+          </LoadingContainer>
+        )}
       />
     </GridContainer>
   );
