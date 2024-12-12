@@ -33,6 +33,7 @@ const MenuContainer = styled.View`
   padding: ${({ theme }) => theme.spacing.small}px 0;
   min-width: 200px;
   z-index: 1000;
+  elevation: 5;
   ${Platform.select({
     ios: `
       shadow-color: #000;
@@ -46,12 +47,17 @@ const MenuContainer = styled.View`
   })}
 `;
 
+const NavigationContainer = styled.View`
+  z-index: 999;
+  elevation: 5;
+`;
+
 const MenuItem = styled(TouchableOpacity)`
   padding: ${({ theme }) => theme.spacing.medium}px;
 `;
 
 const MenuText = styled.Text`
-  font-size: 24px;
+  font-size: 16px;
   font-weight: bold;
   color: ${({ theme }) => theme.colors.text};
 `;
@@ -72,49 +78,51 @@ export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
   };
 
   return (
-    <Nav>
-      <MenuButton onPress={() => setIsOpen(!isOpen)}>
-        <MenuText>{isOpen ? "X" : "☰"}</MenuText>
-      </MenuButton>
+    <NavigationContainer>
+      <Nav>
+        <MenuButton onPress={() => setIsOpen(!isOpen)}>
+          <MenuText>{isOpen ? "X" : "☰"}</MenuText>
+        </MenuButton>
 
-      {isOpen && (
-        <MenuContainer>
-          <MenuItem onPress={() => handleNavigation('Home')}>
-            <MenuText>Home</MenuText>
-          </MenuItem>
+        {isOpen && (
+          <MenuContainer>
+            <MenuItem onPress={() => handleNavigation('Home')}>
+              <MenuText>Home</MenuText>
+            </MenuItem>
 
-          {isLoggedIn ? (
-            <>
-              <MenuItem onPress={() => handleNavigation('Account')}>
-                <MenuText>Account</MenuText>
-              </MenuItem>
-              <MenuItem onPress={() => handleNavigation('Flashcards')}>
-                <MenuText>Flashcards</MenuText>
-              </MenuItem>
-              <MenuItem onPress={() => handleNavigation('AddContent')}>
-                <MenuText>Add Content</MenuText>
-              </MenuItem>
-              {isAdmin && (
-                <MenuItem onPress={() => handleNavigation('Admin')}>
-                  <MenuText>Admin</MenuText>
+            {isLoggedIn ? (
+              <>
+                <MenuItem onPress={() => handleNavigation('Account')}>
+                  <MenuText>Account</MenuText>
                 </MenuItem>
-              )}
-              <MenuItem onPress={handleLogout}>
-                <MenuText>Logout</MenuText>
-              </MenuItem>
-            </>
-          ) : (
-            <>
-              <MenuItem onPress={() => handleNavigation('Login')}>
-                <MenuText>Login</MenuText>
-              </MenuItem>
-              <MenuItem onPress={() => handleNavigation('Register')}>
-                <MenuText>Register</MenuText>
-              </MenuItem>
-            </>
-          )}
-        </MenuContainer>
-      )}
-    </Nav>
+                <MenuItem onPress={() => handleNavigation('Flashcards')}>
+                  <MenuText>Flashcards</MenuText>
+                </MenuItem>
+                <MenuItem onPress={() => handleNavigation('AddContent')}>
+                  <MenuText>Add Content</MenuText>
+                </MenuItem>
+                {isAdmin && (
+                  <MenuItem onPress={() => handleNavigation('Admin')}>
+                    <MenuText>Admin</MenuText>
+                  </MenuItem>
+                )}
+                <MenuItem onPress={handleLogout}>
+                  <MenuText>Logout</MenuText>
+                </MenuItem>
+              </>
+            ) : (
+              <>
+                <MenuItem onPress={() => handleNavigation('Login')}>
+                  <MenuText>Login</MenuText>
+                </MenuItem>
+                <MenuItem onPress={() => handleNavigation('Register')}>
+                  <MenuText>Register</MenuText>
+                </MenuItem>
+              </>
+            )}
+          </MenuContainer>
+        )}
+      </Nav>
+    </NavigationContainer>
   );
 }
