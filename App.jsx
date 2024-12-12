@@ -100,7 +100,6 @@ function App() {
             isAdmin={authStatus.user ? authStatus.user.isAdmin : false}
             logoutUser={logoutUser} 
           />
-          
           <Stack.Navigator>
             <Stack.Screen name="Home">
               {props => (
