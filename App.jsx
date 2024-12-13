@@ -39,6 +39,8 @@ const theme = {
     warning: '#FF9800',
     info: '#2196F3',
     white: '#FFFFFF',
+    primary: '#000000',
+    secondary: '#000000',
   },
   spacing: {
     small: 8,

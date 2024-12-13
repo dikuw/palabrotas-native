@@ -12,7 +12,6 @@ const NotificationCard = styled(Animated.View)`
     type === 'error' ? '#F44336' :
     type === 'warning' ? '#FFA726' :
     '#2196F3'};
-  opacity: 1;
   ${Platform.select({
     ios: `
       shadow-color: #000;
