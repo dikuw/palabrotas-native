@@ -26,7 +26,7 @@ const FooterText = styled.Text`
 const LinkText = styled.Text`
   color: ${({ theme }) => theme.colors.almostWhite};
   font-size: ${({ theme }) => theme.typography.small}px;
-  text-decoration-line: underline;
+  text-decoration-line: none;
 `;
 
 const Row = styled.View`
