@@ -9,7 +9,8 @@ const Container = styled.View`
   top: ${Platform.OS === 'ios' ? 50 : 20}px;
   left: 0;
   right: 0;
-  z-index: 1000;
+  z-index: 9999;
+  elevation: 9999;
   align-items: center;
 `;
 
@@ -17,6 +18,8 @@ const NotificationWrapper = styled(Animated.View)`
   width: 90%;
   max-width: 400px;
   margin-bottom: ${({ theme }) => theme.spacing.small}px;
+  z-index: 9999; 
+  elevation: 9999;
 `;
 
 export default function NotificationContainer() {
