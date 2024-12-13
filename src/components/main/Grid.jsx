@@ -2,7 +2,7 @@ import React from 'react';
 import { FlatList, Dimensions, ActivityIndicator, StyleSheet, View } from 'react-native';
 import styled from 'styled-components/native';
 import { useContentStore } from '../../store/content';
-import ContentCard from './ContentCard';
+import Card from './Card';
 import NoResults from './NoResults';
 
 const GridContainer = styled.View`
@@ -54,8 +54,8 @@ export default function Grid() {
   const renderItem = ({ item }) => {
     return (
       <View style={styles.itemContainer}>
-        <ContentCard 
-          content={item}
+        <Card 
+          item={item}
           showEditIcon={false}
         />
       </View>
