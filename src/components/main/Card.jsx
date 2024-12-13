@@ -9,7 +9,6 @@ import { useContentStore } from '../../store/content';
 import { useFlashcardStore } from '../../store/flashcard';
 import { useVoteStore } from '../../store/vote';
 import { useNotificationStore } from '../../store/notification';
-import CustomText from '../CustomText'; // Assuming you have this component
 
 export default function Card({ item, showEditIcon }) {
   const navigation = useNavigation();
@@ -66,7 +65,7 @@ export default function Card({ item, showEditIcon }) {
     <TouchableOpacity style={styles.card} onPress={handlePress}>
       {item.country && (
         <View style={styles.flagContainer}>
-          <CustomText>{item.country}</CustomText>
+          <Text>{item.country}</Text>
         </View>
       )}
       
@@ -81,13 +80,13 @@ export default function Card({ item, showEditIcon }) {
       )}
 
       <View style={styles.content}>
-        <CustomText style={styles.title}>{item.title}</CustomText>
-        <CustomText style={styles.description}>{item.description}</CustomText>
+        <Text style={styles.title}>{item.title}</Text>
+        <Text style={styles.description}>{item.description}</Text>
       </View>
 
-      <CustomText style={styles.authorText}>
+      <Text style={styles.authorText}>
         {t('created by')}: {item.author}
-      </CustomText>
+      </Text>
 
       {authStatus.isLoggedIn && (
         <TouchableOpacity 
