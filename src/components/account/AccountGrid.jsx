@@ -1,5 +1,6 @@
 import React from 'react';
 import { FlatList } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import styled from 'styled-components/native';
 
 const GridContainer = styled.View`
@@ -27,7 +28,9 @@ const ContentDescription = styled.Text`
   color: ${props => props.theme.colors.textSecondary};
 `;
 
-export default function AccountGrid({ contents, navigation }) {
+export default function AccountGrid({ contents }) {
+  const navigation = useNavigation();
+
   const renderItem = ({ item }) => (
     <ContentCard 
       onPress={() => navigation.navigate('Content', { contentId: item._id })}
