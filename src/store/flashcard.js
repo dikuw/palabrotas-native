@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { API_URL } from '../config/env';
 
 export const useFlashcardStore = create((set, get) => ({
   flashcards: [],

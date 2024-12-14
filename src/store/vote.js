@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { API_URL } from '../config/env';
 
 export const useVoteStore = create((set, get) => ({
   votes: [],
