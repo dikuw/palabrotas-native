@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, Platform, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from "react-i18next";
-import styled from 'styled-components/native';
+import styled, { useTheme } from 'styled-components/native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 import { useContentStore } from '../../store/content';
@@ -23,13 +23,15 @@ const FormContainer = styled.View`
 
 const Input = styled.TextInput`
   background-color: ${({ hasError, theme }) => 
-    hasError ? theme.colors.error + '20' : theme.colors.inputBackground};
+    hasError ? theme.colors.error + '20' : theme.colors.white};
   color: ${({ hasError, theme }) => 
     hasError ? theme.colors.error : theme.colors.text};
   padding: ${({ theme }) => theme.spacing.medium}px;
   margin-bottom: ${({ theme }) => theme.spacing.small}px;
   border-radius: ${({ theme }) => theme.borderRadius.medium}px;
   font-size: ${({ theme }) => theme.typography.regular}px;
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.colors.border};
 `;
 
 const ErrorText = styled.Text`
@@ -61,9 +63,10 @@ const LoadingContainer = styled.View`
 `;
 
 export default function EditContent({ route }) {
-  const { id } = route.params;
+  const { contentId } = route.params;
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const theme = useTheme();
   const { MAX_TITLE_LENGTH, MAX_DESCRIPTION_LENGTH, contents, getContents, updateContent, deleteContent } = useContentStore();
   const addNotification = useNotificationStore(state => state.addNotification);
 
@@ -84,7 +87,7 @@ export default function EditContent({ route }) {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const contentItem = contents.find(item => item._id === id);
+    const contentItem = contents.find(item => item._id === contentId);
     if (contentItem) {
       setFormData({
         id: contentItem._id,
@@ -97,7 +100,7 @@ export default function EditContent({ route }) {
       });
       setIsLoading(false);
     }
-  }, [id, contents]);
+  }, [contentId, contents]);
 
   const handleChange = (name, value) => {
     setFormData(prev => ({ ...prev, [name]: value }));
