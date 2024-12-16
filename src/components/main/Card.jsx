@@ -2,6 +2,7 @@ import React from 'react';
 import { View, TouchableOpacity, StyleSheet, Text, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ReactCountryFlag from "react-native-country-flag";
 import { useTranslation } from "react-i18next";
 
 import { useAuthStore } from '../../store/auth';
@@ -65,7 +66,10 @@ export default function Card({ item, showEditIcon }) {
     <TouchableOpacity style={styles.card} onPress={handlePress}>
       {item.country && (
         <View style={styles.flagContainer}>
-          <Text>{item.country}</Text>
+          <ReactCountryFlag
+            isoCode={item.country}
+            size={16}
+          />
         </View>
       )}
       
@@ -135,10 +139,15 @@ const styles = StyleSheet.create({
     elevation: 5,
     position: 'relative',
   },
-  flagContainer: {
+  flagContainer: { 
     position: 'absolute',
     top: 10,
     left: 10,
+    borderRadius: 4,
+    overflow: 'hidden',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
   },
   editIcon: {
     position: 'absolute',
