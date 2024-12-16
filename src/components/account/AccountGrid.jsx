@@ -32,6 +32,7 @@ export default function AccountGrid({ contents }) {
   const navigation = useNavigation();
 
   const renderItem = ({ item }) => (
+    
     <ContentCard 
       onPress={() => navigation.navigate('Content', { contentId: item._id })}
     >
