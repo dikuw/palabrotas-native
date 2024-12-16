@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { ScrollView, Platform, KeyboardAvoidingView } from 'react-native';
+import { ScrollView, Platform, KeyboardAvoidingView, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from "react-i18next";
-import styled from 'styled-components/native';
+import styled, { useTheme } from 'styled-components/native';
 import DropDownPicker from 'react-native-dropdown-picker';
 
 import { useAuthStore } from '../../store/auth';
@@ -24,13 +24,15 @@ const FormContainer = styled.View`
 
 const Input = styled.TextInput`
   background-color: ${({ hasError, theme }) => 
-    hasError ? theme.colors.error + '20' : theme.colors.inputBackground};
+    hasError ? theme.colors.error + '20' : theme.colors.white};
   color: ${({ hasError, theme }) => 
     hasError ? theme.colors.error : theme.colors.text};
   padding: ${({ theme }) => theme.spacing.medium}px;
   margin-bottom: ${({ theme }) => theme.spacing.small}px;
   border-radius: ${({ theme }) => theme.borderRadius.medium}px;
   font-size: ${({ theme }) => theme.typography.regular}px;
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.colors.border};
 `;
 
 const ErrorText = styled.Text`
@@ -57,6 +59,7 @@ const ButtonText = styled.Text`
 export default function AddContent() {
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const theme = useTheme();
   const { authStatus } = useAuthStore();
   const { MAX_TITLE_LENGTH, MAX_DESCRIPTION_LENGTH, addContent } = useContentStore();
   const addNotification = useNotificationStore(state => state.addNotification);
@@ -117,7 +120,10 @@ export default function AddContent() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
     >
-      <ScrollView>
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
         <Container>
           <FormContainer>
             <Input
@@ -128,7 +134,7 @@ export default function AddContent() {
               maxLength={MAX_TITLE_LENGTH}
             />
             {errors.title && <ErrorText>{errors.title}</ErrorText>}
-
+  
             <Input
               placeholder={t("Description")}
               value={formData.description}
@@ -139,7 +145,7 @@ export default function AddContent() {
               numberOfLines={3}
             />
             {errors.description && <ErrorText>{errors.description}</ErrorText>}
-
+  
             <DropDownPicker
               open={isCountryOpen}
               setOpen={setIsCountryOpen}
@@ -161,7 +167,7 @@ export default function AddContent() {
               zIndex={3000}
             />
             {errors.country && <ErrorText>{errors.country}</ErrorText>}
-
+  
             <Input
               placeholder={t("Author")}
               value={formData.author}
@@ -169,13 +175,13 @@ export default function AddContent() {
               hasError={!!errors.author}
             />
             {errors.author && <ErrorText>{errors.author}</ErrorText>}
-
+  
             <Input
               placeholder={t("Hint (optional)")}
               value={formData.hint}
               onChangeText={(text) => handleChange('hint', text)}
             />
-
+  
             <Input
               placeholder={t("Example sentence (optional)")}
               value={formData.exampleSentence}
@@ -183,7 +189,7 @@ export default function AddContent() {
               multiline
               numberOfLines={2}
             />
-
+  
             <SubmitButton 
               onPress={handleSubmit}
               disabled={isSubmitting}
@@ -193,7 +199,7 @@ export default function AddContent() {
                 {isSubmitting ? t("Adding...") : t("Add Content")}
               </ButtonText>
             </SubmitButton>
-
+  
             {errors.general && <ErrorText>{errors.general}</ErrorText>}
           </FormContainer>
         </Container>
