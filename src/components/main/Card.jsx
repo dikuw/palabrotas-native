@@ -125,6 +125,8 @@ const styles = StyleSheet.create({
     width: '100%',
     marginBottom: 20,
     padding: 20,
+    paddingTop: 40,
+    paddingBottom: 40,
     borderWidth: 1,
     borderColor: '#007AFF',
     backgroundColor: '#FFFFFF',
@@ -138,6 +140,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 5,
     position: 'relative',
+    minHeight: 150,
   },
   flagContainer: { 
     position: 'absolute',
@@ -157,6 +160,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     marginVertical: 10,
+    marginTop: 10,
   },
   title: {
     fontSize: 18,
