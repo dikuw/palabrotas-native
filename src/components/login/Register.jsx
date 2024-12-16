@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ScrollView, Platform, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from "react-i18next";
-import styled from 'styled-components/native';
+import styled, { useTheme } from 'styled-components/native';
 
 import { useAuthStore } from '../../store/auth';
 import { useNotificationStore } from '../../store/notification';
@@ -25,13 +25,15 @@ const Title = styled.Text`
 
 const Input = styled.TextInput`
   background-color: ${({ hasError, theme }) => 
-    hasError ? theme.colors.error + '20' : theme.colors.inputBackground};
+    hasError ? theme.colors.error + '20' : theme.colors.white};
   color: ${({ hasError, theme }) => 
     hasError ? theme.colors.error : theme.colors.text};
   padding: ${({ theme }) => theme.spacing.medium}px;
   margin-bottom: ${({ theme }) => theme.spacing.small}px;
   border-radius: ${({ theme }) => theme.borderRadius.medium}px;
   font-size: ${({ theme }) => theme.typography.regular}px;
+  border-width: 1px;
+  border-color: ${({ theme }) => theme.colors.border};
 `;
 
 const ErrorText = styled.Text`
@@ -60,6 +62,7 @@ const ButtonText = styled.Text`
 export default function Register() {
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const theme = useTheme();
   const { registerUser } = useAuthStore();
   const addNotification = useNotificationStore(state => state.addNotification);
 
