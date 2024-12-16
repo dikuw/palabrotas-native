@@ -45,7 +45,7 @@ const ErrorText = styled.Text`
 
 const Button = styled.TouchableOpacity`
   background-color: ${({ variant, theme }) => 
-    variant === 'secondary' ? 'transparent' : theme.colors.white};
+    variant === 'secondary' ? 'transparent' : theme.colors.primary}; 
   padding: ${({ theme }) => theme.spacing.medium}px;
   border-radius: ${({ theme }) => theme.borderRadius.medium}px;
   align-items: center;
@@ -61,7 +61,6 @@ const ButtonText = styled.Text`
   font-size: ${({ theme }) => theme.typography.medium}px;
   font-weight: bold;
 `;
-
 const OrDivider = styled.View`
   flex-direction: row;
   align-items: center;
