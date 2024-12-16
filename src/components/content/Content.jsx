@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Platform, ActivityIndicator } from 'react-native';
+import { ScrollView, Platform, ActivityIndicator, FlatList } from 'react-native';
 import styled, { useTheme } from 'styled-components/native';
 import { useTranslation } from 'react-i18next';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import ReactCountryFlag from "react-native-country-flag";
 
 import { useAuthStore } from '../../store/auth';
@@ -93,6 +92,11 @@ const ToggleText = styled.Text`
   margin-left: ${({ theme }) => theme.spacing.small}px;
 `;
 
+const ToggleIcon = styled.Text`
+  color: ${({ theme }) => theme.colors.primary};
+  font-size: ${({ theme }) => theme.typography.large}px;
+`;
+
 const CommentList = styled.View`
   margin-top: ${({ theme }) => theme.spacing.large}px;
 `;
@@ -129,7 +133,7 @@ const LoadingText = styled.Text`
 export default function Content({ route }) {
   const { t } = useTranslation();
   const theme = useTheme();
-  const { id } = route.params;
+  const { contentId } = route.params;
   const { authStatus } = useAuthStore();
   const { getContentById } = useContentStore();
   const { comments, getCommentsByContentId, addComment } = useCommentStore();
@@ -141,10 +145,11 @@ export default function Content({ route }) {
 
   useEffect(() => {
     const fetchContentAndComments = async () => {
+      console.log("fetchContentAndComments", contentId);
       try {
-        const contentData = await getContentById(id);
+        const contentData = await getContentById(contentId);
         setContent(contentData);
-        await getCommentsByContentId(id);
+        await getCommentsByContentId(contentId);
       } catch (error) {
         console.error('Error fetching content or comments:', error);
         addNotification(t('Failed to load content or comments'), 'error');
@@ -152,11 +157,11 @@ export default function Content({ route }) {
     };
 
     fetchContentAndComments();
-  }, [id, addNotification, t]);
+  }, [contentId, addNotification, t]);
 
   const handleAddComment = async (commentText) => {
     try {
-      await addComment(id, authStatus.user._id, commentText);
+      await addComment(contentId, authStatus.user._id, commentText);
       addNotification(t('Comment added successfully'), 'success');
     } catch (error) {
       console.error('Error adding comment:', error);
@@ -174,72 +179,72 @@ export default function Content({ route }) {
   }
 
   return (
-    <ScrollView>
-      <ContentWrapper>
-        <ContentHeader>
-          <Title>{content.title}</Title>
-          {content.country && (
-            <ReactCountryFlag
-              isoCode={content.country}
-              size={24}
-            />
-          )}
-        </ContentHeader>
-        
-        <Description>{content.description}</Description>
-        
-        {content.exampleSentence && (
-          <ExampleSentence>{content.exampleSentence}</ExampleSentence>
-        )}
-        
-        <AuthorInfo>{t('Created by')}: {content.author}</AuthorInfo>
-        
-        <TagContainer>
-          <TagGrid contentId={content._id} />
-          <AddTagButton onPress={() => setShowTagSelector(true)}>
-            <AddTagText>{t('+ Add Tag')}</AddTagText>
-          </AddTagButton>
-        </TagContainer>
-
-        {showTagSelector && (
-          <AddTagToContent 
-            contentId={content._id} 
-            onClose={() => setShowTagSelector(false)} 
+    <ContentWrapper>
+      <ContentHeader>
+        <Title>{content.title}</Title>
+        {content.country && (
+          <ReactCountryFlag
+            isoCode={content.country}
+            size={24}
           />
         )}
+      </ContentHeader>
+      
+      <Description>{content.description}</Description>
+      
+      {content.exampleSentence && (
+        <ExampleSentence>{content.exampleSentence}</ExampleSentence>
+      )}
+      
+      <AuthorInfo>{t('Created by')}: {content.author}</AuthorInfo>
+      
+      <TagContainer>
+        <TagGrid contentId={content._id} />
+        <AddTagButton onPress={() => setShowTagSelector(true)}>
+          <AddTagText>{t('+ Add Tag')}</AddTagText>
+        </AddTagButton>
+      </TagContainer>
 
-        <CommentSection>
-          <ToggleButton onPress={() => setShowComments(!showComments)}>
-            <Icon 
-              name={showComments ? 'expand-less' : 'expand-more'} 
-              size={24} 
-              color={theme.colors.primary} 
-            />
-            <ToggleText>
-              {t('Show Comments')} ({comments.length})
-            </ToggleText>
-          </ToggleButton>
+      {showTagSelector && (
+        <AddTagToContent 
+          contentId={content._id} 
+          onClose={() => setShowTagSelector(false)} 
+        />
+      )}
 
-          {showComments && (
-            <>
-              <CommentList>
-                {comments.map((comment) => (
-                  <CommentItem key={comment._id}>
-                    <CommentText>{comment.text}</CommentText>
+      <CommentSection>
+        <ToggleButton onPress={() => setShowComments(!showComments)}>
+          <ToggleIcon>
+            {showComments ? '▼' : '▶'}
+          </ToggleIcon>
+          <ToggleText>
+            {t('Show Comments')} ({comments.length})
+          </ToggleText>
+        </ToggleButton>
+
+        {showComments && (
+          <>
+            <CommentList>
+              <FlatList
+                data={comments}
+                renderItem={({ item }) => (
+                  <CommentItem>
+                    <CommentText>{item.text}</CommentText>
                     <CommentMeta>
-                      {t('Created by')}: {comment.owner.name} | {new Date(comment.createdAt).toLocaleString()}
+                      {t('Created by')}: {item.owner.name} | {new Date(item.createdAt).toLocaleString()}
                     </CommentMeta>
                   </CommentItem>
-                ))}
-              </CommentList>
-              
-              {authStatus.isLoggedIn && (
-                <CommentForm onSubmit={handleAddComment} />
-              )}
-            </>
-          )}
-        </CommentSection>
-      </ContentWrapper>
-    </ScrollView>
+                )}
+                keyExtractor={item => item._id}
+              />
+            </CommentList>
+            
+            {authStatus.isLoggedIn && (
+              <CommentForm onSubmit={handleAddComment} />
+            )}
+          </>
+        )}
+      </CommentSection>
+    </ContentWrapper>
   );
 }
