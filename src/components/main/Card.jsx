@@ -20,11 +20,11 @@ export default function Card({ item, showEditIcon }) {
   const addNotification = useNotificationStore(state => state.addNotification);
 
   const handlePress = () => {
-    navigation.navigate('Content', { id: item._id });
+    navigation.navigate('Content', { contentId: item._id });
   };
 
   const handleEdit = () => {
-    navigation.navigate('EditContent', { id: item._id });
+    navigation.navigate('EditContent', { contentId: item._id });
   };
 
   const handleAddToFlashcard = async () => {
