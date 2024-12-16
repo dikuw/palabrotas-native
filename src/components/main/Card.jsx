@@ -20,7 +20,7 @@ export default function Card({ item, showEditIcon }) {
   const addNotification = useNotificationStore(state => state.addNotification);
 
   const handlePress = () => {
-    navigation.navigate('ContentDetail', { id: item._id });
+    navigation.navigate('Content', { id: item._id });
   };
 
   const handleEdit = () => {
