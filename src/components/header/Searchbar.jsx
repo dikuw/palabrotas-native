@@ -97,10 +97,10 @@ export default function SearchBar() {
   , [t]);
 
   const tagOptions = React.useMemo(() => 
-    tags.map(tag => ({
+    tags?.map(tag => ({
       label: tag.name,
       value: tag._id
-    }))
+    })) || []
   , [tags]);
 
   return (
