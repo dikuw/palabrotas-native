@@ -120,90 +120,93 @@ export default function AddContent() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{ flex: 1 }}
     >
-      <ScrollView
+      <FlatList
+        data={[{ key: 'form' }]}
+        renderItem={() => (
+          <Container>
+            <FormContainer>
+              <Input
+                placeholder={t("Title")}
+                value={formData.title}
+                onChangeText={(text) => handleChange('title', text)}
+                hasError={!!errors.title}
+                maxLength={MAX_TITLE_LENGTH}
+              />
+              {errors.title && <ErrorText>{errors.title}</ErrorText>}
+  
+              <Input
+                placeholder={t("Description")}
+                value={formData.description}
+                onChangeText={(text) => handleChange('description', text)}
+                hasError={!!errors.description}
+                maxLength={MAX_DESCRIPTION_LENGTH}
+                multiline
+                numberOfLines={3}
+              />
+              {errors.description && <ErrorText>{errors.description}</ErrorText>}
+  
+              <DropDownPicker
+                open={isCountryOpen}
+                setOpen={setIsCountryOpen}
+                value={formData.country}
+                items={countryItems}
+                setValue={(callback) => {
+                  const value = callback(formData.country);
+                  handleChange('country', value);
+                }}
+                placeholder={t("Select a country")}
+                style={{
+                  backgroundColor: errors.country ? theme.colors.error + '20' : theme.colors.inputBackground,
+                  borderColor: errors.country ? theme.colors.error : theme.colors.border,
+                  marginBottom: 10
+                }}
+                dropDownContainerStyle={{
+                  borderColor: theme.colors.border
+                }}
+                zIndex={3000}
+                listMode="SCROLLVIEW" // Add this line
+              />
+              {errors.country && <ErrorText>{errors.country}</ErrorText>}
+  
+              <Input
+                placeholder={t("Author")}
+                value={formData.author}
+                onChangeText={(text) => handleChange('author', text)}
+                hasError={!!errors.author}
+              />
+              {errors.author && <ErrorText>{errors.author}</ErrorText>}
+  
+              <Input
+                placeholder={t("Hint (optional)")}
+                value={formData.hint}
+                onChangeText={(text) => handleChange('hint', text)}
+              />
+  
+              <Input
+                placeholder={t("Example sentence (optional)")}
+                value={formData.exampleSentence}
+                onChangeText={(text) => handleChange('exampleSentence', text)}
+                multiline
+                numberOfLines={2}
+              />
+  
+              <SubmitButton 
+                onPress={handleSubmit}
+                disabled={isSubmitting}
+                activeOpacity={0.7}
+              >
+                <ButtonText>
+                  {isSubmitting ? t("Adding...") : t("Add Content")}
+                </ButtonText>
+              </SubmitButton>
+  
+              {errors.general && <ErrorText>{errors.general}</ErrorText>}
+            </FormContainer>
+          </Container>
+        )}
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={{ flexGrow: 1 }}
-      >
-        <Container>
-          <FormContainer>
-            <Input
-              placeholder={t("Title")}
-              value={formData.title}
-              onChangeText={(text) => handleChange('title', text)}
-              hasError={!!errors.title}
-              maxLength={MAX_TITLE_LENGTH}
-            />
-            {errors.title && <ErrorText>{errors.title}</ErrorText>}
-  
-            <Input
-              placeholder={t("Description")}
-              value={formData.description}
-              onChangeText={(text) => handleChange('description', text)}
-              hasError={!!errors.description}
-              maxLength={MAX_DESCRIPTION_LENGTH}
-              multiline
-              numberOfLines={3}
-            />
-            {errors.description && <ErrorText>{errors.description}</ErrorText>}
-  
-            <DropDownPicker
-              open={isCountryOpen}
-              setOpen={setIsCountryOpen}
-              value={formData.country}
-              items={countryItems}
-              setValue={(callback) => {
-                const value = callback(formData.country);
-                handleChange('country', value);
-              }}
-              placeholder={t("Select a country")}
-              style={{
-                backgroundColor: errors.country ? theme.colors.error + '20' : theme.colors.inputBackground,
-                borderColor: errors.country ? theme.colors.error : theme.colors.border,
-                marginBottom: 10
-              }}
-              dropDownContainerStyle={{
-                borderColor: theme.colors.border
-              }}
-              zIndex={3000}
-            />
-            {errors.country && <ErrorText>{errors.country}</ErrorText>}
-  
-            <Input
-              placeholder={t("Author")}
-              value={formData.author}
-              onChangeText={(text) => handleChange('author', text)}
-              hasError={!!errors.author}
-            />
-            {errors.author && <ErrorText>{errors.author}</ErrorText>}
-  
-            <Input
-              placeholder={t("Hint (optional)")}
-              value={formData.hint}
-              onChangeText={(text) => handleChange('hint', text)}
-            />
-  
-            <Input
-              placeholder={t("Example sentence (optional)")}
-              value={formData.exampleSentence}
-              onChangeText={(text) => handleChange('exampleSentence', text)}
-              multiline
-              numberOfLines={2}
-            />
-  
-            <SubmitButton 
-              onPress={handleSubmit}
-              disabled={isSubmitting}
-              activeOpacity={0.7}
-            >
-              <ButtonText>
-                {isSubmitting ? t("Adding...") : t("Add Content")}
-              </ButtonText>
-            </SubmitButton>
-  
-            {errors.general && <ErrorText>{errors.general}</ErrorText>}
-          </FormContainer>
-        </Container>
-      </ScrollView>
+        removeClippedSubviews={false}
+      />
     </KeyboardAvoidingView>
   );
 }
