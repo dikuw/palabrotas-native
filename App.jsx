@@ -39,8 +39,9 @@ const theme = {
     warning: '#FF9800',
     info: '#2196F3',
     white: '#FFFFFF',
-    primary: '#ffcb76',
-    secondary: '#ffbf55',
+    primary: '#e69138',
+    secondary: '#e69138',
+    almostWhite: '#f5f5f5',
   },
   spacing: {
     small: 8,
@@ -54,7 +55,7 @@ const theme = {
     large: 18,
     xlarge: 24
   },
-  borderRadius: {  // Add this new section
+  borderRadius: { 
     small: 4,
     medium: 8,
     large: 16
