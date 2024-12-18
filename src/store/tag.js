@@ -20,9 +20,9 @@ export const useTagStore = create((set) => ({
       headers: {
         "Content-Type": "application/json",
       },
-    })
+    });
     const data = await res.json();
-    set({ tags: data.data });
+    return data.data; 
   },
   addTag: async (newTag) => {
     const res = await fetch(`${API_URL}/api/tag/addTag`, {
