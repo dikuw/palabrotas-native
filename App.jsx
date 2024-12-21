@@ -27,6 +27,7 @@ import NotificationContainer from './src/components/notifications/NotificationCo
 import Footer from './src/components/Footer';
 import AddFeedback from './src/components/feedback/AddFeedback';
 import AddTag from './src/components/tag/AddTag';
+import Intro1 from './src/components/intro/Intro1';
 
 import { ThemeProvider } from 'styled-components/native';
 
@@ -96,31 +97,35 @@ function App() {
     <ThemeProvider theme={theme}>
       <NavigationContainer>
         <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar barStyle="dark-content" />
-        <AppContainer>
-          <TopBanner 
-            isLoggedIn={authStatus.isLoggedIn} 
-            name={authStatus.user ? authStatus.user.name : "guest"} 
-          />
-          <Header />
-          <Navigation 
-            isLoggedIn={authStatus.isLoggedIn} 
-            isAdmin={authStatus.user ? authStatus.user.isAdmin : false}
-            logoutUser={logoutUser} 
-          />
-          <Stack.Navigator>
-            <Stack.Screen name="Home">
-              {props => (
-                <View style={{ flex: 1 }}>
-                  <SearchBar />
-                  {isLoading ? (
-                    <LoadingText>Finding latest content...</LoadingText>
+          <StatusBar barStyle="dark-content" />
+          <AppContainer>
+            <TopBanner 
+              isLoggedIn={authStatus.isLoggedIn} 
+              name={authStatus.user ? authStatus.user.name : "guest"} 
+            />
+            <Header />
+            <Navigation 
+              isLoggedIn={authStatus.isLoggedIn} 
+              isAdmin={authStatus.user ? authStatus.user.isAdmin : false}
+              logoutUser={logoutUser} 
+            />
+            <Stack.Navigator>
+              <Stack.Screen name="Home">
+                {props => (
+                  !authStatus.isLoggedIn ? (
+                    <Intro1 {...props} />
                   ) : (
-                    <Grid />
-                  )}
-                </View>
-              )}
-            </Stack.Screen>
+                    <View style={{ flex: 1 }}>
+                      <SearchBar />
+                      {isLoading ? (
+                        <LoadingText>Finding latest content...</LoadingText>
+                      ) : (
+                        <Grid />
+                      )}
+                    </View>
+                  )
+                )}
+              </Stack.Screen>
 
             <Stack.Screen name="Admin" component={Admin} />
             <Stack.Screen name="Register" component={Register} />
