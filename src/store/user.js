@@ -38,4 +38,26 @@ export const useUserStore = create((set, get) => ({
     const data = await res.json();
     return data;
   }, 
+
+  getAppIntro: async (userId) => {
+    const res = await fetch(`${API_URL}/api/user/getAppIntro/${userId}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    const data = await res.json();
+    return data;
+  },
+
+  setAppIntro: async (userId, intro) => {
+    const res = await fetch(`${API_URL}/api/user/setAppIntro/${userId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    const data = await res.json();
+    return data;
+  }
 }));
