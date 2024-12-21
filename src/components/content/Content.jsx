@@ -145,7 +145,6 @@ export default function Content({ route }) {
 
   useEffect(() => {
     const fetchContentAndComments = async () => {
-      console.log("fetchContentAndComments", contentId);
       try {
         const contentData = await getContentById(contentId);
         setContent(contentData);
