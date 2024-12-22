@@ -24,7 +24,6 @@ import Account from './src/components/account/Account';
 import Flashcards from './src/components/flashcards/Flashcards';
 import Admin from './src/components/admin/Admin';
 import NotificationContainer from './src/components/notifications/NotificationContainer';
-import Footer from './src/components/Footer';
 import AddFeedback from './src/components/feedback/AddFeedback';
 import AddTag from './src/components/tag/AddTag';
 import Config from './src/components/config/Config';
@@ -194,7 +193,6 @@ function App() {
           </Stack.Navigator>
 
           <NotificationContainer />
-          <Footer />
         </AppContainer>
       </SafeAreaView>
       </NavigationContainer>
