@@ -27,6 +27,7 @@ import NotificationContainer from './src/components/notifications/NotificationCo
 import Footer from './src/components/Footer';
 import AddFeedback from './src/components/feedback/AddFeedback';
 import AddTag from './src/components/tag/AddTag';
+import Config from './src/components/config/Config';
 import Intro1 from './src/components/intro/Intro1';
 
 import { ThemeProvider } from 'styled-components/native';
@@ -175,6 +176,10 @@ function App() {
                   isLoggedIn={authStatus.isLoggedIn}
                 />
               )}
+            />
+            <Stack.Screen 
+              name="Config" 
+              component={Config}
             />
             <Stack.Screen name="AddFeedback" component={AddFeedback} />
             <Stack.Screen 

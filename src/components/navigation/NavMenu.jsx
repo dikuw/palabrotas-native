@@ -62,8 +62,9 @@ export default function NavMenu({ isLoggedIn, isAdmin }) {
           {renderMenuItem('Log Out', null, handleLogout)}
         </>
       ) : (
-        renderMenuItem('Log In', 'Login')
+        renderMenuItem('Log In', 'Login') 
       )}
+      {renderMenuItem('Settings', 'Config')}
     </>
   );
 

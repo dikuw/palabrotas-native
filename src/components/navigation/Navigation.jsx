@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TouchableOpacity, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 const Nav = styled.View`
@@ -65,6 +66,7 @@ const MenuText = styled.Text`
 export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   const handleNavigation = (route) => {
     setIsOpen(false);
@@ -87,39 +89,43 @@ export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
         {isOpen && (
           <MenuContainer>
             <MenuItem onPress={() => handleNavigation('Home')}>
-              <MenuText>Home</MenuText>
+              <MenuText>{t('Home')}</MenuText>
             </MenuItem>
 
             {isLoggedIn ? (
               <>
                 <MenuItem onPress={() => handleNavigation('Account')}>
-                  <MenuText>Account</MenuText>
+                  <MenuText>{t('Account')}</MenuText>
                 </MenuItem>
                 <MenuItem onPress={() => handleNavigation('Flashcards')}>
-                  <MenuText>Flashcards</MenuText>
+                  <MenuText>{t('Flashcards')}</MenuText>
                 </MenuItem>
                 <MenuItem onPress={() => handleNavigation('AddContent')}>
-                  <MenuText>Add Content</MenuText>
+                  <MenuText>{t('Add Content')}</MenuText>
                 </MenuItem>
                 {isAdmin && (
                   <MenuItem onPress={() => handleNavigation('Admin')}>
-                    <MenuText>Admin</MenuText>
+                    <MenuText>{t('Admin')}</MenuText>
                   </MenuItem>
                 )}
                 <MenuItem onPress={handleLogout}>
-                  <MenuText>Logout</MenuText>
+                  <MenuText>{t('Logout')}</MenuText>
                 </MenuItem>
               </>
             ) : (
               <>
                 <MenuItem onPress={() => handleNavigation('Login')}>
-                  <MenuText>Login</MenuText>
+                  <MenuText>{t('Login')}</MenuText>
                 </MenuItem>
                 <MenuItem onPress={() => handleNavigation('Register')}>
-                  <MenuText>Register</MenuText>
+                  <MenuText>{t('Register')}</MenuText>
                 </MenuItem>
               </>
             )}
+
+            <MenuItem onPress={() => handleNavigation('Config')}>
+              <MenuText>{t('Settings')}</MenuText>
+            </MenuItem>
           </MenuContainer>
         )}
       </Nav>
