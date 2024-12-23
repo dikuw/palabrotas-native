@@ -173,6 +173,9 @@ const resources = {
       "Password or username is incorrect" : "Password or username is incorrect",
       "Continue with Google" : "Continue with Google",
       "or" : "or",
+      "Theme": "Theme",
+      "Light": "Light",
+      "Dark": "Dark"
     }
   },
   es: {
@@ -346,6 +349,9 @@ const resources = {
       "Password or username is incorrect" : "Contraseña o nombre de usuario incorrecto",
       "Continue with Google" : "Continuar con Google",
       "or" : "o",
+      "Theme": "Tema",
+      "Light": "Claro",
+      "Dark": "Oscuro"
     }
   }
 };
