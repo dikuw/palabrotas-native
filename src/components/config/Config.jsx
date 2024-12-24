@@ -1,77 +1,100 @@
 import React from 'react';
 import { useTranslation } from "react-i18next";
-import styled from 'styled-components/native';
-
-const Container = styled.View`
-  flex: 1;
-  background-color: ${({ theme }) => theme.colors.background};
-  padding: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const Title = styled.Text`
-  font-size: ${({ theme }) => theme.typography.xlarge}px;
-  font-weight: bold;
-  color: ${({ theme }) => theme.colors.primary};
-  margin-bottom: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const Section = styled.View`
-  margin-bottom: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const SectionTitle = styled.Text`
-  font-size: ${({ theme }) => theme.typography.medium}px;
-  font-weight: bold;
-  color: ${({ theme }) => theme.colors.text};
-  margin-bottom: ${({ theme }) => theme.spacing.medium}px;
-`;
-
-const OptionButton = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  padding: ${({ theme }) => theme.spacing.medium}px;
-  background-color: ${({ isSelected, theme }) => 
-    isSelected ? theme.colors.primary : theme.colors.almostWhite};
-  border-radius: ${({ theme }) => theme.borderRadius.medium}px;
-  margin-bottom: ${({ theme }) => theme.spacing.small}px;
-`;
-
-const OptionText = styled.Text`
-  font-size: ${({ theme }) => theme.typography.medium}px;
-  color: ${({ isSelected, theme }) => 
-    isSelected ? theme.colors.white : theme.colors.text};
-`;
+import { View, Text, TouchableOpacity } from 'react-native';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 export default function Config() {
   const { t, i18n } = useTranslation();
+  const theme = useThemeStore(state => state.theme);
+  const setTheme = useThemeStore(state => state.setTheme);
   
+  const styles = {
+    container: {
+      flex: 1,
+      backgroundColor: themes[theme].colors.background,
+      padding: themes[theme].spacing.large,
+    },
+    title: {
+      fontSize: themes[theme].typography.xlarge,
+      fontWeight: 'bold',
+      color: themes[theme].colors.primary,
+      marginBottom: themes[theme].spacing.large,
+    },
+    section: {
+      marginBottom: themes[theme].spacing.large,
+    },
+    sectionTitle: {
+      fontSize: themes[theme].typography.medium,
+      fontWeight: 'bold',
+      color: themes[theme].colors.text,
+      marginBottom: themes[theme].spacing.medium,
+    },
+    optionButton: (isSelected) => ({
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: themes[theme].spacing.medium,
+      backgroundColor: isSelected ? themes[theme].colors.primary : themes[theme].colors.almostWhite,
+      borderRadius: themes[theme].borderRadius.medium,
+      marginBottom: themes[theme].spacing.small,
+    }),
+    optionText: (isSelected) => ({
+      fontSize: themes[theme].typography.medium,
+      color: isSelected ? themes[theme].colors.white : themes[theme].colors.text,
+    }),
+  };
+
   const languages = [
     { code: 'en', name: 'English' },
     { code: 'es', name: 'Español' }
+  ];
+
+  const themeOptions = [
+    { id: 'light', name: t('Light') },
+    { id: 'dark', name: t('Dark') }
   ];
 
   const handleLanguageChange = (languageCode) => {
     i18n.changeLanguage(languageCode);
   };
 
-  return (
-    <Container>
-      <Title>{t("Settings")}</Title>
+  const handleThemeChange = (themeId) => {
+    setTheme(themeId);
+  };
 
-      <Section>
-        <SectionTitle>{t("Language")}</SectionTitle>
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{t("Settings")}</Text>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t("Language")}</Text>
         {languages.map((language) => (
-          <OptionButton
+          <TouchableOpacity
             key={language.code}
-            isSelected={i18n.language === language.code}
+            style={styles.optionButton(i18n.language === language.code)}
             onPress={() => handleLanguageChange(language.code)}
           >
-            <OptionText isSelected={i18n.language === language.code}>
+            <Text style={styles.optionText(i18n.language === language.code)}>
               {language.name}
-            </OptionText>
-          </OptionButton>
+            </Text>
+          </TouchableOpacity>
         ))}
-      </Section>
-    </Container>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>{t("Theme")}</Text>
+        {themeOptions.map((themeOption) => (
+          <TouchableOpacity
+            key={themeOption.id}
+            style={styles.optionButton(theme === themeOption.id)}
+            onPress={() => handleThemeChange(themeOption.id)}
+          >
+            <Text style={styles.optionText(theme === themeOption.id)}>
+              {themeOption.name}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
   );
 }

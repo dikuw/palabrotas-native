@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './src/i18n';
-import { SafeAreaView, View, Text, StatusBar } from 'react-native';
+import { SafeAreaView, StatusBar, View, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import styled from 'styled-components/native';
@@ -8,6 +8,8 @@ import styled from 'styled-components/native';
 // Import stores
 import { useAuthStore } from './src/store/auth';
 import { useContentStore } from './src/store/content';
+import { useThemeStore } from './src/store/theme';
+import { themes } from './src/styles/theme';
 
 // Import components
 import TopBanner from './src/components/header/TopBanner';
@@ -29,50 +31,16 @@ import AddTag from './src/components/tag/AddTag';
 import Config from './src/components/config/Config';
 import Intro1 from './src/components/intro/Intro1';
 
-import { ThemeProvider } from 'styled-components/native';
-
-const theme = {
-  colors: {
-    background: '#ffffff',
-    text: '#000000',
-    success: '#4CAF50',
-    error: '#F44336',
-    warning: '#FF9800',
-    info: '#2196F3',
-    white: '#FFFFFF',
-    primary: '#e69138',
-    secondary: '#e69138',
-    almostWhite: '#f5f5f5',
-  },
-  spacing: {
-    small: 8,
-    medium: 16,
-    large: 24,
-  },
-  typography: {
-    small: 12,
-    regular: 14,
-    medium: 16,
-    large: 18,
-    xlarge: 24
-  },
-  borderRadius: { 
-    small: 4,
-    medium: 8,
-    large: 16
-  }
-};
-
 const Stack = createNativeStackNavigator();
 
-const AppContainer = styled.View`
+const AppContainer = styled(View)`
   flex: 1;
   height: 100%;
-  background-color: ${props => props.theme.colors.background};
+  background-color: ${props => themes[props.currentTheme].colors.background};
 `;
 
-const LoadingText = styled.Text`
-  color: ${props => props.theme.colors.text};
+const LoadingText = styled(Text)`
+  color: ${props => themes[props.currentTheme].colors.text};
   font-size: 16px;
   text-align: center;
   padding: 20px;
@@ -81,6 +49,7 @@ const LoadingText = styled.Text`
 function App() {
   const { getContents, getContentsSortedByVoteDesc } = useContentStore();
   const { authStatus, loginUser, logoutUser, getCurrentUser } = useAuthStore();
+  const theme = useThemeStore(state => state.theme);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -94,38 +63,37 @@ function App() {
   }, [getContents, getContentsSortedByVoteDesc]);
 
   return (  
-    <ThemeProvider theme={theme}>
-      <NavigationContainer>
-        <SafeAreaView style={{ flex: 1 }}>
-          <StatusBar barStyle="dark-content" />
-          <AppContainer>
-            <TopBanner 
-              isLoggedIn={authStatus.isLoggedIn} 
-              name={authStatus.user ? authStatus.user.name : "guest"} 
-            />
-            <Header />
-            <Navigation 
-              isLoggedIn={authStatus.isLoggedIn} 
-              isAdmin={authStatus.user ? authStatus.user.isAdmin : false}
-              logoutUser={logoutUser} 
-            />
-            <Stack.Navigator>
-              <Stack.Screen name="Home">
-                {props => (
-                  !authStatus.isLoggedIn ? (
-                    <Intro1 {...props} />
-                  ) : (
-                    <View style={{ flex: 1 }}>
-                      <SearchBar />
-                      {isLoading ? (
-                        <LoadingText>Finding latest content...</LoadingText>
-                      ) : (
-                        <Grid />
-                      )}
-                    </View>
-                  )
-                )}
-              </Stack.Screen>
+    <NavigationContainer>
+      <SafeAreaView style={{ flex: 1 }}>
+        <StatusBar barStyle="dark-content" />
+        <AppContainer currentTheme={theme}>
+          <TopBanner 
+            isLoggedIn={authStatus.isLoggedIn} 
+            name={authStatus.user ? authStatus.user.name : "guest"} 
+          />
+          <Header />
+          <Navigation 
+            isLoggedIn={authStatus.isLoggedIn} 
+            isAdmin={authStatus.user ? authStatus.user.isAdmin : false}
+            logoutUser={logoutUser} 
+          />
+          <Stack.Navigator>
+            <Stack.Screen name="Home">
+              {props => (
+                !authStatus.isLoggedIn ? (
+                  <Intro1 {...props} />
+                ) : (
+                  <View style={{ flex: 1 }}>
+                    <SearchBar />
+                    {isLoading ? (
+                      <LoadingText currentTheme={theme}>Finding latest content...</LoadingText>
+                    ) : (
+                      <Grid />
+                    )}
+                  </View>
+                )
+              )}
+            </Stack.Screen>
 
             <Stack.Screen name="Admin" component={Admin} />
             <Stack.Screen name="Register" component={Register} />
@@ -195,8 +163,7 @@ function App() {
           <NotificationContainer />
         </AppContainer>
       </SafeAreaView>
-      </NavigationContainer>
-    </ThemeProvider>
+    </NavigationContainer>
   );
 }
 

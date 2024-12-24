@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from "react-i18next";
 import styled from 'styled-components/native';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 const Container = styled.View`
   flex: 1;
-  background-color: ${({ theme }) => theme.colors.background};
+  background-color: ${props => themes[props.currentTheme || 'light'].colors.background};
 `;
 
 const ContentContainer = styled.View`
@@ -14,61 +16,61 @@ const ContentContainer = styled.View`
   align-items: center;
   width: 100%;
   max-width: 500px;
-  padding: ${({ theme }) => theme.spacing.large}px;
+  padding: ${props => themes[props.currentTheme || 'light'].spacing.large}px;
 `;
 
 const Title = styled.Text`
-  font-size: ${({ theme }) => theme.typography.xlarge}px;
+  font-size: ${props => themes[props.currentTheme || 'light'].typography.xlarge}px;
   font-weight: bold;
-  color: ${({ theme }) => theme.colors.primary};
+  color: ${props => themes[props.currentTheme || 'light'].colors.primary};
   text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing.large}px;
+  margin-bottom: ${props => themes[props.currentTheme || 'light'].spacing.large}px;
 `;
 
 const Description = styled.Text`
-  font-size: ${({ theme }) => theme.typography.medium}px;
-  color: ${({ theme }) => theme.colors.text};
+  font-size: ${props => themes[props.currentTheme || 'light'].typography.medium}px;
+  color: ${props => themes[props.currentTheme || 'light'].colors.text};
   text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing.xlarge}px;
+  margin-bottom: ${props => themes[props.currentTheme || 'light'].spacing.xlarge}px;
   line-height: 24px;
 `;
 
 const ButtonContainer = styled.View`
   width: 100%;
-  padding: ${({ theme }) => theme.spacing.large}px;
-  gap: ${({ theme }) => theme.spacing.medium}px;
+  padding: ${props => themes[props.currentTheme || 'light'].spacing.large}px;
+  gap: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
 `;
 
 const Button = styled.TouchableOpacity`
-  background-color: ${({ variant, theme }) => 
-    variant === 'secondary' ? 'transparent' : theme.colors.primary};
-  padding: ${({ theme }) => theme.spacing.medium}px;
-  border-radius: ${({ theme }) => theme.borderRadius.medium}px;
+  background-color: ${props => 
+    props.variant === 'secondary' ? 'transparent' : themes[props.currentTheme || 'light'].colors.primary};
+  padding: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
+  border-radius: ${props => themes[props.currentTheme || 'light'].borderRadius.medium}px;
   align-items: center;
-  border-width: ${({ variant }) => (variant === 'secondary' ? 1 : 0)}px;
-  border-color: ${({ theme }) => theme.colors.primary};
+  border-width: ${props => (props.variant === 'secondary' ? 1 : 0)}px;
+  border-color: ${props => themes[props.currentTheme || 'light'].colors.primary};
 `;
 
 const ButtonText = styled.Text`
-  color: ${({ variant, theme }) => 
-    variant === 'secondary' ? theme.colors.primary : theme.colors.white};
-  font-size: ${({ theme }) => theme.typography.medium}px;
+  color: ${props => 
+    props.variant === 'secondary' ? themes[props.currentTheme || 'light'].colors.primary : themes[props.currentTheme || 'light'].colors.white};
+  font-size: ${props => themes[props.currentTheme || 'light'].typography.medium}px;
   font-weight: bold;
 `;
 
 const ProgressDots = styled.View`
   flex-direction: row;
   justify-content: center;
-  margin-top: ${({ theme }) => theme.spacing.large}px;
-  gap: ${({ theme }) => theme.spacing.small}px;
+  margin-top: ${props => themes[props.currentTheme || 'light'].spacing.large}px;
+  gap: ${props => themes[props.currentTheme || 'light'].spacing.small}px;
 `;
 
 const Dot = styled.View`
   width: 8px;
   height: 8px;
   border-radius: 4px;
-  background-color: ${({ active, theme }) => 
-    active ? theme.colors.primary : theme.colors.border};
+  background-color: ${props => 
+    props.active ? themes[props.currentTheme || 'light'].colors.primary : themes[props.currentTheme || 'light'].colors.border};
 `;
 
 const introPages = [

@@ -3,11 +3,13 @@ import { TouchableOpacity, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 const Nav = styled.View`
   width: 100%;
-  padding: ${({ theme }) => theme.spacing.medium}px;
-  background-color: ${({ theme }) => theme.colors.background};
+  padding: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
+  background-color: ${props => themes[props.currentTheme || 'light'].colors.background};
   ${Platform.select({
     ios: `
       shadow-color: #000;
@@ -22,16 +24,16 @@ const Nav = styled.View`
 `;
 
 const MenuButton = styled(TouchableOpacity)`
-  padding: ${({ theme }) => theme.spacing.small}px;
+  padding: ${props => themes[props.currentTheme || 'light'].spacing.small}px;
 `;
 
 const MenuContainer = styled.View`
   position: absolute;
   top: 100%;
-  right: ${({ theme }) => theme.spacing.medium}px;
-  background-color: ${({ theme }) => theme.colors.background};
-  border-radius: ${({ theme }) => theme.borderRadius.medium}px;
-  padding: ${({ theme }) => theme.spacing.small}px 0;
+  right: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
+  background-color: ${props => themes[props.currentTheme || 'light'].colors.background};
+  border-radius: ${props => themes[props.currentTheme || 'light'].borderRadius.medium}px;
+  padding: ${props => themes[props.currentTheme || 'light'].spacing.small}px 0;
   min-width: 200px;
   z-index: 1000;
   elevation: 5;
@@ -54,19 +56,20 @@ const NavigationContainer = styled.View`
 `;
 
 const MenuItem = styled(TouchableOpacity)`
-  padding: ${({ theme }) => theme.spacing.medium}px;
+  padding: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
 `;
 
 const MenuText = styled.Text`
   font-size: 16px;
   font-weight: bold;
-  color: ${({ theme }) => theme.colors.text};
+  color: ${props => themes[props.currentTheme || 'light'].colors.text};
 `;
 
 export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const theme = useThemeStore(state => state.theme);
 
   const handleNavigation = (route) => {
     setIsOpen(false);

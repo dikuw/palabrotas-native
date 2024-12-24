@@ -12,7 +12,6 @@ export default function Burger(props) {
   const currentRoute = location.pathname;
 
   const toggleMenu = () => {
-    console.log('Menu toggled');
     setMenuOpen(!menuOpen);
   };
 
