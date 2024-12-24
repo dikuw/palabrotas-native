@@ -1,53 +1,64 @@
 import React, { useEffect, useRef } from 'react';
-import { Animated, TouchableOpacity } from 'react-native';
-import styled from 'styled-components/native';
+import { Animated, TouchableOpacity, Platform, View, Text, StyleSheet } from 'react-native';
+import { useThemeStore } from '../../store/theme';
 
-const NotificationCard = styled(Animated.View)`
-  flex-direction: row;
-  align-items: center;
-  padding: ${({ theme }) => theme.spacing.medium}px;
-  border-radius: ${({ theme }) => theme.borderRadius.medium}px;
-  background-color: ${({ type, theme }) => 
-    type === 'success' ? '#4CAF50' :
-    type === 'error' ? '#F44336' :
-    type === 'warning' ? '#FFA726' :
-    '#2196F3'};
-  ${Platform.select({
-    ios: `
-      shadow-color: #000;
-      shadow-offset: 0px 2px;
-      shadow-opacity: 0.25;
-      shadow-radius: 3.84px;
-    `,
-    android: `
-      elevation: 5;
-    `
-  })}
-`;
-
-const Message = styled.Text`
-  flex: 1;
-  color: #FFFFFF;
-  font-size: ${({ theme }) => theme.typography.regular}px;
-  margin-right: ${({ theme }) => theme.spacing.small}px;
-  font-weight: bold;
-`;
-
-const IconText = styled.Text`
-  color: #FFFFFF;
-  font-size: 20px;
-  margin-right: 8px;
-`;
-
-const CloseText = styled.Text`
-  color: #FFFFFF;
-  font-size: 20px;
-  font-weight: bold;
-`;
+const styles = StyleSheet.create({
+  notificationCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    borderRadius: 8,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+  message: {
+    flex: 1,
+    color: '#FFFFFF',
+    fontSize: 16,
+    marginRight: 8,
+    fontWeight: 'bold',
+  },
+  iconText: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    marginRight: 8,
+  },
+  closeText: {
+    color: '#FFFFFF',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+});
 
 export default function Notification({ message, type = 'info', duration = 3000, onClose }) {
   const opacity = useRef(new Animated.Value(0)).current;
   const translateY = useRef(new Animated.Value(-20)).current;
+  const theme = useThemeStore(state => state.theme);
+
+  const getBackgroundColor = () => {
+    switch (type) {
+      case 'success':
+        return '#4CAF50';
+      case 'error':
+        return '#F44336';
+      case 'warning':
+        return '#FFA726';
+      default:
+        return '#2196F3';
+    }
+  };
 
   const getIcon = () => {
     switch (type) {
@@ -101,18 +112,21 @@ export default function Notification({ message, type = 'info', duration = 3000, 
   };
 
   return (
-    <NotificationCard
-      type={type}
-      style={{
-        opacity,
-        transform: [{ translateY }],
-      }}
+    <Animated.View
+      style={[
+        styles.notificationCard,
+        {
+          backgroundColor: getBackgroundColor(),
+          opacity,
+          transform: [{ translateY }],
+        },
+      ]}
     >
-      <IconText>{getIcon()}</IconText>
-      <Message>{message}</Message>
+      <Text style={styles.iconText}>{getIcon()}</Text>
+      <Text style={styles.message}>{message}</Text>
       <TouchableOpacity onPress={handleClose}>
-        <CloseText>×</CloseText>
+        <Text style={styles.closeText}>×</Text>
       </TouchableOpacity>
-    </NotificationCard>
+    </Animated.View>
   );
 }

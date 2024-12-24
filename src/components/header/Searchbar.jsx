@@ -1,59 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Platform } from 'react-native';
-import styled from 'styled-components/native';
+import { Platform, View, TextInput, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useTranslation } from "react-i18next";
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 import { useContentStore } from '../../store/content';
 import { useTagStore } from '../../store/tag';
 import { countries } from '../shared/countries';
 
-const SearchBarContainer = styled.View`
-  width: 100%;
-  padding: ${({ theme }) => theme.spacing.large}px;
-  align-items: center;
-`;
-
-const SearchInputWrapper = styled.View`
-  width: 100%;
-  gap: ${({ theme }) => theme.spacing.medium}px;
-`;
-
-const SearchBarInner = styled.View`
-  flex-direction: row;
-  align-items: center;
-  border-width: 1px;
-  border-color: ${({ theme }) => theme.colors.border};
-  border-radius: 20px;
-  padding: 5px 10px;
-  background-color: ${({ theme }) => theme.colors.white};
-  ${Platform.select({
-    ios: `
-      shadow-color: #000;
-      shadow-offset: 0px 2px;
-      shadow-opacity: 0.1;
-      shadow-radius: 2px;
-    `,
-    android: `
-      elevation: 2;
-    `
-  })}
-`;
-
-const SearchInput = styled.TextInput`
-  flex: 1;
-  padding: 5px;
-  font-size: ${({ theme }) => theme.typography.regular}px;
-  color: ${({ theme }) => theme.colors.text};
-`;
-
-const SearchIconWrapper = styled.TouchableOpacity`
-  padding: 5px;
-`;
-
 export default function SearchBar() {
   const { t } = useTranslation();
+  const theme = useThemeStore(state => state.theme);
   const [searchTerm, setSearchTerm] = useState('');
   const [countryOpen, setCountryOpen] = useState(false);
   const [tagOpen, setTagOpen] = useState(false);
@@ -63,12 +22,62 @@ export default function SearchBar() {
   const { searchContents, clearSearch, filterByCountries, filterByTags } = useContentStore();
   const { getTags, tags } = useTagStore();
 
-  // Use useEffect with proper dependency array
+  const styles = {
+    container: {
+      width: '100%',
+      padding: themes[theme].spacing.large,
+      alignItems: 'center',
+    },
+    inputWrapper: {
+      width: '100%',
+      gap: themes[theme].spacing.medium,
+    },
+    searchBarInner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      borderWidth: 1,
+      borderColor: themes[theme].colors.border,
+      borderRadius: 20,
+      padding: '5px 10px',
+      backgroundColor: themes[theme].colors.white,
+      ...Platform.select({
+        ios: {
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 2,
+        },
+        android: {
+          elevation: 2,
+        },
+      }),
+    },
+    input: {
+      flex: 1,
+      padding: 5,
+      fontSize: themes[theme].typography.regular,
+      color: themes[theme].colors.text,
+    },
+    iconWrapper: {
+      padding: 5,
+    },
+    dropdownStyle: {
+      borderRadius: 20,
+      borderColor: themes[theme].colors.border,
+    },
+    dropdownContainerStyle: {
+      marginTop: 10,
+    },
+    dropdownTextStyle: {
+      fontSize: 14,
+      color: themes[theme].colors.text,
+    },
+  };
+
   useEffect(() => {
     getTags();
-  }, []); // Empty dependency array means this only runs once on mount
+  }, []);
 
-  // Memoize handlers to prevent unnecessary re-renders
   const handleCountryChange = useCallback((items) => {
     setSelectedCountries(items);
     filterByCountries(items);
@@ -88,7 +97,6 @@ export default function SearchBar() {
     }
   }, [searchTerm, searchContents, clearSearch]);
 
-  // Memoize options to prevent recreating on every render
   const countryOptions = React.useMemo(() => 
     countries.map(country => ({
       label: t(`${country.name}`),
@@ -104,10 +112,11 @@ export default function SearchBar() {
   , [tags]);
 
   return (
-    <SearchBarContainer>
-      <SearchInputWrapper>
-        <SearchBarInner>
-          <SearchInput
+    <View style={styles.container}>
+      <View style={styles.inputWrapper}>
+        <View style={styles.searchBarInner}>
+          <TextInput
+            style={styles.input}
             placeholder={t("Search...")}
             value={searchTerm}
             onChangeText={(text) => {
@@ -119,11 +128,12 @@ export default function SearchBar() {
             onSubmitEditing={handleSearch}
             returnKeyType="search"
             clearButtonMode="while-editing"
+            placeholderTextColor={themes[theme].colors.textSecondary}
           />
-          <SearchIconWrapper onPress={handleSearch}>
-            <Icon name="search" size={20} color="#666" />
-          </SearchIconWrapper>
-        </SearchBarInner>
+          <TouchableOpacity style={styles.iconWrapper} onPress={handleSearch}>
+            <Icon name="search" size={20} color={themes[theme].colors.textSecondary} />
+          </TouchableOpacity>
+        </View>
 
         <DropDownPicker
           open={countryOpen}
@@ -135,17 +145,11 @@ export default function SearchBar() {
           min={0}
           placeholder={t("Select countries...")}
           onChangeValue={handleCountryChange}
-          style={{
-            borderRadius: 20,
-            borderColor: '#ccc',
-          }}
-          textStyle={{
-            fontSize: 14
-          }}
-          containerStyle={{
-            marginTop: 10
-          }}
+          style={styles.dropdownStyle}
+          containerStyle={styles.dropdownContainerStyle}
+          textStyle={styles.dropdownTextStyle}
           zIndex={3000}
+          theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
         />
 
         <DropDownPicker
@@ -158,19 +162,13 @@ export default function SearchBar() {
           min={0}
           placeholder={t("Select tags...")}
           onChangeValue={handleTagChange}
-          style={{
-            borderRadius: 20,
-            borderColor: '#ccc',
-          }}
-          textStyle={{
-            fontSize: 14
-          }}
-          containerStyle={{
-            marginTop: 10
-          }}
+          style={styles.dropdownStyle}
+          containerStyle={styles.dropdownContainerStyle}
+          textStyle={styles.dropdownTextStyle}
           zIndex={2000}
+          theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
         />
-      </SearchInputWrapper>
-    </SearchBarContainer>
+      </View>
+    </View>
   );
 }

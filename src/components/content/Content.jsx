@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Platform, ActivityIndicator, FlatList } from 'react-native';
-import styled, { useTheme } from 'styled-components/native';
+import { ScrollView, Platform, ActivityIndicator, FlatList, View, Text, TouchableOpacity } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import ReactCountryFlag from "react-native-country-flag";
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 import { useAuthStore } from '../../store/auth';
 import { useContentStore } from '../../store/content';
@@ -13,126 +14,9 @@ import CommentForm from '../comment/CommentForm';
 import TagGrid from '../tag/TagGrid';
 import AddTagToContent from '../tag/AddTagToContent';
 
-const ContentWrapper = styled.View`
-  flex: 1;
-  width: 90%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing.large}px;
-  background-color: ${({ theme }) => theme.colors.background};
-`;
-
-const ContentHeader = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const Title = styled.Text`
-  font-size: ${({ theme }) => theme.typography.xlarge}px;
-  font-weight: bold;
-  color: ${({ theme }) => theme.colors.primary};
-  flex: 1;
-  margin-right: ${({ theme }) => theme.spacing.medium}px;
-`;
-
-const Description = styled.Text`
-  font-size: ${({ theme }) => theme.typography.medium}px;
-  color: ${({ theme }) => theme.colors.text};
-  margin-bottom: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const ExampleSentence = styled.Text`
-  font-style: italic;
-  font-size: ${({ theme }) => theme.typography.medium}px;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  margin-bottom: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const AuthorInfo = styled.Text`
-  font-size: ${({ theme }) => theme.typography.small}px;
-  color: ${({ theme }) => theme.colors.textSecondary};
-`;
-
-const TagContainer = styled.View`
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin: ${({ theme }) => theme.spacing.medium}px 0;
-`;
-
-const AddTagButton = styled.TouchableOpacity`
-  background-color: ${({ theme }) => theme.colors.background};
-  border-width: 1px;
-  border-style: dashed;
-  border-color: ${({ theme }) => theme.colors.border};
-  padding: 4px 8px;
-  border-radius: ${({ theme }) => theme.borderRadius.small}px;
-`;
-
-const AddTagText = styled.Text`
-  font-size: ${({ theme }) => theme.typography.small}px;
-  color: ${({ theme }) => theme.colors.textSecondary};
-`;
-
-const CommentSection = styled.View`
-  margin-top: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const ToggleButton = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  padding: ${({ theme }) => theme.spacing.small}px;
-`;
-
-const ToggleText = styled.Text`
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: ${({ theme }) => theme.typography.regular}px;
-  margin-left: ${({ theme }) => theme.spacing.small}px;
-`;
-
-const ToggleIcon = styled.Text`
-  color: ${({ theme }) => theme.colors.primary};
-  font-size: ${({ theme }) => theme.typography.large}px;
-`;
-
-const CommentList = styled.View`
-  margin-top: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const CommentItem = styled.View`
-  border-bottom-width: 1px;
-  border-bottom-color: ${({ theme }) => theme.colors.border};
-  padding: ${({ theme }) => theme.spacing.medium}px 0;
-`;
-
-const CommentText = styled.Text`
-  color: ${({ theme }) => theme.colors.text};
-  margin-bottom: ${({ theme }) => theme.spacing.small}px;
-`;
-
-const CommentMeta = styled.Text`
-  font-size: ${({ theme }) => theme.typography.small}px;
-  color: ${({ theme }) => theme.colors.textSecondary};
-`;
-
-const LoadingContainer = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  padding: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const LoadingText = styled.Text`
-  color: ${({ theme }) => theme.colors.textSecondary};
-  font-size: ${({ theme }) => theme.typography.regular}px;
-  margin-top: ${({ theme }) => theme.spacing.medium}px;
-`;
-
 export default function Content({ route }) {
   const { t } = useTranslation();
-  const theme = useTheme();
+  const theme = useThemeStore(state => state.theme);
   const { contentId } = route.params;
   const { authStatus } = useAuthStore();
   const { getContentById } = useContentStore();
@@ -142,6 +26,109 @@ export default function Content({ route }) {
   const [content, setContent] = useState(null);
   const [showTagSelector, setShowTagSelector] = useState(false);
   const [showComments, setShowComments] = useState(false);
+
+  const styles = {
+    wrapper: {
+      flex: 1,
+      width: '90%',
+      maxWidth: 800,
+      margin: 0,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      padding: themes[theme].spacing.large,
+      backgroundColor: themes[theme].colors.background,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: themes[theme].spacing.large,
+    },
+    title: {
+      fontSize: themes[theme].typography.xlarge,
+      fontWeight: 'bold',
+      color: themes[theme].colors.primary,
+      flex: 1,
+      marginRight: themes[theme].spacing.medium,
+    },
+    description: {
+      fontSize: themes[theme].typography.medium,
+      color: themes[theme].colors.text,
+      marginBottom: themes[theme].spacing.large,
+    },
+    exampleSentence: {
+      fontStyle: 'italic',
+      fontSize: themes[theme].typography.medium,
+      color: themes[theme].colors.textSecondary,
+      marginBottom: themes[theme].spacing.large,
+    },
+    authorInfo: {
+      fontSize: themes[theme].typography.small,
+      color: themes[theme].colors.textSecondary,
+    },
+    tagContainer: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      justifyContent: 'space-between',
+      margin: `${themes[theme].spacing.medium}px 0`,
+    },
+    addTagButton: {
+      backgroundColor: themes[theme].colors.background,
+      borderWidth: 1,
+      borderStyle: 'dashed',
+      borderColor: themes[theme].colors.border,
+      padding: '4px 8px',
+      borderRadius: themes[theme].borderRadius.small,
+    },
+    addTagText: {
+      fontSize: themes[theme].typography.small,
+      color: themes[theme].colors.textSecondary,
+    },
+    commentSection: {
+      marginTop: themes[theme].spacing.large,
+    },
+    toggleButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      padding: themes[theme].spacing.small,
+    },
+    toggleText: {
+      color: themes[theme].colors.primary,
+      fontSize: themes[theme].typography.regular,
+      marginLeft: themes[theme].spacing.small,
+    },
+    toggleIcon: {
+      color: themes[theme].colors.primary,
+      fontSize: themes[theme].typography.large,
+    },
+    commentList: {
+      marginTop: themes[theme].spacing.large,
+    },
+    commentItem: {
+      borderBottomWidth: 1,
+      borderBottomColor: themes[theme].colors.border,
+      padding: `${themes[theme].spacing.medium}px 0`,
+    },
+    commentText: {
+      color: themes[theme].colors.text,
+      marginBottom: themes[theme].spacing.small,
+    },
+    commentMeta: {
+      fontSize: themes[theme].typography.small,
+      color: themes[theme].colors.textSecondary,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: themes[theme].spacing.large,
+    },
+    loadingText: {
+      color: themes[theme].colors.textSecondary,
+      fontSize: themes[theme].typography.regular,
+      marginTop: themes[theme].spacing.medium,
+    },
+  };
 
   useEffect(() => {
     const fetchContentAndComments = async () => {
@@ -170,39 +157,42 @@ export default function Content({ route }) {
 
   if (!content) {
     return (
-      <LoadingContainer>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <LoadingText>{t('Loading...')}</LoadingText>
-      </LoadingContainer>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={themes[theme].colors.primary} />
+        <Text style={styles.loadingText}>{t('Loading...')}</Text>
+      </View>
     );
   }
 
   return (
-    <ContentWrapper>
-      <ContentHeader>
-        <Title>{content.title}</Title>
+    <View style={styles.wrapper}>
+      <View style={styles.header}>
+        <Text style={styles.title}>{content.title}</Text>
         {content.country && (
           <ReactCountryFlag
             isoCode={content.country}
             size={24}
           />
         )}
-      </ContentHeader>
+      </View>
       
-      <Description>{content.description}</Description>
+      <Text style={styles.description}>{content.description}</Text>
       
       {content.exampleSentence && (
-        <ExampleSentence>{content.exampleSentence}</ExampleSentence>
+        <Text style={styles.exampleSentence}>{content.exampleSentence}</Text>
       )}
       
-      <AuthorInfo>{t('Created by')}: {content.author}</AuthorInfo>
+      <Text style={styles.authorInfo}>{t('Created by')}: {content.author}</Text>
       
-      <TagContainer>
+      <View style={styles.tagContainer}>
         <TagGrid contentId={content._id} />
-        <AddTagButton onPress={() => setShowTagSelector(true)}>
-          <AddTagText>{t('+ Add Tag')}</AddTagText>
-        </AddTagButton>
-      </TagContainer>
+        <TouchableOpacity 
+          style={styles.addTagButton}
+          onPress={() => setShowTagSelector(true)}
+        >
+          <Text style={styles.addTagText}>{t('+ Add Tag')}</Text>
+        </TouchableOpacity>
+      </View>
 
       {showTagSelector && (
         <AddTagToContent 
@@ -211,39 +201,42 @@ export default function Content({ route }) {
         />
       )}
 
-      <CommentSection>
-        <ToggleButton onPress={() => setShowComments(!showComments)}>
-          <ToggleIcon>
+      <View style={styles.commentSection}>
+        <TouchableOpacity 
+          style={styles.toggleButton}
+          onPress={() => setShowComments(!showComments)}
+        >
+          <Text style={styles.toggleIcon}>
             {showComments ? '▼' : '▶'}
-          </ToggleIcon>
-          <ToggleText>
+          </Text>
+          <Text style={styles.toggleText}>
             {t('Show Comments')} ({comments.length})
-          </ToggleText>
-        </ToggleButton>
+          </Text>
+        </TouchableOpacity>
 
         {showComments && (
           <>
-            <CommentList>
+            <View style={styles.commentList}>
               <FlatList
                 data={comments}
                 renderItem={({ item }) => (
-                  <CommentItem>
-                    <CommentText>{item.text}</CommentText>
-                    <CommentMeta>
+                  <View style={styles.commentItem}>
+                    <Text style={styles.commentText}>{item.text}</Text>
+                    <Text style={styles.commentMeta}>
                       {t('Created by')}: {item.owner.name} | {new Date(item.createdAt).toLocaleString()}
-                    </CommentMeta>
-                  </CommentItem>
+                    </Text>
+                  </View>
                 )}
                 keyExtractor={item => item._id}
               />
-            </CommentList>
+            </View>
             
             {authStatus.isLoggedIn && (
               <CommentForm onSubmit={handleAddComment} />
             )}
           </>
         )}
-      </CommentSection>
-    </ContentWrapper>
+      </View>
+    </View>
   );
 }

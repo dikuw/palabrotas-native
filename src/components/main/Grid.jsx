@@ -1,49 +1,48 @@
 import React from 'react';
-import { FlatList, Dimensions, ActivityIndicator, StyleSheet, View } from 'react-native';
-import styled from 'styled-components/native';
+import { FlatList, ActivityIndicator, StyleSheet, View, Text } from 'react-native';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 import { useContentStore } from '../../store/content';
 import Card from './Card';
 import NoResults from './NoResults';
 
-const GridContainer = styled.View`
-  flex: 1;
-  background-color: ${({ theme }) => theme.colors.background};
-`;
-
-const styles = StyleSheet.create({
-  flatListContent: {
-    padding: 8,
-    minHeight: '100%', 
-  },
-  itemContainer: {
-    width: '100%',
-    marginVertical: 8,
-  }
-});
-
-const LoadingContainer = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  padding: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const LoadingText = styled.Text`
-  margin-top: ${({ theme }) => theme.spacing.small}px;
-  color: ${({ theme }) => theme.colors.text};
-  font-size: ${({ theme }) => theme.typography.regular}px;
-`;
-
 export default function Grid() {
+  const theme = useThemeStore(state => state.theme);
   const { contents, isSearching, searchResults, isLoading } = useContentStore();
   const displayContents = searchResults.length > 0 ? searchResults : contents;
 
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: themes[theme].colors.background,
+    },
+    flatListContent: {
+      padding: 8,
+      minHeight: '100%',
+    },
+    itemContainer: {
+      width: '100%',
+      marginVertical: 8,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: themes[theme].spacing.large,
+    },
+    loadingText: {
+      marginTop: themes[theme].spacing.small,
+      color: themes[theme].colors.text,
+      fontSize: themes[theme].typography.regular,
+    }
+  });
+
   if (isLoading) {
     return (
-      <LoadingContainer>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <LoadingText>Loading content...</LoadingText>
-      </LoadingContainer>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={themes[theme].colors.primary} />
+        <Text style={styles.loadingText}>Loading content...</Text>
+      </View>
     );
   }
 
@@ -63,7 +62,7 @@ export default function Grid() {
   };
 
   return (
-    <GridContainer>
+    <View style={styles.container}>
       <FlatList
         data={displayContents}
         renderItem={renderItem}
@@ -71,11 +70,11 @@ export default function Grid() {
         contentContainerStyle={styles.flatListContent}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={() => (
-          <LoadingContainer>
-            <LoadingText>No content available</LoadingText>
-          </LoadingContainer>
+          <View style={styles.loadingContainer}>
+            <Text style={styles.loadingText}>No content available</Text>
+          </View>
         )}
       />
-    </GridContainer>
+    </View>
   );
 }

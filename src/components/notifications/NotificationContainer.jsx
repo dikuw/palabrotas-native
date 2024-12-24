@@ -1,40 +1,43 @@
 import React from 'react';
-import { Animated } from 'react-native';
-import styled from 'styled-components/native';
+import { Animated, Platform, View, StyleSheet } from 'react-native';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 import { useNotificationStore } from '../../store/notification';
 import Notification from './Notification';
 
-const Container = styled.View`
-  position: absolute;
-  top: ${Platform.OS === 'ios' ? 50 : 20}px;
-  left: 0;
-  right: 0;
-  z-index: 500;
-  align-items: center;
-`;
-
-const NotificationWrapper = styled(Animated.View)`
-  width: 90%;
-  max-width: 400px;
-  margin-bottom: ${({ theme }) => theme.spacing.small}px;
-  z-index: 500; 
-`;
-
 export default function NotificationContainer() {
   const { notifications, removeNotification } = useNotificationStore();
+  const theme = useThemeStore(state => state.theme);
+
+  const styles = StyleSheet.create({
+    container: {
+      position: 'absolute',
+      top: Platform.OS === 'ios' ? 50 : 20,
+      left: 0,
+      right: 0,
+      zIndex: 500,
+      alignItems: 'center',
+    },
+    notificationWrapper: {
+      width: '90%',
+      maxWidth: 400,
+      marginBottom: 8,
+      zIndex: 500,
+    }
+  });
 
   return (
-    <Container>
+    <View style={styles.container}>
       {notifications.map(({ id, message, type, duration }) => (
-        <NotificationWrapper key={id}>
+        <Animated.View key={id} style={styles.notificationWrapper}>
           <Notification
             message={message}
             type={type}
             duration={duration}
             onClose={() => removeNotification(id)}
           />
-        </NotificationWrapper>
+        </Animated.View>
       ))}
-    </Container>
+    </View>
   );
 }
