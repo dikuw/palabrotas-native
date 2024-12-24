@@ -7,7 +7,9 @@ import { themes } from '../../styles/theme';
 
 const Container = styled.View`
   flex: 1;
-  background-color: ${props => themes[props.currentTheme || 'light'].colors.background};
+  background-color: ${props => {
+    return themes[props.currentTheme].colors.background;
+  }};
 `;
 
 const ContentContainer = styled.View`
@@ -16,53 +18,53 @@ const ContentContainer = styled.View`
   align-items: center;
   width: 100%;
   max-width: 500px;
-  padding: ${props => themes[props.currentTheme || 'light'].spacing.large}px;
+  padding: ${props => themes[props.currentTheme].spacing.large}px;
 `;
 
 const Title = styled.Text`
-  font-size: ${props => themes[props.currentTheme || 'light'].typography.xlarge}px;
+  font-size: ${props => themes[props.currentTheme].typography.xlarge}px;
   font-weight: bold;
-  color: ${props => themes[props.currentTheme || 'light'].colors.primary};
+  color: ${props => themes[props.currentTheme].colors.primary};
   text-align: center;
-  margin-bottom: ${props => themes[props.currentTheme || 'light'].spacing.large}px;
+  margin-bottom: ${props => themes[props.currentTheme].spacing.large}px;
 `;
 
 const Description = styled.Text`
-  font-size: ${props => themes[props.currentTheme || 'light'].typography.medium}px;
-  color: ${props => themes[props.currentTheme || 'light'].colors.text};
+  font-size: ${props => themes[props.currentTheme].typography.medium}px;
+  color: ${props => themes[props.currentTheme].colors.text};
   text-align: center;
-  margin-bottom: ${props => themes[props.currentTheme || 'light'].spacing.xlarge}px;
+  margin-bottom: ${props => themes[props.currentTheme].spacing.xlarge}px;
   line-height: 24px;
 `;
 
 const ButtonContainer = styled.View`
   width: 100%;
-  padding: ${props => themes[props.currentTheme || 'light'].spacing.large}px;
-  gap: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
+  padding: ${props => themes[props.currentTheme].spacing.large}px;
+  gap: ${props => themes[props.currentTheme].spacing.medium}px;
 `;
 
 const Button = styled.TouchableOpacity`
   background-color: ${props => 
-    props.variant === 'secondary' ? 'transparent' : themes[props.currentTheme || 'light'].colors.primary};
-  padding: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
-  border-radius: ${props => themes[props.currentTheme || 'light'].borderRadius.medium}px;
+    props.variant === 'secondary' ? 'transparent' : themes[props.currentTheme].colors.primary};
+  padding: ${props => themes[props.currentTheme].spacing.medium}px;
+  border-radius: ${props => themes[props.currentTheme].borderRadius.medium}px;
   align-items: center;
   border-width: ${props => (props.variant === 'secondary' ? 1 : 0)}px;
-  border-color: ${props => themes[props.currentTheme || 'light'].colors.primary};
+  border-color: ${props => themes[props.currentTheme].colors.primary};
 `;
 
 const ButtonText = styled.Text`
   color: ${props => 
-    props.variant === 'secondary' ? themes[props.currentTheme || 'light'].colors.primary : themes[props.currentTheme || 'light'].colors.white};
-  font-size: ${props => themes[props.currentTheme || 'light'].typography.medium}px;
+    props.variant === 'secondary' ? themes[props.currentTheme].colors.primary : themes[props.currentTheme].colors.white};
+  font-size: ${props => themes[props.currentTheme].typography.medium}px;
   font-weight: bold;
 `;
 
 const ProgressDots = styled.View`
   flex-direction: row;
   justify-content: center;
-  margin-top: ${props => themes[props.currentTheme || 'light'].spacing.large}px;
-  gap: ${props => themes[props.currentTheme || 'light'].spacing.small}px;
+  margin-top: ${props => themes[props.currentTheme].spacing.large}px;
+  gap: ${props => themes[props.currentTheme].spacing.small}px;
 `;
 
 const Dot = styled.View`
@@ -70,7 +72,7 @@ const Dot = styled.View`
   height: 8px;
   border-radius: 4px;
   background-color: ${props => 
-    props.active ? themes[props.currentTheme || 'light'].colors.primary : themes[props.currentTheme || 'light'].colors.border};
+    props.active ? themes[props.currentTheme].colors.primary : themes[props.currentTheme].colors.border};
 `;
 
 const introPages = [
@@ -92,6 +94,7 @@ export default function Intro1() {
   const navigation = useNavigation();
   const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(0);
+  const theme = useThemeStore(state => state.theme);
 
   const handleGetStarted = () => {
     if (currentPage < introPages.length - 1) {
@@ -106,31 +109,31 @@ export default function Intro1() {
   };
 
   return (
-    <Container>
-      <ContentContainer>
-        <Title>{t(introPages[currentPage].title)}</Title>
-        <Description>
+    <Container currentTheme={theme}>
+      <ContentContainer currentTheme={theme}>
+        <Title currentTheme={theme}>{t(introPages[currentPage].title)}</Title>
+        <Description currentTheme={theme}>
           {t(introPages[currentPage].description)}
         </Description>
 
-        <ProgressDots>
+        <ProgressDots currentTheme={theme}>
           {introPages.map((_, index) => (
-            <Dot key={index} active={index === currentPage} />
+            <Dot key={index} active={index === currentPage} currentTheme={theme} />
           ))}
         </ProgressDots>
       </ContentContainer>
 
-      <ButtonContainer>
-        <Button onPress={handleGetStarted}>
-          <ButtonText>
+      <ButtonContainer currentTheme={theme}>
+        <Button currentTheme={theme} onPress={handleGetStarted}>
+          <ButtonText currentTheme={theme}>
             {currentPage < introPages.length - 1 
               ? t("Next")
               : t("Get Started")}
           </ButtonText>
         </Button>
 
-        <Button variant="secondary" onPress={handleLogin}>
-          <ButtonText variant="secondary">
+        <Button currentTheme={theme} variant="secondary" onPress={handleLogin}>
+          <ButtonText currentTheme={theme} variant="secondary">
             {t("I already have an account")}
           </ButtonText>
         </Button>

@@ -1,68 +1,17 @@
 import React, { useState } from 'react';
-import { ScrollView, Platform, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { ScrollView, Platform, KeyboardAvoidingView, ActivityIndicator, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from "react-i18next";
-import styled, { useTheme } from 'styled-components/native';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 import { useAuthStore } from '../../store/auth';
 import { useNotificationStore } from '../../store/notification';
 
-const Container = styled.View`
-  flex: 1;
-  width: 90%;
-  max-width: 500px;
-  margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const Title = styled.Text`
-  font-size: ${({ theme }) => theme.typography.xlarge}px;
-  font-weight: bold;
-  color: ${({ theme }) => theme.colors.text};
-  text-align: center;
-  margin-bottom: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const Input = styled.TextInput`
-  background-color: ${({ hasError, theme }) => 
-    hasError ? theme.colors.error + '20' : theme.colors.white};
-  color: ${({ hasError, theme }) => 
-    hasError ? theme.colors.error : theme.colors.text};
-  padding: ${({ theme }) => theme.spacing.medium}px;
-  margin-bottom: ${({ theme }) => theme.spacing.small}px;
-  border-radius: ${({ theme }) => theme.borderRadius.medium}px;
-  font-size: ${({ theme }) => theme.typography.regular}px;
-  border-width: 1px;
-  border-color: ${({ theme }) => theme.colors.border};
-`;
-
-const ErrorText = styled.Text`
-  color: ${({ theme }) => theme.colors.error};
-  font-size: ${({ theme }) => theme.typography.small}px;
-  margin-bottom: ${({ theme }) => theme.spacing.small}px;
-`;
-
-const Button = styled.TouchableOpacity`
-  background-color: ${({ variant, theme }) => 
-    variant === 'secondary' ? 'transparent' : theme.colors.primary};
-  padding: ${({ theme }) => theme.spacing.medium}px;
-  border-radius: ${({ theme }) => theme.borderRadius.medium}px;
-  align-items: center;
-  margin-top: ${({ theme }) => theme.spacing.medium}px;
-  opacity: ${({ disabled }) => disabled ? 0.5 : 1};
-`;
-
-const ButtonText = styled.Text`
-  color: ${({ variant, theme }) => 
-    variant === 'secondary' ? theme.colors.primary : theme.colors.white};
-  font-size: ${({ theme }) => theme.typography.medium}px;
-  font-weight: bold;
-`;
-
 export default function Register() {
   const navigation = useNavigation();
   const { t } = useTranslation();
-  const theme = useTheme();
+  const theme = useThemeStore(state => state.theme);
   const { registerUser } = useAuthStore();
   const addNotification = useNotificationStore(state => state.addNotification);
 
@@ -75,6 +24,64 @@ export default function Register() {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const styles = {
+    keyboardView: {
+      flex: 1,
+      backgroundColor: themes[theme].colors.background,
+    },
+    scrollView: {
+      flex: 1,
+      backgroundColor: themes[theme].colors.background,
+    },
+    container: {
+      flex: 1,
+      width: '90%',
+      maxWidth: 500,
+      margin: 0,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      padding: themes[theme].spacing.large,
+      backgroundColor: themes[theme].colors.background,
+    },
+    title: {
+      fontSize: themes[theme].typography.xlarge,
+      fontWeight: 'bold',
+      color: themes[theme].colors.text,
+      textAlign: 'center',
+      marginBottom: themes[theme].spacing.large,
+    },
+    input: (hasError) => ({
+      backgroundColor: hasError ? `${themes[theme].colors.error}20` : themes[theme].colors.white,
+      color: hasError ? themes[theme].colors.error : themes[theme].colors.text,
+      padding: themes[theme].spacing.medium,
+      marginBottom: themes[theme].spacing.small,
+      borderRadius: themes[theme].borderRadius.medium,
+      fontSize: themes[theme].typography.regular,
+      borderWidth: 1,
+      borderColor: themes[theme].colors.border,
+    }),
+    errorText: {
+      color: themes[theme].colors.error,
+      fontSize: themes[theme].typography.small,
+      marginBottom: themes[theme].spacing.small,
+    },
+    button: (variant) => ({
+      backgroundColor: variant === 'secondary' ? 'transparent' : themes[theme].colors.primary,
+      padding: themes[theme].spacing.medium,
+      borderRadius: themes[theme].borderRadius.medium,
+      alignItems: 'center',
+      marginTop: themes[theme].spacing.medium,
+      opacity: isSubmitting ? 0.5 : 1,
+      borderWidth: variant === 'secondary' ? 1 : 0,
+      borderColor: themes[theme].colors.primary,
+    }),
+    buttonText: (variant) => ({
+      color: variant === 'secondary' ? themes[theme].colors.primary : themes[theme].colors.white,
+      fontSize: themes[theme].typography.medium,
+      fontWeight: 'bold',
+    }),
+  };
 
   const handleChange = (name, value) => {
     setFormData(prev => ({ ...prev, [name]: value }));
@@ -126,77 +133,82 @@ export default function Register() {
   return (
     <KeyboardAvoidingView 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
+      style={styles.keyboardView}
     >
-      <ScrollView>
-        <Container>
-          <Title>{t("Create Account")}</Title>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.container}>
+          <Text style={styles.title}>{t("Create Account")}</Text>
 
-          <Input
+          <TextInput
+            style={styles.input(!!errors.name)}
             placeholder={t("Name")}
             value={formData.name}
             onChangeText={(text) => handleChange('name', text)}
-            hasError={!!errors.name}
             autoCapitalize="words"
             autoComplete="name"
+            placeholderTextColor={themes[theme].colors.textSecondary}
           />
-          {errors.name && <ErrorText>{errors.name}</ErrorText>}
+          {errors.name && <Text style={styles.errorText}>{errors.name}</Text>}
 
-          <Input
+          <TextInput
+            style={styles.input(!!errors.email)}
             placeholder={t("Email")}
             value={formData.email}
             onChangeText={(text) => handleChange('email', text)}
-            hasError={!!errors.email}
             keyboardType="email-address"
             autoCapitalize="none"
             autoComplete="email"
+            placeholderTextColor={themes[theme].colors.textSecondary}
           />
-          {errors.email && <ErrorText>{errors.email}</ErrorText>}
+          {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
 
-          <Input
+          <TextInput
+            style={styles.input(!!errors.password)}
             placeholder={t("Password")}
             value={formData.password}
             onChangeText={(text) => handleChange('password', text)}
-            hasError={!!errors.password}
             secureTextEntry
             autoCapitalize="none"
             autoComplete="password-new"
+            placeholderTextColor={themes[theme].colors.textSecondary}
           />
-          {errors.password && <ErrorText>{errors.password}</ErrorText>}
+          {errors.password && <Text style={styles.errorText}>{errors.password}</Text>}
 
-          <Input
+          <TextInput
+            style={styles.input(!!errors.confirmPassword)}
             placeholder={t("Confirm Password")}
             value={formData.confirmPassword}
             onChangeText={(text) => handleChange('confirmPassword', text)}
-            hasError={!!errors.confirmPassword}
             secureTextEntry
             autoCapitalize="none"
             autoComplete="password-new"
+            placeholderTextColor={themes[theme].colors.textSecondary}
           />
-          {errors.confirmPassword && <ErrorText>{errors.confirmPassword}</ErrorText>}
+          {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
 
-          <Button 
+          <TouchableOpacity 
+            style={styles.button()}
             onPress={handleSubmit}
             disabled={isSubmitting}
             activeOpacity={0.7}
           >
             {isSubmitting ? (
-              <ActivityIndicator color={theme.colors.white} />
+              <ActivityIndicator color={themes[theme].colors.white} />
             ) : (
-              <ButtonText>{t("Register")}</ButtonText>
+              <Text style={styles.buttonText()}>{t("Register")}</Text>
             )}
-          </Button>
+          </TouchableOpacity>
 
-          <Button 
-            variant="secondary"
+          <TouchableOpacity 
+            style={styles.button('secondary')}
             onPress={() => navigation.navigate('Login')}
             activeOpacity={0.7}
           >
-            <ButtonText variant="secondary">{t("Back to Login")}</ButtonText>
-          </Button>
+            <Text style={styles.buttonText('secondary')}>{t("Back to Login")}</Text>
+          </TouchableOpacity>
 
-          {errors.general && <ErrorText>{errors.general}</ErrorText>}
-        </Container>
+          {errors.general && <Text style={styles.errorText}>{errors.general}</Text>}
+        </View>
       </ScrollView>
     </KeyboardAvoidingView>
   );
