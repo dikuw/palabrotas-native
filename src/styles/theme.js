@@ -10,7 +10,10 @@ export const lightTheme = {
     primary: '#e69138',
     secondary: '#e69138',
     almostWhite: '#f5f5f5',
-    border: '#e0e0e0'
+    border: '#e0e0e0',
+    inputBackground: '#ffffff',
+    textSecondary: '#666666',
+    inputText: '#000000',
   },
   spacing: {
     small: 8,
@@ -44,7 +47,10 @@ export const darkTheme = {
     primary: '#fe6899',
     secondary: '#fe6899',
     almostWhite: '#1e1e1e',
-    border: '#333333'
+    border: '#333333',
+    inputBackground: '#2d2d2d',
+    textSecondary: '#999999',
+    inputText: '#ffffff',
   },
   spacing: lightTheme.spacing,
   typography: lightTheme.typography,
