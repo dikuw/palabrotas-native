@@ -1,31 +1,39 @@
 import React, { useState, useEffect } from 'react';
+import { View, Text } from 'react-native';
 import { useContentStore } from '../../store/content';
 import { useAuthStore } from '../../store/auth';
 import { useUserStore } from '../../store/user';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components/native';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 import Banner from '../header/Banner';
 import AccountGrid from './AccountGrid';
 import Streak from './Streak';
 import NoPermission from '../shared/NoPermissionDiv';
 
-const Container = styled.View`
-  width: 90%;
-  max-width: 1000px;
-  flex: 1;
-  margin: 30px auto;
-  padding: 4px;
-`;
-
 export default function Account() {
   const { t } = useTranslation();
+  const theme = useThemeStore(state => state.theme);
   const { getContentsByUserId } = useContentStore(); 
   const { authStatus } = useAuthStore();
   const { getCurrentStreak, getLongestStreak } = useUserStore();
   const [userContents, setUserContents] = useState([]);
   const [currentStreak, setCurrentStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
+
+  const styles = {
+    container: {
+      width: '90%',
+      maxWidth: 1000,
+      flex: 1,
+      margin: 30,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      padding: 4,
+      backgroundColor: themes[theme].colors.background,
+    }
+  };
 
   useEffect(() => {
     async function fetchUserContents() {
@@ -49,10 +57,10 @@ export default function Account() {
   }
 
   return (
-    <Container>
+    <View style={styles.container}>
       <Streak currentStreak={currentStreak} longestStreak={longestStreak} />
       <Banner title={t("Your Content")} />
       <AccountGrid contents={userContents} />
-    </Container>
+    </View>
   );
 }

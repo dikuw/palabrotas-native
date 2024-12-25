@@ -1,72 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Platform, KeyboardAvoidingView, ActivityIndicator, FlatList } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Platform, KeyboardAvoidingView, ActivityIndicator, FlatList } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from "react-i18next";
-import styled, { useTheme } from 'styled-components/native';
 import DropDownPicker from 'react-native-dropdown-picker';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 import { useContentStore } from '../../store/content';
 import { useNotificationStore } from '../../store/notification';
 import { countries } from '../shared/countries';
 
-const Container = styled.View`
-  flex: 1;
-  width: 90%;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const FormContainer = styled.View`
-  margin-bottom: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const Input = styled.TextInput`
-  background-color: ${({ hasError, theme }) => 
-    hasError ? theme.colors.error + '20' : theme.colors.white};
-  color: ${({ hasError, theme }) => 
-    hasError ? theme.colors.error : theme.colors.text};
-  padding: ${({ theme }) => theme.spacing.medium}px;
-  margin-bottom: ${({ theme }) => theme.spacing.small}px;
-  border-radius: ${({ theme }) => theme.borderRadius.medium}px;
-  font-size: ${({ theme }) => theme.typography.regular}px;
-  border-width: 1px;
-  border-color: ${({ theme }) => theme.colors.border};
-`;
-
-const ErrorText = styled.Text`
-  color: ${({ theme }) => theme.colors.error};
-  font-size: ${({ theme }) => theme.typography.small}px;
-  margin-bottom: ${({ theme }) => theme.spacing.small}px;
-`;
-
-const Button = styled.TouchableOpacity`
-  background-color: ${({ variant, theme }) => 
-    variant === 'delete' ? theme.colors.error : theme.colors.primary};
-  padding: ${({ theme }) => theme.spacing.medium}px;
-  border-radius: ${({ theme }) => theme.borderRadius.medium}px;
-  align-items: center;
-  margin-top: ${({ theme }) => theme.spacing.medium}px;
-  opacity: ${({ disabled }) => disabled ? 0.5 : 1};
-`;
-
-const ButtonText = styled.Text`
-  color: ${({ theme }) => theme.colors.white};
-  font-size: ${({ theme }) => theme.typography.medium}px;
-  font-weight: bold;
-`;
-
-const LoadingContainer = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
 export default function EditContent({ route }) {
   const { contentId } = route.params;
   const navigation = useNavigation();
   const { t } = useTranslation();
-  const theme = useTheme();
+  const theme = useThemeStore(state => state.theme);
   const { MAX_TITLE_LENGTH, MAX_DESCRIPTION_LENGTH, contents, getContents, updateContent, deleteContent } = useContentStore();
   const addNotification = useNotificationStore(state => state.addNotification);
 
@@ -85,6 +33,60 @@ export default function EditContent({ route }) {
   const [isCountryOpen, setIsCountryOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const styles = {
+    container: {
+      flex: 1,
+      width: '90%',
+      maxWidth: 800,
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      padding: themes[theme].spacing.large,
+      backgroundColor: themes[theme].colors.background,
+    },
+    formContainer: {
+      marginBottom: themes[theme].spacing.large,
+    },
+    input: (hasError) => ({
+      backgroundColor: themes[theme].colors.white,
+      color: '#000000',
+      padding: themes[theme].spacing.medium,
+      marginBottom: themes[theme].spacing.small,
+      borderRadius: themes[theme].borderRadius.medium,
+      fontSize: themes[theme].typography.regular,
+      borderWidth: 1,
+      borderColor: hasError ? themes[theme].colors.error : themes[theme].colors.border,
+    }),
+    errorText: {
+      color: themes[theme].colors.error,
+      fontSize: themes[theme].typography.small,
+      marginBottom: themes[theme].spacing.small,
+    },
+    button: (variant) => ({
+      backgroundColor: variant === 'delete' ? themes[theme].colors.error : themes[theme].colors.primary,
+      padding: themes[theme].spacing.medium,
+      borderRadius: themes[theme].borderRadius.medium,
+      alignItems: 'center',
+      marginTop: themes[theme].spacing.medium,
+      opacity: isSubmitting ? 0.5 : 1,
+    }),
+    buttonText: {
+      color: themes[theme].colors.white,
+      fontSize: themes[theme].typography.medium,
+      fontWeight: 'bold',
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: themes[theme].colors.background,
+    },
+    dropDown: {
+      backgroundColor: themes[theme].colors.white,
+      borderColor: themes[theme].colors.border,
+      marginBottom: themes[theme].spacing.small,
+    },
+  };
 
   useEffect(() => {
     const contentItem = contents.find(item => item._id === contentId);
@@ -160,42 +162,44 @@ export default function EditContent({ route }) {
 
   if (isLoading) {
     return (
-      <LoadingContainer>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-      </LoadingContainer>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={themes[theme].colors.primary} />
+      </View>
     );
   }
 
   return (
     <KeyboardAvoidingView 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: themes[theme].colors.background }}
     >
       <FlatList
         data={[{ key: 'form' }]}
         renderItem={() => (
-          <Container>
-            <FormContainer>
-              <Input
+          <View style={styles.container}>
+            <View style={styles.formContainer}>
+              <TextInput
+                style={styles.input(!!errors.title)}
                 placeholder={t("Title")}
                 value={formData.title}
                 onChangeText={(text) => handleChange('title', text)}
-                hasError={!!errors.title}
                 maxLength={MAX_TITLE_LENGTH}
+                placeholderTextColor="#666666"
               />
-              {errors.title && <ErrorText>{errors.title}</ErrorText>}
-  
-              <Input
+              {errors.title && <Text style={styles.errorText}>{errors.title}</Text>}
+
+              <TextInput
+                style={styles.input(!!errors.description)}
                 placeholder={t("Description")}
                 value={formData.description}
                 onChangeText={(text) => handleChange('description', text)}
-                hasError={!!errors.description}
                 maxLength={MAX_DESCRIPTION_LENGTH}
                 multiline
                 numberOfLines={3}
+                placeholderTextColor="#666666"
               />
-              {errors.description && <ErrorText>{errors.description}</ErrorText>}
-  
+              {errors.description && <Text style={styles.errorText}>{errors.description}</Text>}
+
               <DropDownPicker
                 open={isCountryOpen}
                 setOpen={setIsCountryOpen}
@@ -206,63 +210,64 @@ export default function EditContent({ route }) {
                   handleChange('country', value);
                 }}
                 placeholder={t("Select a country")}
-                style={{
-                  backgroundColor: errors.country ? theme.colors.error + '20' : theme.colors.inputBackground,
-                  borderColor: errors.country ? theme.colors.error : theme.colors.border,
-                  marginBottom: 10
-                }}
-                dropDownContainerStyle={{
-                  borderColor: theme.colors.border
-                }}
+                style={styles.dropDown}
+                dropDownContainerStyle={styles.dropDown}
+                theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
                 zIndex={3000}
-                listMode="SCROLLVIEW" // Add this line
+                listMode="SCROLLVIEW"
               />
-              {errors.country && <ErrorText>{errors.country}</ErrorText>}
-  
-              <Input
+              {errors.country && <Text style={styles.errorText}>{errors.country}</Text>}
+
+              <TextInput
+                style={styles.input(!!errors.author)}
                 placeholder={t("Author")}
                 value={formData.author}
                 onChangeText={(text) => handleChange('author', text)}
-                hasError={!!errors.author}
+                placeholderTextColor="#666666"
               />
-              {errors.author && <ErrorText>{errors.author}</ErrorText>}
-  
-              <Input
+              {errors.author && <Text style={styles.errorText}>{errors.author}</Text>}
+
+              <TextInput
+                style={styles.input(false)}
                 placeholder={t("Hint (optional)")}
                 value={formData.hint}
                 onChangeText={(text) => handleChange('hint', text)}
+                placeholderTextColor="#666666"
               />
-  
-              <Input
+
+              <TextInput
+                style={styles.input(false)}
                 placeholder={t("Example sentence (optional)")}
                 value={formData.exampleSentence}
                 onChangeText={(text) => handleChange('exampleSentence', text)}
                 multiline
                 numberOfLines={2}
+                placeholderTextColor="#666666"
               />
-  
-              <Button 
+
+              <TouchableOpacity 
+                style={styles.button()}
                 onPress={handleSubmit}
                 disabled={!isDirty || isSubmitting}
                 activeOpacity={0.7}
-            >
-              <ButtonText>
-                {isSubmitting ? t("Updating...") : t("Update Content")}
-              </ButtonText>
-            </Button>
+              >
+                <Text style={styles.buttonText}>
+                  {isSubmitting ? t("Updating...") : t("Update Content")}
+                </Text>
+              </TouchableOpacity>
 
-            <Button 
-              variant="delete"
-              onPress={handleDelete}
-              disabled={isSubmitting}
-              activeOpacity={0.7}
-            >
-              <ButtonText>{t("Delete Content")}</ButtonText>
-            </Button>
-  
-              {errors.general && <ErrorText>{errors.general}</ErrorText>}
-            </FormContainer>
-          </Container>
+              <TouchableOpacity 
+                style={styles.button('delete')}
+                onPress={handleDelete}
+                disabled={isSubmitting}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.buttonText}>{t("Delete Content")}</Text>
+              </TouchableOpacity>
+
+              {errors.general && <Text style={styles.errorText}>{errors.general}</Text>}
+            </View>
+          </View>
         )}
         keyboardShouldPersistTaps="handled"
         removeClippedSubviews={false}

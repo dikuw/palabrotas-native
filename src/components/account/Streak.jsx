@@ -1,42 +1,47 @@
 import React from 'react';
-import styled from 'styled-components/native';
-
-const StreakContainer = styled.View`
-  flex-direction: row;
-  justify-content: space-around;
-  padding: 15px;
-  background-color: ${props => props.theme.colors.background};
-  border-radius: 8px;
-  margin-bottom: 15px;
-`;
-
-const StreakBox = styled.View`
-  align-items: center;
-`;
-
-const StreakNumber = styled.Text`
-  font-size: 24px;
-  font-weight: bold;
-  color: ${props => props.theme.colors.primary};
-`;
-
-const StreakLabel = styled.Text`
-  font-size: 14px;
-  color: ${props => props.theme.colors.text};
-  margin-top: 5px;
-`;
+import { View, Text } from 'react-native';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 export default function Streak({ currentStreak, longestStreak }) {
+  const theme = useThemeStore(state => state.theme);
+
+  const styles = {
+    container: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      padding: themes[theme].spacing.medium,
+      backgroundColor: themes[theme].colors.background,
+      borderRadius: themes[theme].borderRadius.medium,
+      marginBottom: themes[theme].spacing.medium,
+      borderWidth: 1,
+      borderColor: themes[theme].colors.border,
+    },
+    streakBox: {
+      alignItems: 'center',
+    },
+    streakNumber: {
+      fontSize: themes[theme].typography.xlarge,
+      fontWeight: 'bold',
+      color: themes[theme].colors.primary,
+    },
+    streakLabel: {
+      fontSize: themes[theme].typography.regular,
+      color: themes[theme].colors.text,
+      marginTop: themes[theme].spacing.small,
+    },
+  };
+
   return (
-    <StreakContainer>
-      <StreakBox>
-        <StreakNumber>{currentStreak}</StreakNumber>
-        <StreakLabel>Current Streak</StreakLabel>
-      </StreakBox>
-      <StreakBox>
-        <StreakNumber>{longestStreak}</StreakNumber>
-        <StreakLabel>Longest Streak</StreakLabel>
-      </StreakBox>
-    </StreakContainer>
+    <View style={styles.container}>
+      <View style={styles.streakBox}>
+        <Text style={styles.streakNumber}>{currentStreak}</Text>
+        <Text style={styles.streakLabel}>Current Streak</Text>
+      </View>
+      <View style={styles.streakBox}>
+        <Text style={styles.streakNumber}>{longestStreak}</Text>
+        <Text style={styles.streakLabel}>Longest Streak</Text>
+      </View>
+    </View>
   );
 }

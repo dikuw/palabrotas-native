@@ -1,23 +1,29 @@
 import React from 'react';
-import styled from 'styled-components/native';
-
-const BannerContainer = styled.View`
-  padding: 10px;
-  margin: 10px 0;
-  background-color: ${props => props.theme.colors.primary};
-`;
-
-const BannerText = styled.Text`
-  color: ${props => props.theme.colors.white};
-  font-size: 18px;
-  font-weight: bold;
-  text-align: center;
-`;
+import { View, Text } from 'react-native';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 export default function Banner({ title }) {
+  const theme = useThemeStore(state => state.theme);
+
+  const styles = {
+    container: {
+      padding: themes[theme].spacing.medium,
+      margin: `${themes[theme].spacing.medium}px 0`,
+      backgroundColor: themes[theme].colors.primary,
+      borderRadius: themes[theme].borderRadius.medium,
+    },
+    text: {
+      color: themes[theme].colors.white,
+      fontSize: themes[theme].typography.large,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+  };
+
   return (
-    <BannerContainer>
-      <BannerText>{title}</BannerText>
-    </BannerContainer>
+    <View style={styles.container}>
+      <Text style={styles.text}>{title}</Text>
+    </View>
   );
 }

@@ -1,7 +1,37 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 export default function FormattedHint({ hint }) {
+  const theme = useThemeStore(state => state.theme);
+
+  const styles = StyleSheet.create({
+    hintContainer: {
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      height: 24,
+      marginVertical: 10,
+    },
+    hintCharacter: {
+      width: 16,
+      height: 24,
+      marginHorizontal: 2,
+      borderBottomWidth: 2,
+      borderBottomColor: themes[theme].colors.text,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    hintSpace: {
+      width: 16,
+    },
+    characterText: {
+      fontWeight: 'bold',
+      fontSize: 16,
+      color: themes[theme].colors.text,
+    },
+  });
+
   return (
     <View style={styles.hintContainer}>
       {hint.split('').map((char, index) => {
@@ -20,28 +50,3 @@ export default function FormattedHint({ hint }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  hintContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-    height: 24, // converted from 1.5em
-    marginVertical: 10,
-  },
-  hintCharacter: {
-    width: 16, // converted from 1em
-    height: 24, // converted from 1.5em
-    marginHorizontal: 2,
-    borderBottomWidth: 2,
-    borderBottomColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  hintSpace: {
-    width: 16, // converted from 1em
-  },
-  characterText: {
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
-});

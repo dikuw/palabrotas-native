@@ -1,57 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator } from 'react-native';
-import styled from 'styled-components/native';
+import { View, Text, ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 import { useAuthStore } from '../../store/auth';
 import { useFlashcardStore } from '../../store/flashcard';
 import { NoPermissionView } from '../shared/index';
 import Flashcard from './Flashcard';
 
-const Container = styled.View`
-  flex: 1;
-  width: 90%;
-  max-width: 1000px;
-  margin: 30px auto;
-  padding: 4px;
-`;
-
-const Header = styled.View`
-  padding: ${({ theme }) => theme.spacing.large}px;
-  background-color: ${({ theme }) => theme.colors.primary};
-  border-radius: ${({ theme }) => theme.borderRadius.medium}px;
-  margin-bottom: ${({ theme }) => theme.spacing.large}px;
-`;
-
-const HeaderText = styled.Text`
-  color: ${({ theme }) => theme.colors.white};
-  font-size: ${({ theme }) => theme.typography.large}px;
-  font-weight: bold;
-  text-align: center;
-`;
-
-const FlashcardCounter = styled.Text`
-  text-align: center;
-  margin-top: ${({ theme }) => theme.spacing.medium}px;
-  font-size: ${({ theme }) => theme.typography.small}px;
-  color: ${({ theme }) => theme.colors.textSecondary};
-`;
-
-const Message = styled.Text`
-  text-align: center;
-  margin-top: ${({ theme }) => theme.spacing.medium}px;
-  font-size: ${({ theme }) => theme.typography.regular}px;
-  color: ${({ theme }) => theme.colors.text};
-`;
-
-const LoadingContainer = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-`;
-
 export default function Flashcards() {
   const { t } = useTranslation();
+  const theme = useThemeStore(state => state.theme);
   const { authStatus } = useAuthStore();
   const { 
     flashcards, 
@@ -63,6 +23,48 @@ export default function Flashcards() {
   } = useFlashcardStore();
   
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const styles = {
+    container: {
+      flex: 1,
+      width: '90%',
+      maxWidth: 1000,
+      marginVertical: 30,
+      marginHorizontal: 'auto',
+      padding: 4,
+      backgroundColor: themes[theme].colors.background,
+    },
+    header: {
+      padding: themes[theme].spacing.large,
+      backgroundColor: themes[theme].colors.primary,
+      borderRadius: themes[theme].borderRadius.medium,
+      marginBottom: themes[theme].spacing.large,
+    },
+    headerText: {
+      color: themes[theme].colors.white,
+      fontSize: themes[theme].typography.large,
+      fontWeight: 'bold',
+      textAlign: 'center',
+    },
+    counter: {
+      textAlign: 'center',
+      marginTop: themes[theme].spacing.medium,
+      fontSize: themes[theme].typography.small,
+      color: themes[theme].colors.textSecondary,
+    },
+    message: {
+      textAlign: 'center',
+      marginTop: themes[theme].spacing.medium,
+      fontSize: themes[theme].typography.regular,
+      color: themes[theme].colors.text,
+    },
+    loadingContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: themes[theme].colors.background,
+    },
+  };
 
   useEffect(() => {
     if (authStatus.isLoggedIn && authStatus.user) {
@@ -93,18 +95,18 @@ export default function Flashcards() {
 
   if (isLoading) {
     return (
-      <LoadingContainer>
-        <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Message>{t("Loading flashcards...")}</Message>
-      </LoadingContainer>
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={themes[theme].colors.primary} />
+        <Text style={styles.message}>{t("Loading flashcards...")}</Text>
+      </View>
     );
   }
 
   return (
-    <Container>
-      <Header>
-        <HeaderText>{t("Your Flashcards")}</HeaderText>
-      </Header>
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>{t("Your Flashcards")}</Text>
+      </View>
 
       {flashcards.length > 0 ? (
         dueFlashcards.length > 0 ? (
@@ -113,18 +115,18 @@ export default function Flashcards() {
               item={dueFlashcards[currentIndex]} 
               onNext={handleReviewAndNext}
             />
-            <FlashcardCounter>
+            <Text style={styles.counter}>
               {currentIndex + 1} {t('of')} {dueFlashcards.length}
-            </FlashcardCounter>
+            </Text>
           </View>
         ) : (
-          <Message>
+          <Text style={styles.message}>
             {t("You've completed all your flashcards for today. Please come back tomorrow.")}
-          </Message>
+          </Text>
         )
       ) : (
-        <Message>{t("You don't have any flashcards yet.")}</Message>
+        <Text style={styles.message}>{t("You don't have any flashcards yet.")}</Text>
       )}
-    </Container>
+    </View>
   );
 }
