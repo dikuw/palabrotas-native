@@ -8,7 +8,7 @@ const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = 0.25 * SCREEN_WIDTH;
 const SWIPE_OUT_DURATION = 250;
 
-export default function Flashcard({ item, onNext }) {
+export default function Flashcard({ item, onNext, totalCards }) {
   const { t } = useTranslation();
   const theme = useThemeStore(state => state.theme);
   const [isFlipped, setIsFlipped] = useState(false);
@@ -22,6 +22,17 @@ export default function Flashcard({ item, onNext }) {
       height: 400,
       position: 'relative',
       backgroundColor: 'transparent',
+    },
+    cardCounter: {
+      position: 'absolute',
+      top: -30,
+      width: '100%',
+      alignItems: 'center',
+      zIndex: 1,
+    },
+    cardCounterText: {
+      fontSize: themes[theme].typography.small,
+      color: themes[theme].colors.textSecondary,
     },
     cardContainer: {
       position: 'absolute',
@@ -131,8 +142,21 @@ export default function Flashcard({ item, onNext }) {
     };
   };
 
+  const handleHardPress = () => {
+    onNext(item._id, 0, true);
+  };
+
+  const handleEasyPress = () => {
+    onNext(item._id, 5, false);
+  };
+
   return (
     <View style={styles.container}>
+      <View style={styles.cardCounter}>
+        <Text style={styles.cardCounterText}>
+          {t("{{count}} cards remain", { count: totalCards })}
+        </Text>
+      </View>
       <Animated.View
         {...panResponder.panHandlers}
         style={[styles.cardContainer, getCardStyle()]}
@@ -146,7 +170,7 @@ export default function Flashcard({ item, onNext }) {
         <View style={styles.buttonContainer}>
           <TouchableOpacity 
             style={styles.button('hard')}
-            onPress={() => onNext(item._id, 0, true)}
+            onPress={handleHardPress}
           >
             <Text style={styles.buttonText}>{t("Hard")}</Text>
           </TouchableOpacity>
@@ -160,7 +184,7 @@ export default function Flashcard({ item, onNext }) {
 
           <TouchableOpacity 
             style={styles.button('easy')}
-            onPress={() => onNext(item._id, 5, false)}
+            onPress={handleEasyPress}
           >
             <Text style={styles.buttonText}>{t("Easy")}</Text>
           </TouchableOpacity>
