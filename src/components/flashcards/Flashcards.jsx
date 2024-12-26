@@ -82,6 +82,10 @@ export default function Flashcards() {
         useFlashcardStore.setState({ dueFlashcards: updatedDueFlashcards });
         setCurrentIndex(prevIndex => prevIndex % updatedDueFlashcards.length);
       } else {
+        const currentCard = dueFlashcards.find(card => card._id === flashcardId);
+        const remainingCards = dueFlashcards.filter(card => card._id !== flashcardId);
+        const updatedDueFlashcards = [...remainingCards, currentCard];
+        useFlashcardStore.setState({ dueFlashcards: updatedDueFlashcards });
         setCurrentIndex(0);
       }
     } catch (error) {
@@ -104,16 +108,13 @@ export default function Flashcards() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerText}>{t("Your Flashcards")}</Text>
-      </View>
-
       {flashcards.length > 0 ? (
         dueFlashcards.length > 0 ? (
           <View>
             <Flashcard 
               item={dueFlashcards[currentIndex]} 
               onNext={handleReviewAndNext}
+              totalCards={dueFlashcards.length}
             />
             <Text style={styles.counter}>
               {currentIndex + 1} {t('of')} {dueFlashcards.length}
