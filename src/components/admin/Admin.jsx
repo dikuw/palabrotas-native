@@ -1,39 +1,47 @@
 import React from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import styled from 'styled-components/native';
-
-const StyledView = styled.View`
-  flex: 1;
-  width: 90%;
-  max-width: 1000px;
-  margin: 30px auto;
-  justify-content: center;
-  align-items: center;
-`;
-
-const BackButton = styled.TouchableOpacity`
-  padding: 10px 20px;
-  background-color: ${({ theme }) => theme.colors.primary};
-  border-radius: 5px;
-`;
-
-const ButtonText = styled.Text`
-  color: ${({ theme }) => theme.colors.white};
-  font-size: 16px;
-`;
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 export default function Admin() {
   const navigation = useNavigation();
+  const theme = useThemeStore(state => state.theme);
+
+  const styles = {
+    container: {
+      flex: 1,
+      width: '90%',
+      maxWidth: 1000,
+      marginVertical: 30,
+      marginHorizontal: 'auto',
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: themes[theme].colors.background,
+    },
+    backButton: {
+      padding: themes[theme].spacing.medium,
+      backgroundColor: themes[theme].colors.primary,
+      borderRadius: themes[theme].borderRadius.medium,
+    },
+    buttonText: {
+      color: themes[theme].colors.white,
+      fontSize: themes[theme].typography.regular,
+    },
+  };
 
   const goBack = () => {
     navigation.navigate("Home");
   };
 
   return (
-    <StyledView>
-      <BackButton onPress={goBack}>
-        <ButtonText>Back to Site</ButtonText>
-      </BackButton>
-    </StyledView>
+    <View style={styles.container}>
+      <TouchableOpacity 
+        style={styles.backButton} 
+        onPress={goBack}
+      >
+        <Text style={styles.buttonText}>Back to Site</Text>
+      </TouchableOpacity>
+    </View>
   );
 }
