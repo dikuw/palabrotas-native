@@ -75,8 +75,6 @@ export default function Flashcards() {
 
   const handleReviewAndNext = async (flashcardId, quality, keepInQueue) => {
     try {
-      await updateFlashcardReview(flashcardId, quality, keepInQueue);
-      
       if (!keepInQueue) {
         const updatedDueFlashcards = dueFlashcards.filter(card => card._id !== flashcardId);
         useFlashcardStore.setState({ dueFlashcards: updatedDueFlashcards });
@@ -88,8 +86,12 @@ export default function Flashcards() {
         useFlashcardStore.setState({ dueFlashcards: updatedDueFlashcards });
         setCurrentIndex(0);
       }
+
+      await updateFlashcardReview(flashcardId, quality, keepInQueue);
     } catch (error) {
       console.error('Error updating flashcard review:', error);
+      await getFlashcards(authStatus.user._id);
+      await getDueFlashcards(authStatus.user._id);
     }
   };
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Animated, PanResponder, Dimensions, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useThemeStore } from '../../store/theme';
@@ -13,6 +13,10 @@ export default function Flashcard({ item, onNext, totalCards }) {
   const theme = useThemeStore(state => state.theme);
   const [isFlipped, setIsFlipped] = useState(false);
   const position = new Animated.ValueXY();
+
+  useEffect(() => {
+    position.setValue({ x: 0, y: 0 });
+  }, [item?._id]);
 
   const front = item?.content?.title || 'Front';
   const back = item?.content?.description || 'Back';
@@ -109,18 +113,16 @@ export default function Flashcard({ item, onNext, totalCards }) {
 
   const forceSwipe = (direction) => {
     const x = direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH;
+    const quality = direction === 'right' ? 5 : 0;
+    
     Animated.timing(position, {
       toValue: { x, y: 0 },
       duration: SWIPE_OUT_DURATION,
       useNativeDriver: false
-    }).start(() => onSwipeComplete(direction));
-  };
-
-  const onSwipeComplete = (direction) => {
-    const quality = direction === 'right' ? 5 : 0;
-    onNext(item._id, quality, direction === 'left');
-    position.setValue({ x: 0, y: 0 });
-    setIsFlipped(false);
+    }).start(() => {
+      setIsFlipped(false);
+      onNext(item._id, quality, direction === 'left');
+    });
   };
 
   const resetPosition = () => {
@@ -143,11 +145,11 @@ export default function Flashcard({ item, onNext, totalCards }) {
   };
 
   const handleHardPress = () => {
-    onNext(item._id, 0, true);
+    forceSwipe('left');
   };
 
   const handleEasyPress = () => {
-    onNext(item._id, 5, false);
+    forceSwipe('right');
   };
 
   return (
