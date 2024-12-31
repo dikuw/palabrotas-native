@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Animated, PanResponder, Dimensions, Platform } from 'react-native';
+import { View, Text, TouchableOpacity, Animated, PanResponder, Dimensions, Platform, Easing } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
@@ -14,7 +14,7 @@ export default function Flashcard({ item, onNext, totalCards }) {
   const [isFlipped, setIsFlipped] = useState(false);
   const position = new Animated.ValueXY();
 
-  useEffect(() => {
+  React.useEffect(() => {
     position.setValue({ x: 0, y: 0 });
   }, [item?._id]);
 
@@ -40,8 +40,7 @@ export default function Flashcard({ item, onNext, totalCards }) {
     },
     cardContainer: {
       position: 'absolute',
-      left: 0,
-      right: 0,
+      width: '100%',
       height: 300,
       borderRadius: themes[theme].borderRadius.large,
       backgroundColor: '#FFFFFF',
@@ -64,7 +63,6 @@ export default function Flashcard({ item, onNext, totalCards }) {
       justifyContent: 'center',
       alignItems: 'center',
       padding: themes[theme].spacing.large,
-      backgroundColor: 'transparent',
     },
     cardText: {
       fontSize: 24,
@@ -98,7 +96,7 @@ export default function Flashcard({ item, onNext, totalCards }) {
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onPanResponderMove: (event, gesture) => {
-      position.setValue({ x: gesture.dx, y: gesture.dy });
+      position.setValue({ x: gesture.dx, y: 0 });
     },
     onPanResponderRelease: (event, gesture) => {
       if (gesture.dx > SWIPE_THRESHOLD) {
@@ -112,13 +110,13 @@ export default function Flashcard({ item, onNext, totalCards }) {
   });
 
   const forceSwipe = (direction) => {
-    const x = direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH;
+    const x = direction === 'right' ? SCREEN_WIDTH + 100 : -SCREEN_WIDTH - 100;
     const quality = direction === 'right' ? 5 : 0;
     
     Animated.timing(position, {
       toValue: { x, y: 0 },
       duration: SWIPE_OUT_DURATION,
-      useNativeDriver: false
+      useNativeDriver: true
     }).start(() => {
       setIsFlipped(false);
       onNext(item._id, quality, direction === 'left');
@@ -128,19 +126,15 @@ export default function Flashcard({ item, onNext, totalCards }) {
   const resetPosition = () => {
     Animated.spring(position, {
       toValue: { x: 0, y: 0 },
-      useNativeDriver: false
+      useNativeDriver: true
     }).start();
   };
 
   const getCardStyle = () => {
-    const rotate = position.x.interpolate({
-      inputRange: [-SCREEN_WIDTH * 1.5, 0, SCREEN_WIDTH * 1.5],
-      outputRange: ['-120deg', '0deg', '120deg']
-    });
-
     return {
-      ...position.getLayout(),
-      transform: [{ rotate }]
+      transform: [
+        { translateX: position.x }
+      ]
     };
   };
 
