@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView, Platform, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { useAuthStore } from '../../store/auth';
@@ -10,13 +10,28 @@ import { themes } from '../../styles/theme';
 export default function AddTagToContent({ contentId, visible, onClose }) {
   const { t } = useTranslation();
   const theme = useThemeStore(state => state.theme);
-  const { getTags, tags, addTagToContent } = useTagStore();
+  const { getTags, tags, addTagToContent, getTagsForContent } = useTagStore();
   const { authStatus: { user } } = useAuthStore();
-  const [selectedTags, setSelectedTags] = React.useState([]);
+  const [selectedTags, setSelectedTags] = useState([]);
+  const [existingTags, setExistingTags] = useState([]);
+  const [availableTags, setAvailableTags] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    getTags();
-  }, []);
+    const fetchTags = async () => {
+      setIsLoading(true);
+      await getTags();
+      const contentTags = await getTagsForContent(contentId);
+      setExistingTags(contentTags.map(tag => tag._id));
+      setIsLoading(false);
+    };
+    fetchTags();
+  }, [contentId]);
+
+  useEffect(() => {
+    // Filter out existing tags from the available options
+    setAvailableTags(tags.filter(tag => !existingTags.includes(tag._id)));
+  }, [tags, existingTags]);
 
   const handleTagClick = (tagId) => {
     setSelectedTags(prev => 
@@ -150,6 +165,16 @@ export default function AddTagToContent({ contentId, visible, onClose }) {
       fontSize: 14,
       fontWeight: '500',
     },
+    spinnerContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: 200, // Ensure minimum height while loading
+    },
+    spinner: {
+      width: 50,
+      height: 50,
+    },
   });
 
   return (
@@ -172,21 +197,30 @@ export default function AddTagToContent({ contentId, visible, onClose }) {
           <Text style={styles.title}>{t('Select Tags')}</Text>
           
           <ScrollView style={styles.scrollContainer}>
-            <View style={styles.tagGrid}>
-              {tags.map(tag => (
-                <TouchableOpacity
-                  key={tag._id}
-                  style={[
-                    styles.tagItem,
-                    selectedTags.includes(tag._id) && styles.tagItemSelected
-                  ]}
-                  onPress={() => handleTagClick(tag._id)}
-                >
-                  <Text style={styles.tagText}>{tag.name}</Text>
-                  <View style={styles.tagHole} />
-                </TouchableOpacity>
-              ))}
-            </View>
+            {isLoading ? (
+              <View style={styles.spinnerContainer}>
+                <Image
+                  source={require('../../assets/images/spinner.gif')}
+                  style={styles.spinner}
+                />
+              </View>
+            ) : (
+              <View style={styles.tagGrid}>
+                {availableTags.map(tag => (
+                  <TouchableOpacity
+                    key={tag._id}
+                    style={[
+                      styles.tagItem,
+                      selectedTags.includes(tag._id) && styles.tagItemSelected
+                    ]}
+                    onPress={() => handleTagClick(tag._id)}
+                  >
+                    <Text style={styles.tagText}>{tag.name}</Text>
+                    <View style={styles.tagHole} />
+                  </TouchableOpacity>
+                ))}
+              </View>
+            )}
           </ScrollView>
 
           <View style={styles.buttonRow}>
