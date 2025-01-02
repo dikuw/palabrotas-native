@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
 import { useTagStore } from '../../store/tag';
 
 export default function TagGrid({ contentId }) {
+  const { t } = useTranslation();
   const theme = useThemeStore(state => state.theme);
   const { getTagsForContent } = useTagStore();
   const [contentTags, setContentTags] = useState([]);
@@ -122,7 +124,7 @@ export default function TagGrid({ contentId }) {
         contentContainerStyle={styles.gridContainer}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
-          <Text style={styles.emptyText}>No tags available</Text>
+          <Text style={styles.emptyText}>{t('No tags yet!')}</Text>
         }
       />
     </View>

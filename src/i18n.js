@@ -175,7 +175,8 @@ const resources = {
       "or" : "or",
       "Theme": "Theme",
       "Light": "Light",
-      "Dark": "Dark"
+      "Dark": "Dark",
+      "No tags yet!" : "No tags yet!"
     }
   },
   es: {
@@ -351,7 +352,8 @@ const resources = {
       "or" : "o",
       "Theme": "Tema",
       "Light": "Claro",
-      "Dark": "Oscuro"
+      "Dark": "Oscuro",
+      "No tags yet!" : "No hay etiquetas aún!"
     }
   }
 };
