@@ -88,16 +88,15 @@ export default function AddTagToContent({ contentId, visible, onClose }) {
     },
     tagItem: {
       backgroundColor: themes[theme].colors.primary,
-      padding: 5,
+      paddingVertical: 5,
       paddingHorizontal: 10,
       marginVertical: 2,
-      marginHorizontal: 2,
       marginLeft: 20,
-      position: 'relative',
+      marginRight: 2,
       minWidth: 100,
-      height: 34,
-      justifyContent: 'center',
       alignItems: 'center',
+      position: 'relative',
+      height: 34,
       ...Platform.select({
         ios: {
           shadowColor: 'rgba(0,0,0,0.2)',
@@ -137,6 +136,10 @@ export default function AddTagToContent({ contentId, visible, onClose }) {
         ios: 'System',
         android: 'sans-serif',
       }),
+    },
+    tagTextSelected: {
+      color: themes[theme].colors.white,
+      fontWeight: '600',
     },
     tagItemSelected: {
       backgroundColor: themes[theme].colors.primaryDark,
@@ -215,7 +218,12 @@ export default function AddTagToContent({ contentId, visible, onClose }) {
                     ]}
                     onPress={() => handleTagClick(tag._id)}
                   >
-                    <Text style={styles.tagText}>{tag.name}</Text>
+                    <Text style={[
+                      styles.tagText,
+                      selectedTags.includes(tag._id) && styles.tagTextSelected
+                    ]}>
+                      {tag.name}
+                    </Text>
                     <View style={styles.tagHole} />
                   </TouchableOpacity>
                 ))}
