@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator } from 'react-native';
+import { View, Text, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
@@ -18,11 +18,11 @@ export default function Flashcards() {
     dueFlashcards, 
     getFlashcards, 
     getDueFlashcards, 
-    updateFlashcardReview,
-    isLoading 
+    updateFlashcardReview
   } = useFlashcardStore();
   
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [initialFetch, setInitialFetch] = useState(true);
 
   const styles = {
     container: {
@@ -58,19 +58,29 @@ export default function Flashcards() {
       fontSize: themes[theme].typography.regular,
       color: themes[theme].colors.text,
     },
-    loadingContainer: {
+    spinnerContainer: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
       backgroundColor: themes[theme].colors.background,
     },
+    spinner: {
+      width: 50,
+      height: 50,
+    },
   };
 
   useEffect(() => {
-    if (authStatus.isLoggedIn && authStatus.user) {
-      getFlashcards(authStatus.user._id);
-      getDueFlashcards(authStatus.user._id);
-    }
+    const fetchCards = async () => {
+      if (authStatus.isLoggedIn && authStatus.user) {
+        await Promise.all([
+          getFlashcards(authStatus.user._id),
+          getDueFlashcards(authStatus.user._id)
+        ]);
+        setInitialFetch(false);
+      }
+    };
+    fetchCards();
   }, [authStatus.isLoggedIn, authStatus.user, getFlashcards, getDueFlashcards]);
 
   const handleReviewAndNext = async (flashcardId, quality, keepInQueue) => {
@@ -99,11 +109,13 @@ export default function Flashcards() {
     return <NoPermissionView message={t("Please log in to view this page")} />;
   }
 
-  if (isLoading) {
+  if (initialFetch) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={themes[theme].colors.primary} />
-        <Text style={styles.message}>{t("Loading flashcards...")}</Text>
+      <View style={styles.spinnerContainer}>
+        <Image
+          source={require('../../assets/images/spinner.gif')}
+          style={styles.spinner}
+        />
       </View>
     );
   }
