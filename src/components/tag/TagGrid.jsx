@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
@@ -10,6 +10,7 @@ export default function TagGrid({ contentId }) {
   const theme = useThemeStore(state => state.theme);
   const { getTagsForContent } = useTagStore();
   const [contentTags, setContentTags] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const styles = StyleSheet.create({
     container: {
@@ -83,15 +84,28 @@ export default function TagGrid({ contentId }) {
       color: themes[theme].colors.white,
       fontSize: themes[theme].typography.small,
     },
+    spinnerContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: 100,
+    },
+    spinner: {
+      width: 50,
+      height: 50,
+    },
   });
 
   useEffect(() => {
     const fetchTags = async () => {
       try {
+        setIsLoading(true);
         const data = await getTagsForContent(contentId);
         setContentTags(data);
       } catch (error) {
         console.error('Error fetching tags:', error);
+      } finally {
+        setIsLoading(false);
       }
     };
     
@@ -112,6 +126,17 @@ export default function TagGrid({ contentId }) {
   const renderTag = ({ item }) => (
     <TagComponent tag={item} />
   );
+
+  if (isLoading) {
+    return (
+      <View style={styles.spinnerContainer}>
+        <Image
+          source={require('../../assets/images/spinner.gif')}
+          style={styles.spinner}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
