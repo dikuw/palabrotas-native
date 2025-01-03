@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, Animated, TouchableOpacity, Image, FlatList } from 'react-native';
+import { GestureHandlerRootView, Swipeable } from 'react-native-gesture-handler';
 import { useTranslation } from 'react-i18next';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
@@ -8,7 +9,7 @@ import { useTagStore } from '../../store/tag';
 export default function TagGrid({ contentId }) {
   const { t } = useTranslation();
   const theme = useThemeStore(state => state.theme);
-  const { getTagsForContent } = useTagStore();
+  const { getTagsForContent, removeTagFromContent } = useTagStore();
   const [contentTags, setContentTags] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -42,6 +43,7 @@ export default function TagGrid({ contentId }) {
       marginRight: 12,
       marginBottom: 8,
       overflow: 'visible',
+      height: 34,
     },
     tagBackground: {
       position: 'absolute',
@@ -94,6 +96,21 @@ export default function TagGrid({ contentId }) {
       width: 50,
       height: 50,
     },
+    deleteButton: {
+      backgroundColor: themes[theme].colors.error,
+      justifyContent: 'center',
+      alignItems: 'center',
+      width: 60,
+      height: 34,
+      marginBottom: 8,
+      marginRight: 8,
+      paddingHorizontal: 10,
+    },
+    deleteText: {
+      color: themes[theme].colors.white,
+      fontSize: 10,
+      fontWeight: '500',
+    },
   });
 
   useEffect(() => {
@@ -114,13 +131,49 @@ export default function TagGrid({ contentId }) {
     }
   }, [contentId, getTagsForContent]);
 
+  const handleDelete = async (tagId) => {
+    try {
+      await removeTagFromContent(contentId, tagId);
+      // Refresh tags after deletion
+      const updatedTags = await getTagsForContent(contentId);
+      setContentTags(updatedTags);
+    } catch (error) {
+      console.error('Error removing tag:', error);
+    }
+  };
+
+  const renderRightActions = (tagId) => {
+    return (
+      <TouchableOpacity
+        style={styles.deleteButton}
+        onPress={() => handleDelete(tagId)}
+      >
+        <Text style={styles.deleteText}>{t('Remove')}</Text>
+      </TouchableOpacity>
+    );
+  };
+
+  // TODO: update Swipeable with Reanimated
+  //  npm install react-native-reanimated
+  //  npm install @react-native-community/gesture-handler
+  //  npm install @react-native-community/swipeable
+  //  Add this line to babel.config.js:
+  //  module.exports = {  
+  //  presets: ['module:metro-react-native-babel-preset'],
+  //  plugins: ['react-native-reanimated/plugin'],
+  //  };
   const TagComponent = ({ tag }) => (
-    <View style={styles.tag}>
-      <View style={styles.tagBackground} />
-      <View style={styles.tagCut} />
-      <Text style={styles.tagText}>{tag.name}</Text>
-      <View style={styles.tagHole} />
-    </View>
+    <Swipeable
+      renderRightActions={() => renderRightActions(tag._id)}
+      rightThreshold={40}
+    >
+      <View style={styles.tag}>
+        <View style={styles.tagBackground} />
+        <View style={styles.tagCut} />
+        <Text style={styles.tagText}>{tag.name}</Text>
+        <View style={styles.tagHole} />
+      </View>
+    </Swipeable>
   );
 
   const renderTag = ({ item }) => (
@@ -139,7 +192,7 @@ export default function TagGrid({ contentId }) {
   }
 
   return (
-    <View style={styles.container}>
+    <GestureHandlerRootView style={styles.container}>
       <FlatList
         data={contentTags}
         renderItem={renderTag}
@@ -152,6 +205,6 @@ export default function TagGrid({ contentId }) {
           <Text style={styles.emptyText}>{t('No tags yet!')}</Text>
         }
       />
-    </View>
+    </GestureHandlerRootView>
   );
 }
