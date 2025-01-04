@@ -27,6 +27,12 @@ export default function Content({ route }) {
   const [showTagSelector, setShowTagSelector] = useState(false);
   const [showComments, setShowComments] = useState(false);
 
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  
+  const handleTagsSaved = () => {
+    setRefreshTrigger(prev => prev + 1); // Increment to trigger refresh
+  };
+
   const styles = {
     wrapper: {
       flex: 1,
@@ -185,7 +191,10 @@ export default function Content({ route }) {
       <Text style={styles.authorInfo}>{t('Created by')}: {content.author}</Text>
       
       <View style={styles.tagContainer}>
-        <TagGrid contentId={content._id} />
+        <TagGrid 
+          contentId={content._id} 
+          refreshTrigger={refreshTrigger} 
+        />
         <TouchableOpacity 
           style={styles.addTagButton}
           onPress={() => setShowTagSelector(true)}
@@ -198,6 +207,7 @@ export default function Content({ route }) {
         <AddTagToContent 
           contentId={content._id} 
           onClose={() => setShowTagSelector(false)} 
+          onSave={handleTagsSaved}
         />
       )}
 

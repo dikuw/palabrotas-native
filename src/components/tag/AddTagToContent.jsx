@@ -7,7 +7,7 @@ import { useTagStore } from '../../store/tag';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
 
-export default function AddTagToContent({ contentId, visible, onClose }) {
+export default function AddTagToContent({ contentId, visible, onClose, onSave }) {
   const { t } = useTranslation();
   const theme = useThemeStore(state => state.theme);
   const { getTags, tags, addTagToContent, getTagsForContent } = useTagStore();
@@ -42,10 +42,17 @@ export default function AddTagToContent({ contentId, visible, onClose }) {
   };
 
   const handleSave = async () => {
-    for (const tagId of selectedTags) {
-      await addTagToContent(contentId, tagId, user._id);
+    try {
+      for (const tagId of selectedTags) {
+        await addTagToContent(contentId, tagId, user._id);
+      }
+      if (onSave) {
+        onSave(); // Trigger refresh in parent
+      }
+      onClose();
+    } catch (error) {
+      console.error('Error saving tags:', error);
     }
-    onClose();
   };
 
   const styles = StyleSheet.create({

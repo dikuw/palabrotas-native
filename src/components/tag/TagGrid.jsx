@@ -6,7 +6,7 @@ import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
 import { useTagStore } from '../../store/tag';
 
-export default function TagGrid({ contentId }) {
+export default function TagGrid({ contentId, refreshTrigger }) {
   const { t } = useTranslation();
   const theme = useThemeStore(state => state.theme);
   const { getTagsForContent, removeTagFromContent } = useTagStore();
@@ -129,7 +129,7 @@ export default function TagGrid({ contentId }) {
     if (contentId) {
       fetchTags();
     }
-  }, [contentId, getTagsForContent]);
+  }, [contentId, refreshTrigger]);
 
   const handleDelete = async (tagId) => {
     try {
