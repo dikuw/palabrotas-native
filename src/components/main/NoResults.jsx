@@ -1,29 +1,37 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import styled from 'styled-components/native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
-const Container = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  padding: ${({ theme }) => theme.spacing.xlarge}px;
-`;
-
-const Message = styled.Text`
-  font-size: ${({ theme }) => theme.typography.large}px;
-  color: ${({ theme }) => theme.colors.textSecondary};
-  text-align: center;
-  margin-top: ${({ theme }) => theme.spacing.medium}px;
-`;
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
+import { View, Text } from 'react-native';
 
 export default function NoResults() {
   const { t } = useTranslation();
+  const theme = useThemeStore(state => state.theme);
+
+  const styles = {
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: themes[theme].spacing.xlarge,
+    },
+    message: {
+      fontSize: themes[theme].typography.large,
+      color: themes[theme].colors.text,
+      textAlign: 'center',
+      marginTop: themes[theme].spacing.medium,
+    },
+  };
 
   return (
-    <Container>
-      <Icon name="search-off" size={48} color={theme.colors.textSecondary} />
-      <Message>{t("No results found")}</Message>
-    </Container>
+    <View style={styles.container}>
+      <Icon 
+        name="search-minus" 
+        size={48} 
+        color={themes[theme].colors.text} 
+      />
+      <Text style={styles.message}>{t("No results found")}</Text>
+    </View>
   );
 }
