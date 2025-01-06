@@ -3,6 +3,7 @@ import './src/i18n';
 import { SafeAreaView, StatusBar, View, Text } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 
 // Import stores
@@ -47,6 +48,7 @@ const LoadingText = styled(Text)`
 `;
 
 function App() {
+  const { t } = useTranslation();
   const { getContents, getContentsSortedByVoteDesc } = useContentStore();
   const { authStatus, loginUser, logoutUser, getCurrentUser } = useAuthStore();
   const theme = useThemeStore(state => state.theme);
@@ -80,7 +82,10 @@ function App() {
             logoutUser={logoutUser} 
           />
           <Stack.Navigator>
-            <Stack.Screen name="Home">
+            <Stack.Screen 
+              name="Home" 
+              options={{ title: t('Home') }}
+            >
               {props => (
                 !authStatus.isLoggedIn ? (
                   <Intro1 {...props} />
@@ -88,7 +93,7 @@ function App() {
                   <View style={{ flex: 1 }}>
                     <SearchBar />
                     {isLoading ? (
-                      <LoadingText currentTheme={theme}>Finding latest content...</LoadingText>
+                      <LoadingText currentTheme={theme}>{t('Finding latest content...')}</LoadingText>
                     ) : (
                       <Grid />
                     )}
@@ -97,10 +102,11 @@ function App() {
               )}
             </Stack.Screen>
 
-            <Stack.Screen name="Admin" component={Admin} />
-            <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="Admin" options={{ title: t('Admin') }} component={Admin} />
+            <Stack.Screen name="Register" options={{ title: t('Register') }} component={Register} />
             <Stack.Screen 
               name="Login" 
+              options={{ title: t('Login') }}
               children={props => (
                 <LocalLogin
                   {...props}
@@ -109,9 +115,10 @@ function App() {
                 />
               )}
             />
-            <Stack.Screen name="Content" component={Content} />
+            <Stack.Screen name="Content" options={{ title: t('Content') }} component={Content} />
             <Stack.Screen 
               name="Account" 
+              options={{ title: t('Account') }}
               children={props => (
                 <Account
                   {...props}
@@ -121,6 +128,7 @@ function App() {
             />
             <Stack.Screen 
               name="Flashcards" 
+              options={{ title: t('Flashcards') }}
               children={props => (
                 <Flashcards
                   {...props}
@@ -130,6 +138,7 @@ function App() {
             />
             <Stack.Screen 
               name="AddContent" 
+              options={{ title: t('Add Content') }}
               children={props => (
                 <AddContent
                   {...props}
@@ -139,6 +148,7 @@ function App() {
             />
             <Stack.Screen 
               name="EditContent" 
+              options={{ title: t('Edit Content') }}
               children={props => (
                 <EditContent
                   {...props}
@@ -148,11 +158,17 @@ function App() {
             />
             <Stack.Screen 
               name="Config" 
+              options={{ title: t('Settings') }}
               component={Config}
             />
-            <Stack.Screen name="AddFeedback" component={AddFeedback} />
+            <Stack.Screen 
+              name="AddFeedback" 
+              options={{ title: t('Add Feedback') }}
+              component={AddFeedback} 
+            />
             <Stack.Screen 
               name="AddTag" 
+              options={{ title: t('Add Tag') }}
               children={props => (
                 <AddTag
                   {...props}
