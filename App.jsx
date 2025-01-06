@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './src/i18n';
 import { SafeAreaView, StatusBar, View, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import styled from 'styled-components/native';
 
@@ -52,6 +52,8 @@ function App() {
   const theme = useThemeStore(state => state.theme);
   const [isLoading, setIsLoading] = useState(false);
 
+  const navigationTheme = theme === 'dark' ? DarkTheme : DefaultTheme;
+
   useEffect(() => {
     setIsLoading(true);
     async function initialize() {
@@ -63,9 +65,9 @@ function App() {
   }, [getContents, getContentsSortedByVoteDesc]);
 
   return (  
-    <NavigationContainer>
+    <NavigationContainer theme={navigationTheme}>
       <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar barStyle={theme === 'dark' ? "light-content" : "dark-content"} />
         <AppContainer currentTheme={theme}>
           <TopBanner 
             isLoggedIn={authStatus.isLoggedIn} 
