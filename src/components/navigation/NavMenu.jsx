@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, TouchableOpacity, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useTranslation } from "react-i18next";
-import CustomText from '../CustomText';
+import { useTranslation } from 'react-i18next';
+import styled from 'styled-components/native';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
 
@@ -11,7 +11,23 @@ import { useAppStore } from '../../store/app';
 import { useContentStore } from '../../store/content';
 import { useNotificationStore } from '../../store/notification';
 
-const { width } = Dimensions.get('window');
+const MenuContainer = styled.View`
+  background-color: ${props => themes[props.currentTheme || 'light'].colors.elevated};
+  padding: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
+  border-radius: ${props => themes[props.currentTheme || 'light'].borderRadius.medium}px;
+`;
+
+const MenuItem = styled(TouchableOpacity)`
+  padding: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
+  border-bottom-width: 1px;
+  border-bottom-color: ${props => themes[props.currentTheme || 'light'].colors.border};
+  background-color: transparent;
+`;
+
+const MenuText = styled.Text`
+  color: ${props => themes[props.currentTheme || 'light'].colors.text};
+  font-size: 16px;
+`;
 
 export default function NavMenu({ isLoggedIn, isAdmin }) {
   const navigation = useNavigation();
@@ -21,54 +37,6 @@ export default function NavMenu({ isLoggedIn, isAdmin }) {
   const { menuOpen, setMenuOpen } = useAppStore();
   const { clearSearch } = useContentStore();
   const addNotification = useNotificationStore(state => state.addNotification);
-
-  const styles = StyleSheet.create({
-    overlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      zIndex: 998,
-    },
-    desktopMenu: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
-      width: '100%',
-      height: 50,
-      backgroundColor: themes[theme].colors.background,
-    },
-    mobileMenu: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      bottom: 0,
-      width: 200,
-      backgroundColor: themes[theme].colors.background,
-      borderRightWidth: 1,
-      borderRightColor: themes[theme].colors.border,
-      paddingTop: 60,
-      zIndex: 999,
-      elevation: 5,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 2,
-        height: 0,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-    },
-    menuItem: {
-      paddingVertical: themes[theme].spacing.medium,
-      paddingHorizontal: themes[theme].spacing.large,
-    },
-    menuText: {
-      fontSize: themes[theme].typography.medium,
-      color: themes[theme].colors.text,
-    },
-  });
 
   const handleNavigation = (route) => {
     setMenuOpen(false);
@@ -92,12 +60,11 @@ export default function NavMenu({ isLoggedIn, isAdmin }) {
   };
 
   const renderMenuItem = (label, route, onPress = null) => (
-    <TouchableOpacity
-      style={styles.menuItem}
+    <MenuItem
       onPress={onPress || (() => handleNavigation(route))}
     >
-      <CustomText style={styles.menuText}>{t(label)}</CustomText>
-    </TouchableOpacity>
+      <MenuText>{t(label)}</MenuText>
+    </MenuItem>
   );
 
   const MenuContent = () => (

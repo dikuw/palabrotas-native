@@ -9,7 +9,7 @@ import { themes } from '../../styles/theme';
 const Nav = styled.View`
   width: 100%;
   padding: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
-  background-color: ${props => themes[props.currentTheme || 'light'].colors.background};
+  background-color: ${props => props.currentTheme === 'dark' ? '#121212' : '#ffffff'};
   ${Platform.select({
     ios: `
       shadow-color: #000;
@@ -31,12 +31,14 @@ const MenuContainer = styled.View`
   position: absolute;
   top: 100%;
   right: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
-  background-color: ${props => themes[props.currentTheme || 'light'].colors.background};
+  background-color: ${props => props.currentTheme === 'dark' ? '#121212' : '#ffffff'};
   border-radius: ${props => themes[props.currentTheme || 'light'].borderRadius.medium}px;
   padding: ${props => themes[props.currentTheme || 'light'].spacing.small}px 0;
   min-width: 200px;
   z-index: 1000;
   elevation: 5;
+  border-width: ${props => props.currentTheme === 'dark' ? '1px' : '0px'};
+  border-color: ${props => props.currentTheme === 'dark' ? '#ffffff' : 'transparent'};
   ${Platform.select({
     ios: `
       shadow-color: #000;
@@ -62,7 +64,7 @@ const MenuItem = styled(TouchableOpacity)`
 const MenuText = styled.Text`
   font-size: 16px;
   font-weight: bold;
-  color: ${props => themes[props.currentTheme || 'light'].colors.text};
+  color: ${props => props.currentTheme === 'dark' ? '#ffffff' : '#000000'};
 `;
 
 export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
@@ -84,50 +86,50 @@ export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
 
   return (
     <NavigationContainer>
-      <Nav>
-        <MenuButton onPress={() => setIsOpen(!isOpen)}>
-          <MenuText>{isOpen ? "X" : "☰"}</MenuText>
+      <Nav currentTheme={theme}>
+        <MenuButton currentTheme={theme} onPress={() => setIsOpen(!isOpen)}>
+          <MenuText currentTheme={theme}>{isOpen ? "X" : "☰"}</MenuText>
         </MenuButton>
 
         {isOpen && (
-          <MenuContainer>
-            <MenuItem onPress={() => handleNavigation('Home')}>
-              <MenuText>{t('Home')}</MenuText>
+          <MenuContainer currentTheme={theme}>
+            <MenuItem currentTheme={theme} onPress={() => handleNavigation('Home')}>
+              <MenuText currentTheme={theme}>{t('Home')}</MenuText>
             </MenuItem>
 
             {isLoggedIn ? (
               <>
-                <MenuItem onPress={() => handleNavigation('Account')}>
-                  <MenuText>{t('Account')}</MenuText>
+                <MenuItem currentTheme={theme} onPress={() => handleNavigation('Account')}>
+                  <MenuText currentTheme={theme}>{t('Account')}</MenuText>
                 </MenuItem>
-                <MenuItem onPress={() => handleNavigation('Flashcards')}>
-                  <MenuText>{t('Flashcards')}</MenuText>
+                <MenuItem currentTheme={theme} onPress={() => handleNavigation('Flashcards')}>
+                  <MenuText currentTheme={theme}>{t('Flashcards')}</MenuText>
                 </MenuItem>
-                <MenuItem onPress={() => handleNavigation('AddContent')}>
-                  <MenuText>{t('Add Content')}</MenuText>
+                <MenuItem currentTheme={theme} onPress={() => handleNavigation('AddContent')}>
+                  <MenuText currentTheme={theme}>{t('Add Content')}</MenuText>
                 </MenuItem>
                 {isAdmin && (
-                  <MenuItem onPress={() => handleNavigation('Admin')}>
-                    <MenuText>{t('Admin')}</MenuText>
+                  <MenuItem currentTheme={theme} onPress={() => handleNavigation('Admin')}>
+                    <MenuText currentTheme={theme}>{t('Admin')}</MenuText>
                   </MenuItem>
                 )}
-                <MenuItem onPress={handleLogout}>
-                  <MenuText>{t('Logout')}</MenuText>
+                <MenuItem currentTheme={theme} onPress={handleLogout}>
+                  <MenuText currentTheme={theme}>{t('Logout')}</MenuText>
                 </MenuItem>
               </>
             ) : (
               <>
-                <MenuItem onPress={() => handleNavigation('Login')}>
-                  <MenuText>{t('Login')}</MenuText>
+                <MenuItem currentTheme={theme} onPress={() => handleNavigation('Login')}>
+                  <MenuText currentTheme={theme}>{t('Login')}</MenuText>
                 </MenuItem>
-                <MenuItem onPress={() => handleNavigation('Register')}>
-                  <MenuText>{t('Register')}</MenuText>
+                <MenuItem currentTheme={theme} onPress={() => handleNavigation('Register')}>
+                  <MenuText currentTheme={theme}>{t('Register')}</MenuText>
                 </MenuItem>
               </>
             )}
 
-            <MenuItem onPress={() => handleNavigation('Config')}>
-              <MenuText>{t('Settings')}</MenuText>
+            <MenuItem currentTheme={theme} onPress={() => handleNavigation('Config')}>
+              <MenuText currentTheme={theme}>{t('Settings')}</MenuText>
             </MenuItem>
           </MenuContainer>
         )}
