@@ -79,23 +79,38 @@ export default function SearchBar() {
   }, []);
 
   const handleCountryChange = useCallback((items) => {
+    console.log('Country change:', items);
     setSelectedCountries(items);
     filterByCountries(items);
-  }, [filterByCountries]);
+    console.log('After filterByCountries');
+    if (searchTerm.trim()) {
+      console.log('Searching with term:', searchTerm);
+      searchContents(searchTerm);
+    } else {
+      console.log('Searching with empty string');
+      searchContents('');
+    }
+  }, [filterByCountries, searchContents, searchTerm]);
 
   const handleTagChange = useCallback((items) => {
+    console.log('Tag change:', items);
     setSelectedTags(items);
     filterByTags(items);
-  }, [filterByTags]);
-
-  const handleSearch = useCallback(() => {
     if (searchTerm.trim()) {
       searchContents(searchTerm);
-      setSearchTerm('');
     } else {
-      clearSearch();
+      searchContents('');
     }
-  }, [searchTerm, searchContents, clearSearch]);
+  }, [filterByTags, searchContents, searchTerm]);
+
+  const handleTextChange = useCallback((text) => {
+    setSearchTerm(text);
+    if (!text.trim()) {
+      clearSearch();
+    } else {
+      searchContents(text);
+    }
+  }, [clearSearch, searchContents]);
 
   const countryOptions = React.useMemo(() => 
     countries.map(country => ({
@@ -111,6 +126,38 @@ export default function SearchBar() {
     })) || []
   , [tags]);
 
+  const dropdownProps = {
+    mode: "BADGE",
+    showBadgeDot: false,
+    badgeColors: [themes[theme].colors.primary],
+    badgeTextStyle: {
+      color: themes[theme].colors.white,
+      fontSize: 12,
+      marginRight: 5,
+    },
+    listMode: "SCROLLVIEW",
+    badgeDotColors: ["transparent"],
+    removable: true,
+    showArrowIcon: true,
+    closeOnBackPressed: true,
+    badgeProps: {
+      closeIconStyle: {
+        color: themes[theme].colors.white,
+        fontSize: 14,
+        fontWeight: 'bold',
+      },
+      dotStyle: { display: 'none' },
+      badgeStyle: {
+        padding: 8,
+        paddingRight: 25,
+      },
+      iconStyle: {
+        right: 5,
+        top: '25%',
+      },
+    },
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.inputWrapper}>
@@ -119,20 +166,23 @@ export default function SearchBar() {
             style={styles.input}
             placeholder={t("Search...")}
             value={searchTerm}
-            onChangeText={(text) => {
-              setSearchTerm(text);
-              if (!text.trim()) {
-                clearSearch();
-              }
-            }}
-            onSubmitEditing={handleSearch}
+            onChangeText={handleTextChange}
             returnKeyType="search"
             clearButtonMode="while-editing"
             placeholderTextColor={themes[theme].colors.textSecondary}
+            underlineColorAndroid="transparent"
           />
-          <TouchableOpacity style={styles.iconWrapper} onPress={handleSearch}>
-            <Icon name="search" size={20} color={themes[theme].colors.textSecondary} />
-          </TouchableOpacity>
+          {searchTerm ? (
+            <TouchableOpacity 
+              style={styles.iconWrapper} 
+              onPress={() => {
+                setSearchTerm('');
+                clearSearch();
+              }}
+            >
+              <Icon name="times" size={20} color={themes[theme].colors.textSecondary} />
+            </TouchableOpacity>
+          ) : null}
         </View>
 
         <DropDownPicker
@@ -150,14 +200,7 @@ export default function SearchBar() {
           textStyle={styles.dropdownTextStyle}
           zIndex={3000}
           theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
-          mode="BADGE"
-          showBadgeDot={false}
-          badgeColors={[themes[theme].colors.primary]}
-          badgeTextStyle={{
-            color: themes[theme].colors.white,
-            fontSize: 12,
-          }}
-          listMode="SCROLLVIEW"
+          {...dropdownProps}
         />
 
         <DropDownPicker
@@ -175,14 +218,7 @@ export default function SearchBar() {
           textStyle={styles.dropdownTextStyle}
           zIndex={2000}
           theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
-          mode="BADGE"
-          showBadgeDot={false}
-          badgeColors={[themes[theme].colors.primary]}
-          badgeTextStyle={{
-            color: themes[theme].colors.white,
-            fontSize: 12,
-          }}
-          listMode="SCROLLVIEW"
+          {...dropdownProps}
         />
       </View>
     </View>

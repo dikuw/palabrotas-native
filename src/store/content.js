@@ -5,6 +5,8 @@ export const useContentStore = create((set, get) => ({
   contents: [],
   searchResults: [],
   isSearching: false,
+  selectedCountries: [],
+  selectedTags: [],
   MAX_TITLE_LENGTH: 1000,
   MAX_DESCRIPTION_LENGTH: 1000,
   setContents: (contents) => set({ contents }),
@@ -92,26 +94,45 @@ export const useContentStore = create((set, get) => ({
   },
   searchContents: (searchTerm) => {
     set({ isSearching: true });
-    const { contents } = get();
-    const filtered = contents.filter(content => 
-      content.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      content.description.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const { contents, selectedCountries, selectedTags } = get();
+    
+    let filtered = contents;
+
+    if (searchTerm) {
+      filtered = filtered.filter(content => 
+        content.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        content.description.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectedCountries.length > 0) {
+      filtered = filtered.filter(content => 
+        selectedCountries.includes(content.country)
+      );
+    }
+
+    if (selectedTags.length > 0) {
+      filtered = filtered.filter(content => 
+        content.tags?.some(tag => selectedTags.includes(tag))
+      );
+    }
+
     set({ searchResults: filtered });
   },
   filterByCountries: (countries) => {
-    const { contents } = get();
-    const filtered = contents.filter(content => countries.includes(content.country));
-    set({ searchResults: filtered });
+    set({ selectedCountries: countries });
+    const { searchContents } = get();
+    searchContents(get().searchTerm || '');
   },
-  // TODO: Implement filterByTags
   filterByTags: (tags) => {
-    const { contents } = get();
-    const filtered = contents.filter(content => tags.includes(content.tags));
-    set({ searchResults: filtered });
+    set({ selectedTags: tags });
+    const { searchContents } = get();
+    searchContents(get().searchTerm || '');
   },
   clearSearch: () => set({ 
     searchResults: [],
-    isSearching: false
+    isSearching: false,
+    selectedCountries: [],
+    selectedTags: [],
   }),
 }));
