@@ -56,7 +56,7 @@ export default function SearchBar() {
       flex: 1,
       padding: 5,
       fontSize: themes[theme].typography.regular,
-      color: themes[theme].colors.text,
+      color: '#000000',
     },
     iconWrapper: {
       padding: 5,
@@ -150,6 +150,14 @@ export default function SearchBar() {
           textStyle={styles.dropdownTextStyle}
           zIndex={3000}
           theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
+          mode="BADGE"
+          showBadgeDot={false}
+          badgeColors={[themes[theme].colors.primary]}
+          badgeTextStyle={{
+            color: themes[theme].colors.white,
+            fontSize: 12,
+          }}
+          listMode="SCROLLVIEW"
         />
 
         <DropDownPicker
@@ -167,6 +175,14 @@ export default function SearchBar() {
           textStyle={styles.dropdownTextStyle}
           zIndex={2000}
           theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
+          mode="BADGE"
+          showBadgeDot={false}
+          badgeColors={[themes[theme].colors.primary]}
+          badgeTextStyle={{
+            color: themes[theme].colors.white,
+            fontSize: 12,
+          }}
+          listMode="SCROLLVIEW"
         />
       </View>
     </View>
