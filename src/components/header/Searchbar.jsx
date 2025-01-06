@@ -79,22 +79,19 @@ export default function SearchBar() {
   }, []);
 
   const handleCountryChange = useCallback((items) => {
-    console.log('Country change:', items);
     setSelectedCountries(items);
+    setCountryOpen(false);
     filterByCountries(items);
-    console.log('After filterByCountries');
     if (searchTerm.trim()) {
-      console.log('Searching with term:', searchTerm);
       searchContents(searchTerm);
     } else {
-      console.log('Searching with empty string');
       searchContents('');
     }
   }, [filterByCountries, searchContents, searchTerm]);
 
   const handleTagChange = useCallback((items) => {
-    console.log('Tag change:', items);
     setSelectedTags(items);
+    setTagOpen(false);
     filterByTags(items);
     if (searchTerm.trim()) {
       searchContents(searchTerm);
