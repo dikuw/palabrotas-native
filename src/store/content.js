@@ -7,6 +7,7 @@ export const useContentStore = create((set, get) => ({
   isSearching: false,
   selectedCountries: [],
   selectedTags: [],
+  searchTerm: '',
   MAX_TITLE_LENGTH: 1000,
   MAX_DESCRIPTION_LENGTH: 1000,
   setContents: (contents) => set({ contents }),
@@ -97,7 +98,7 @@ export const useContentStore = create((set, get) => ({
     return data.data;
   },
   searchContents: (searchTerm) => {
-    set({ isSearching: true });
+    set({ isSearching: true, searchTerm });
     const { contents, selectedCountries, selectedTags } = get();
     
     let filtered = contents;
@@ -120,11 +121,7 @@ export const useContentStore = create((set, get) => ({
         if (!content.tags || !Array.isArray(content.tags)) {
           return false;
         }
-        return content.tags.some(tag => 
-          selectedTags.some(selectedTag => 
-            selectedTag.toLowerCase() === tag.name.toLowerCase()
-          )
-        );
+        return content.tags.some(tag => selectedTags.includes(tag._id));
       });
     }
 
@@ -135,8 +132,8 @@ export const useContentStore = create((set, get) => ({
     const { searchContents } = get();
     searchContents(get().searchTerm || '');
   },
-  filterByTags: (tags) => {
-    set({ selectedTags: tags });
+  filterByTags: (tagIds) => {
+    set({ selectedTags: tagIds });
     const { searchContents } = get();
     searchContents(get().searchTerm || '');
   },
