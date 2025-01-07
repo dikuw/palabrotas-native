@@ -62,15 +62,19 @@ export const useContentStore = create((set, get) => ({
     }
   },
   getContentsSortedByVoteDesc: async () => {
-    const res = await fetch(`${API_URL}/api/content/getContentsSortedByVoteDesc`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    const data = await res.json();
-    const visibleContents = data.data.filter(content => content.show === true);
-    set({ contents: visibleContents });
+    try {
+      const res = await fetch(`${API_URL}/api/content/getContentsSortedByVoteDesc`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      const visibleContents = data.data.filter(content => content.show === true);
+      set({ contents: visibleContents });
+    } catch (error) {
+      console.error('Fetch error:', error);
+    }
   },
   getContentById: async (id) => {
     const res = await fetch(`${API_URL}/api/content/getContentById/${id}`, {
@@ -112,9 +116,16 @@ export const useContentStore = create((set, get) => ({
     }
 
     if (selectedTags.length > 0) {
-      filtered = filtered.filter(content => 
-        content.tags?.some(tag => selectedTags.includes(tag))
-      );
+      filtered = filtered.filter(content => {
+        if (!content.tags || !Array.isArray(content.tags)) {
+          return false;
+        }
+        return content.tags.some(tag => 
+          selectedTags.some(selectedTag => 
+            selectedTag.toLowerCase() === tag.name.toLowerCase()
+          )
+        );
+      });
     }
 
     set({ searchResults: filtered });
