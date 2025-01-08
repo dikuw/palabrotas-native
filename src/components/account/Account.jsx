@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View } from 'react-native';
+import { View, Text } from 'react-native';
 import { useContentStore } from '../../store/content';
 import { useAuthStore } from '../../store/auth';
 import { useUserStore } from '../../store/user';
@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
 
-import Banner from '../header/Banner';
 import AccountGrid from './AccountGrid';
 import Streak from './Streak';
 import NoPermission from '../shared/NoPermissionDiv';
@@ -36,6 +35,18 @@ export default function Account() {
       marginRight: 'auto',
       padding: 4,
       backgroundColor: themes[theme].colors.background,
+    },
+    sectionHeader: {
+      paddingVertical: 16,
+      paddingHorizontal: 20,
+      borderBottomWidth: 2,
+      borderBottomColor: themes[theme].colors.primary,
+      marginBottom: 20,
+    },
+    sectionTitle: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: themes[theme].colors.text,
     },
     spinnerContainer: {
       padding: 20,
@@ -86,7 +97,9 @@ export default function Account() {
         isCurrentStreakLoading={isCurrentStreakLoading}
         isLongestStreakLoading={isLongestStreakLoading}
       />
-      <Banner title={t("Your Content")} />
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>{t("Your Content")}</Text>
+      </View>
       {isContentLoading ? (
         <View style={styles.spinnerContainer}>
           <Spinner size={40} />
