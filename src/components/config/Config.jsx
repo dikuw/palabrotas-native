@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useTranslation } from "react-i18next";
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useThemeStore } from '../../store/theme';
@@ -9,6 +9,13 @@ export default function Config() {
   const theme = useThemeStore(state => state.theme);
   const setTheme = useThemeStore(state => state.setTheme);
   
+  // Set default language if none is selected
+  useEffect(() => {
+    if (!i18n.language) {
+      i18n.changeLanguage('en');
+    }
+  }, [i18n]);
+
   const styles = {
     container: {
       flex: 1,
@@ -71,10 +78,10 @@ export default function Config() {
         {languages.map((language) => (
           <TouchableOpacity
             key={language.code}
-            style={styles.optionButton(i18n.language === language.code)}
+            style={styles.optionButton(i18n.language?.startsWith(language.code))}
             onPress={() => handleLanguageChange(language.code)}
           >
-            <Text style={styles.optionText(i18n.language === language.code)}>
+            <Text style={styles.optionText(i18n.language?.startsWith(language.code))}>
               {language.name}
             </Text>
           </TouchableOpacity>
