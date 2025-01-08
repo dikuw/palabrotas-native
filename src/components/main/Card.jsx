@@ -54,7 +54,7 @@ export default function Card({ item, showEditIcon }) {
         addNotification(t('Vote recorded successfully!'), 'success');
         await getContentsSortedByVoteDesc();
       } else {
-        addNotification(result.message, 'info');
+        addNotification(t(result.message), 'info');
       }
     } catch (error) {
       console.error('Error voting:', error);
