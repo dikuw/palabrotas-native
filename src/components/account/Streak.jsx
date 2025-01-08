@@ -1,46 +1,60 @@
 import React from 'react';
 import { View, Text } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
+import Spinner from '../shared/Spinner';
 
-export default function Streak({ currentStreak, longestStreak }) {
+export default function Streak({ currentStreak, longestStreak, isCurrentStreakLoading, isLongestStreakLoading }) {
+  const { t } = useTranslation();
   const theme = useThemeStore(state => state.theme);
 
   const styles = {
     container: {
       flexDirection: 'row',
       justifyContent: 'space-around',
-      padding: themes[theme].spacing.medium,
+      padding: 20,
       backgroundColor: themes[theme].colors.background,
-      borderRadius: themes[theme].borderRadius.medium,
-      marginBottom: themes[theme].spacing.medium,
-      borderWidth: 1,
-      borderColor: themes[theme].colors.border,
     },
     streakBox: {
       alignItems: 'center',
     },
     streakNumber: {
-      fontSize: themes[theme].typography.xlarge,
+      fontSize: 24,
       fontWeight: 'bold',
-      color: themes[theme].colors.primary,
+      color: themes[theme].colors.text,
+      height: 30,
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     streakLabel: {
-      fontSize: themes[theme].typography.regular,
+      fontSize: 16,
       color: themes[theme].colors.text,
-      marginTop: themes[theme].spacing.small,
+      marginTop: 5,
     },
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.streakBox}>
-        <Text style={styles.streakNumber}>{currentStreak}</Text>
-        <Text style={styles.streakLabel}>Current Streak</Text>
+        <View style={styles.streakNumber}>
+          {isCurrentStreakLoading ? (
+            <Spinner size={24} />
+          ) : (
+            <Text style={styles.streakNumber}>{currentStreak}</Text>
+          )}
+        </View>
+        <Text style={styles.streakLabel}>{t("Current Streak")}</Text>
       </View>
       <View style={styles.streakBox}>
-        <Text style={styles.streakNumber}>{longestStreak}</Text>
-        <Text style={styles.streakLabel}>Longest Streak</Text>
+        <View style={styles.streakNumber}>
+          {isLongestStreakLoading ? (
+            <Spinner size={24} />
+          ) : (
+            <Text style={styles.streakNumber}>{longestStreak}</Text>
+          )}
+        </View>
+        <Text style={styles.streakLabel}>{t("Longest Streak")}</Text>
       </View>
     </View>
   );

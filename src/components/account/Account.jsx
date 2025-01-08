@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text } from 'react-native';
+import { View } from 'react-native';
 import { useContentStore } from '../../store/content';
 import { useAuthStore } from '../../store/auth';
 import { useUserStore } from '../../store/user';
@@ -11,6 +11,7 @@ import Banner from '../header/Banner';
 import AccountGrid from './AccountGrid';
 import Streak from './Streak';
 import NoPermission from '../shared/NoPermissionDiv';
+import Spinner from '../shared/Spinner';
 
 export default function Account() {
   const { t } = useTranslation();
@@ -21,6 +22,9 @@ export default function Account() {
   const [userContents, setUserContents] = useState([]);
   const [currentStreak, setCurrentStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
+  const [isContentLoading, setIsContentLoading] = useState(true);
+  const [isCurrentStreakLoading, setIsCurrentStreakLoading] = useState(true);
+  const [isLongestStreakLoading, setIsLongestStreakLoading] = useState(true);
 
   const styles = {
     container: {
@@ -32,20 +36,38 @@ export default function Account() {
       marginRight: 'auto',
       padding: 4,
       backgroundColor: themes[theme].colors.background,
-    }
+    },
+    spinnerContainer: {
+      padding: 20,
+      alignItems: 'center',
+    },
   };
 
   useEffect(() => {
     async function fetchUserContents() {
       if (authStatus.isLoggedIn && authStatus.user) {
-        const contents = await getContentsByUserId(authStatus.user._id);
-        setUserContents(contents);
+        try {
+          setIsContentLoading(true);
+          setIsCurrentStreakLoading(true);
+          setIsLongestStreakLoading(true);
 
-        const currentStreakData = await getCurrentStreak(authStatus.user._id);
-        setCurrentStreak(currentStreakData.streak || 0);
-        
-        const longestStreakData = await getLongestStreak(authStatus.user._id);
-        setLongestStreak(longestStreakData.streak || 0);
+          const contents = await getContentsByUserId(authStatus.user._id);
+          setUserContents(contents);
+          setIsContentLoading(false);
+
+          const currentStreakData = await getCurrentStreak(authStatus.user._id);
+          setCurrentStreak(currentStreakData.streak || 0);
+          setIsCurrentStreakLoading(false);
+          
+          const longestStreakData = await getLongestStreak(authStatus.user._id);
+          setLongestStreak(longestStreakData.streak || 0);
+          setIsLongestStreakLoading(false);
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+          setIsContentLoading(false);
+          setIsCurrentStreakLoading(false);
+          setIsLongestStreakLoading(false);
+        }
       }
     }
   
@@ -58,9 +80,20 @@ export default function Account() {
 
   return (
     <View style={styles.container}>
-      <Streak currentStreak={currentStreak} longestStreak={longestStreak} />
+      <Streak 
+        currentStreak={currentStreak} 
+        longestStreak={longestStreak}
+        isCurrentStreakLoading={isCurrentStreakLoading}
+        isLongestStreakLoading={isLongestStreakLoading}
+      />
       <Banner title={t("Your Content")} />
-      <AccountGrid contents={userContents} />
+      {isContentLoading ? (
+        <View style={styles.spinnerContainer}>
+          <Spinner size={40} />
+        </View>
+      ) : (
+        <AccountGrid contents={userContents} />
+      )}
     </View>
   );
 }
