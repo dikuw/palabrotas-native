@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, Platform, ActivityIndicator, FlatList, View, Text, TouchableOpacity } from 'react-native';
+import { Platform, ActivityIndicator, FlatList, View, Text, TouchableOpacity, KeyboardAvoidingView, Keyboard } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import ReactCountryFlag from "react-native-country-flag";
 import { useThemeStore } from '../../store/theme';
@@ -134,6 +134,13 @@ export default function Content({ route }) {
       fontSize: themes[theme].typography.regular,
       marginTop: themes[theme].spacing.medium,
     },
+    commentFormContainer: {
+      marginBottom: Platform.OS === 'android' ? 120 : 80, // Extra padding for Android
+      paddingHorizontal: 16,
+    },
+    keyboardSpacer: {
+      height: Platform.OS === 'android' ? 200 : 100, // Extra space at the bottom
+    },
   };
 
   useEffect(() => {
@@ -161,17 +168,8 @@ export default function Content({ route }) {
     }
   };
 
-  if (!content) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color={themes[theme].colors.primary} />
-        <Text style={styles.loadingText}>{t('Loading...')}</Text>
-      </View>
-    );
-  }
-
-  return (
-    <View style={styles.wrapper}>
+  const renderContent = () => (
+    <>
       <View style={styles.header}>
         <Text style={styles.title}>{content.title}</Text>
         {content.country && (
@@ -238,15 +236,46 @@ export default function Content({ route }) {
                   </View>
                 )}
                 keyExtractor={item => item._id}
+                nestedScrollEnabled
               />
             </View>
             
             {authStatus.isLoggedIn && (
-              <CommentForm onSubmit={handleAddComment} />
+              <View style={styles.commentFormContainer}>
+                <CommentForm onSubmit={handleAddComment} />
+              </View>
             )}
           </>
         )}
       </View>
-    </View>
+      <View style={styles.keyboardSpacer} />
+    </>
+  );
+
+  if (!content) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={themes[theme].colors.primary} />
+        <Text style={styles.loadingText}>{t('Loading...')}</Text>
+      </View>
+    );
+  }
+
+  return (
+    <KeyboardAvoidingView 
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+      keyboardVerticalOffset={Platform.OS === "android" ? 100 : 64}
+    >
+      <FlatList
+        style={styles.wrapper}
+        contentContainerStyle={{ flexGrow: 1 }}
+        data={[{ key: 'content' }]}
+        renderItem={() => renderContent()}
+        keyboardShouldPersistTaps="handled"
+        ListFooterComponent={<View style={{ height: 200 }} />}
+        onScrollBeginDrag={Keyboard.dismiss}
+      />
+    </KeyboardAvoidingView>
   );
 }
