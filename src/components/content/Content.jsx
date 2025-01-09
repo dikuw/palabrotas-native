@@ -160,7 +160,21 @@ export default function Content({ route }) {
 
   const handleAddComment = async (commentText) => {
     try {
-      await addComment(contentId, authStatus.user._id, commentText);
+      const response = await addComment(contentId, authStatus.user._id, commentText);
+      
+      // Create a new comment object with the response data or generate temporary id
+      const newComment = {
+        _id: response?._id || `temp-${Date.now()}`, // Use server ID or generate temporary one
+        text: commentText,
+        owner: {
+          _id: authStatus.user._id,
+          name: authStatus.user.name
+        },
+        createdAt: new Date().toISOString()
+      };
+      
+      // Update local comments state
+      useCommentStore.getState().setComments([...comments, newComment]);
       addNotification(t('Comment added successfully'), 'success');
     } catch (error) {
       console.error('Error adding comment:', error);
