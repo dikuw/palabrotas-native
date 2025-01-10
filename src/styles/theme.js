@@ -7,7 +7,7 @@ export const lightTheme = {
     warning: '#FF9800',
     info: '#2196F3',
     white: '#FFFFFF',
-    primary: '#e69138',
+    primary: '#FF9671',
     primaryDark: '#c97a2f',
     secondary: '#e69138',
     almostWhite: '#f5f5f5',
