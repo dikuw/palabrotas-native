@@ -11,7 +11,7 @@ export default function TopBanner(props) {
   const styles = {
     container: {
       width: '100%',
-      backgroundColor: themes[theme].colors.primary,
+      backgroundColor: themes[theme].colors.secondary,
       padding: 7,
       paddingHorizontal: 10,
     },
