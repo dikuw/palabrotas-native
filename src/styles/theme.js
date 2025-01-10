@@ -9,7 +9,7 @@ export const lightTheme = {
     white: '#FFFFFF',
     primary: '#FF9671',
     primaryDark: '#c97a2f',
-    secondary: '#e69138',
+    secondary: '#03BEED',
     almostWhite: '#f5f5f5',
     border: '#e0e0e0',
     inputBackground: '#ffffff',
