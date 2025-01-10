@@ -111,8 +111,20 @@ function App() {
   }, [getContents, getContentsSortedByVoteDesc]);
 
   return (  
-    <NavigationContainer theme={navigationTheme}>
-      <SafeAreaView style={{ flex: 1 }}>
+    <NavigationContainer 
+      theme={{
+        ...navigationTheme,
+        colors: {
+          ...navigationTheme.colors,
+          background: 'transparent',
+          card: 'transparent',
+        }
+      }}
+    >
+      <SafeAreaView style={{ 
+        flex: 1,
+        backgroundColor: 'transparent'
+      }}>
         <StatusBar barStyle={theme === 'dark' ? "light-content" : "dark-content"} />
         <AppContainer currentTheme={theme}>
           <GridBackground theme={theme} />
@@ -132,7 +144,10 @@ function App() {
                 !authStatus.isLoggedIn ? (
                   <Intro1 {...props} />
                 ) : (
-                  <View style={{ flex: 1}}>
+                  <View style={{ 
+                    flex: 1, 
+                    backgroundColor: 'transparent'
+                  }}>
                     <SearchBar />
                     {isLoading ? (
                       <LoadingText currentTheme={theme}>{t('Finding latest content...')}</LoadingText>

@@ -14,21 +14,24 @@ export default function Grid() {
   const styles = StyleSheet.create({
     container: {
       flex: 1,
-      backgroundColor: themes[theme].colors.background,
+      backgroundColor: 'transparent',
     },
     flatListContent: {
       padding: 8,
       minHeight: '100%',
+      backgroundColor: 'transparent',
     },
     itemContainer: {
       width: '100%',
       marginVertical: 8,
+      backgroundColor: 'transparent',
     },
     loadingContainer: {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
       padding: themes[theme].spacing.large,
+      backgroundColor: 'transparent',
     },
     loadingText: {
       marginTop: themes[theme].spacing.small,
