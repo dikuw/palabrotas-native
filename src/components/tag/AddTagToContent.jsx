@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView, Platform, Image } from 'react-native';
+import { View, Text, TouchableOpacity, Modal, StyleSheet, ScrollView, Platform } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { useAuthStore } from '../../store/auth';
 import { useTagStore } from '../../store/tag';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
+import Spinner from '../shared/Spinner';
 
 export default function AddTagToContent({ contentId, visible, onClose, onSave }) {
   const { t } = useTranslation();
@@ -209,10 +210,7 @@ export default function AddTagToContent({ contentId, visible, onClose, onSave })
           <ScrollView style={styles.scrollContainer}>
             {isLoading ? (
               <View style={styles.spinnerContainer}>
-                <Image
-                  source={require('../../assets/images/spinner.gif')}
-                  style={styles.spinner}
-                />
+                <Spinner size={40} />
               </View>
             ) : (
               <View style={styles.tagGrid}>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image } from 'react-native';
+import { View, Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
@@ -8,6 +8,7 @@ import { useAuthStore } from '../../store/auth';
 import { useFlashcardStore } from '../../store/flashcard';
 import { NoPermissionView } from '../shared/index';
 import Flashcard from './Flashcard';
+import Spinner from '../shared/Spinner';
 
 export default function Flashcards() {
   const { t } = useTranslation();
@@ -64,10 +65,6 @@ export default function Flashcards() {
       alignItems: 'center',
       backgroundColor: themes[theme].colors.background,
     },
-    spinner: {
-      width: 50,
-      height: 50,
-    },
   };
 
   useEffect(() => {
@@ -112,10 +109,7 @@ export default function Flashcards() {
   if (initialFetch) {
     return (
       <View style={styles.spinnerContainer}>
-        <Image
-          source={require('../../assets/images/spinner.gif')}
-          style={styles.spinner}
-        />
+        <Spinner size={40} />
       </View>
     );
   }
