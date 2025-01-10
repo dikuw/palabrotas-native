@@ -127,15 +127,12 @@ function App() {
             logoutUser={logoutUser} 
           />
           <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen 
-              name="Home" 
-              options={{ title: t('Home') }}
-            >
+            <Stack.Screen name="Home">
               {props => (
                 !authStatus.isLoggedIn ? (
                   <Intro1 {...props} />
                 ) : (
-                  <View style={{ flex: 1 }}>
+                  <View style={{ flex: 1}}>
                     <SearchBar />
                     {isLoading ? (
                       <LoadingText currentTheme={theme}>{t('Finding latest content...')}</LoadingText>
