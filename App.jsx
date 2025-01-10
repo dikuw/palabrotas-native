@@ -126,7 +126,7 @@ function App() {
             isAdmin={authStatus.user ? authStatus.user.isAdmin : false}
             logoutUser={logoutUser} 
           />
-          <Stack.Navigator>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen 
               name="Home" 
               options={{ title: t('Home') }}
