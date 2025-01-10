@@ -4,6 +4,8 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ReactCountryFlag from "react-native-country-flag";
 import { useTranslation } from "react-i18next";
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 import { useAuthStore } from '../../store/auth';
 import { useContentStore } from '../../store/content'; 
@@ -14,6 +16,7 @@ import { useNotificationStore } from '../../store/notification';
 export default function Card({ item, showEditIcon }) {
   const navigation = useNavigation();
   const { t } = useTranslation();
+  const theme = useThemeStore(state => state.theme);
   const { addFlashcard } = useFlashcardStore(); 
   const { authStatus } = useAuthStore(); 
   const { addVote } = useVoteStore(); 
@@ -63,67 +66,88 @@ export default function Card({ item, showEditIcon }) {
   };
 
   return (
-    <TouchableOpacity style={styles.card} onPress={handlePress}>
-      {item.country && (
-        <View style={styles.flagContainer}>
-          <ReactCountryFlag
-            isoCode={item.country}
-            size={16}
-          />
+    <View style={styles.cardContainer}>
+      <View style={styles.backgroundCard} />
+      <TouchableOpacity style={styles.card} onPress={handlePress}>
+        {item.country && (
+          <View style={styles.flagContainer}>
+            <ReactCountryFlag
+              isoCode={item.country}
+              size={16}
+            />
+          </View>
+        )}
+        
+        {showEditIcon && (
+          <TouchableOpacity 
+            style={styles.editIcon} 
+            onPress={handleEdit}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Icon name="edit" size={20} color="#007AFF" />
+          </TouchableOpacity>
+        )}
+
+        <View style={styles.content}>
+          <Text style={styles.title}>{item.title}</Text>
+          <Text style={styles.description}>{item.description}</Text>
         </View>
-      )}
-      
-      {showEditIcon && (
-        <TouchableOpacity 
-          style={styles.editIcon} 
-          onPress={handleEdit}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <Icon name="edit" size={20} color="#007AFF" />
-        </TouchableOpacity>
-      )}
 
-      <View style={styles.content}>
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.description}>{item.description}</Text>
-      </View>
+        <Text style={styles.authorText}>
+          {t('created by')}: {item.author}
+        </Text>
 
-      <Text style={styles.authorText}>
-        {t('created by')}: {item.author}
-      </Text>
+        {authStatus.isLoggedIn && (
+          <TouchableOpacity 
+            style={styles.addIcon}
+            onPress={handleAddToFlashcard}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Icon name="plus" size={20} color="#007AFF" />
+          </TouchableOpacity>
+        )}
 
-      {authStatus.isLoggedIn && (
-        <TouchableOpacity 
-          style={styles.addIcon}
-          onPress={handleAddToFlashcard}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <Icon name="plus" size={20} color="#007AFF" />
-        </TouchableOpacity>
-      )}
-
-      <View style={styles.voteContainer}>
-        <TouchableOpacity 
-          onPress={() => handleVote('upvote')}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <Icon name="chevron-up" size={20} color="#007AFF" />
-        </TouchableOpacity>
-        <TouchableOpacity 
-          onPress={() => handleVote('downvote')}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          <Icon name="chevron-down" size={20} color="#007AFF" />
-        </TouchableOpacity>
-      </View>
-    </TouchableOpacity>
+        <View style={styles.voteContainer}>
+          <TouchableOpacity 
+            onPress={() => handleVote('upvote')}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Icon name="chevron-up" size={20} color="#007AFF" />
+          </TouchableOpacity>
+          <TouchableOpacity 
+            onPress={() => handleVote('downvote')}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          >
+            <Icon name="chevron-down" size={20} color="#007AFF" />
+          </TouchableOpacity>
+        </View>
+      </TouchableOpacity>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  cardContainer: {
+    width: '90%',
+    marginBottom: 20,
+    position: 'relative',
+    alignSelf: 'center',
+    marginHorizontal: 'auto',
+  },
+  backgroundCard: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    borderWidth: 1,
+    borderColor: '#000',
+    borderRadius: 8,
+    backgroundColor: '#F9BC60',
+    top: 7,
+    left: 7,
+    zIndex: 1,
+  },
   card: {
     width: '100%',
-    marginBottom: 20,
     padding: 20,
     paddingTop: 40,
     paddingBottom: 40,
@@ -141,6 +165,7 @@ const styles = StyleSheet.create({
     elevation: 5,
     position: 'relative',
     minHeight: 150,
+    zIndex: 2,
   },
   flagContainer: { 
     position: 'absolute',
@@ -187,6 +212,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
+    flexDirection: 'row',
+    gap: 18,
     alignItems: 'center',
   },
 });
