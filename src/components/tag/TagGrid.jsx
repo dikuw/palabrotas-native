@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
 import { useTagStore } from '../../store/tag';
+import Spinner from '../shared/Spinner';
 
 export default function TagGrid({ contentId, refreshTrigger }) {
   const { t } = useTranslation();
@@ -183,10 +184,7 @@ export default function TagGrid({ contentId, refreshTrigger }) {
   if (isLoading) {
     return (
       <View style={styles.spinnerContainer}>
-        <Image
-          source={require('../../assets/images/spinner.gif')}
-          style={styles.spinner}
-        />
+        <Spinner size={40} />
       </View>
     );
   }
