@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './src/i18n';
-import { SafeAreaView, StatusBar, View, Text } from 'react-native';
+import { SafeAreaView, StatusBar, View, Text, StyleSheet } from 'react-native';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useTranslation } from 'react-i18next';
@@ -34,9 +34,53 @@ import Intro1 from './src/components/intro/Intro1';
 
 const Stack = createNativeStackNavigator();
 
+const GridBackground = ({ theme }) => {
+  const lines = [];
+  const size = 50;
+  const width = 2000;
+  const height = 2000;
+
+  // Create vertical lines
+  for (let i = 0; i <= width; i += size) {
+    lines.push(
+      <View
+        key={`v${i}`}
+        style={[
+          styles.verticalLine,
+          {
+            left: i,
+            backgroundColor: themes[theme].colors.primary,
+            opacity: 0.2,
+          },
+        ]}
+      />
+    );
+  }
+
+  // Create horizontal lines
+  for (let i = 0; i <= height; i += size) {
+    lines.push(
+      <View
+        key={`h${i}`}
+        style={[
+          styles.horizontalLine,
+          {
+            top: i,
+            backgroundColor: themes[theme].colors.primary,
+            opacity: 0.2,
+          },
+        ]}
+      />
+    );
+  }
+
+  return <View style={styles.gridPattern}>{lines}</View>;
+};
+
 const AppContainer = styled(View)`
   flex: 1;
   height: 100%;
+  width: 100%;
   background-color: ${props => themes[props.currentTheme].colors.background};
 `;
 
@@ -71,6 +115,7 @@ function App() {
       <SafeAreaView style={{ flex: 1 }}>
         <StatusBar barStyle={theme === 'dark' ? "light-content" : "dark-content"} />
         <AppContainer currentTheme={theme}>
+          <GridBackground theme={theme} />
           <TopBanner 
             isLoggedIn={authStatus.isLoggedIn} 
             name={authStatus.user ? authStatus.user.name : "guest"} 
@@ -184,5 +229,29 @@ function App() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  gridPattern: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    width: '100%',
+    height: '100%',
+  },
+  verticalLine: {
+    position: 'absolute',
+    width: 1,
+    top: 0,
+    bottom: 0,
+  },
+  horizontalLine: {
+    position: 'absolute',
+    height: 1,
+    left: 0,
+    right: 0,
+  },
+});
 
 export default App;
