@@ -7,18 +7,8 @@ import Logo from './Logo';
 
 const HeaderContainer = styled.View`
   margin-bottom: ${props => themes[props.currentTheme].spacing.medium}px;
-  background-color: ${props => themes[props.currentTheme].colors.background};
-  ${Platform.select({
-    ios: `
-      shadow-color: #000;
-      shadow-offset: 0px 2px;
-      shadow-opacity: 0.1;
-      shadow-radius: 2px;
-    `,
-    android: `
-      elevation: 3;
-    `
-  })}
+  background-color: transparent;
+  border-bottom-width: 0;
 `;
 
 const HeaderContent = styled.View`
