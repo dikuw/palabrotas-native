@@ -5,12 +5,14 @@ import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Nav = styled.View`
   width: 100%;
   padding: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
   background-color: transparent;
   border-width: 0;
+  align-items: flex-start;
 `;
 
 const MenuButton = styled(TouchableOpacity)`
@@ -19,8 +21,8 @@ const MenuButton = styled(TouchableOpacity)`
 
 const MenuContainer = styled.View`
   position: absolute;
-  top: 100%;
-  right: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
+  top: 120%;
+  left: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
   background-color: ${props => themes[props.currentTheme || 'light'].colors.background};
   border-radius: ${props => themes[props.currentTheme || 'light'].borderRadius.medium}px;
   padding: ${props => themes[props.currentTheme || 'light'].spacing.small}px 0;
@@ -40,12 +42,33 @@ const NavigationContainer = styled.View`
 
 const MenuItem = styled(TouchableOpacity)`
   padding: ${props => themes[props.currentTheme || 'light'].spacing.medium}px;
+  padding-left: ${props => themes[props.currentTheme || 'light'].spacing.large}px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
 `;
 
 const MenuText = styled.Text`
   font-size: ${props => props.isMenuIcon ? '24px' : '16px'};
   font-weight: bold;
   color: ${props => props.currentTheme === 'dark' ? '#ffffff' : '#000000'};
+  margin-left: 10px;
+`;
+
+const LogoutButton = styled(TouchableOpacity)`
+  margin: ${props => themes[props.currentTheme || 'light'].spacing.small}px;
+  padding: ${props => themes[props.currentTheme || 'light'].spacing.small}px ${props => themes[props.currentTheme || 'light'].spacing.small}px;
+  background-color: ${props => themes[props.currentTheme || 'light'].colors.secondary};
+  border-radius: 20px;
+  align-items: center;
+  align-self: center;
+  min-width: 120px;
+`;
+
+const LogoutText = styled.Text`
+  font-size: 14px;
+  font-weight: bold;
+  color: ${props => themes[props.currentTheme || 'light'].colors.white};
 `;
 
 export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
@@ -75,43 +98,54 @@ export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
         {isOpen && (
           <MenuContainer currentTheme={theme}>
             <MenuItem currentTheme={theme} onPress={() => handleNavigation('Home')}>
+              <Icon name="home" size={16} color={theme === 'dark' ? '#ffffff' : '#000000'} />
               <MenuText currentTheme={theme} isMenuIcon={false}>{t('Home')}</MenuText>
             </MenuItem>
 
             {isLoggedIn ? (
               <>
                 <MenuItem currentTheme={theme} onPress={() => handleNavigation('Account')}>
+                  <Icon name="user" size={16} color={theme === 'dark' ? '#ffffff' : '#000000'} />
                   <MenuText currentTheme={theme} isMenuIcon={false}>{t('Account')}</MenuText>
                 </MenuItem>
                 <MenuItem currentTheme={theme} onPress={() => handleNavigation('Flashcards')}>
+                  <Icon name="clone" size={16} color={theme === 'dark' ? '#ffffff' : '#000000'} />
                   <MenuText currentTheme={theme} isMenuIcon={false}>{t('Flashcards')}</MenuText>
                 </MenuItem>
                 <MenuItem currentTheme={theme} onPress={() => handleNavigation('AddContent')}>
+                  <Icon name="plus-circle" size={16} color={theme === 'dark' ? '#ffffff' : '#000000'} />
                   <MenuText currentTheme={theme} isMenuIcon={false}>{t('Add Content')}</MenuText>
                 </MenuItem>
                 {isAdmin && (
                   <MenuItem currentTheme={theme} onPress={() => handleNavigation('Admin')}>
+                    <Icon name="shield" size={16} color={theme === 'dark' ? '#ffffff' : '#000000'} />
                     <MenuText currentTheme={theme} isMenuIcon={false}>{t('Admin')}</MenuText>
                   </MenuItem>
                 )}
-                <MenuItem currentTheme={theme} onPress={handleLogout}>
-                  <MenuText currentTheme={theme} isMenuIcon={false}>{t('Logout')}</MenuText>
-                </MenuItem>
               </>
             ) : (
               <>
                 <MenuItem currentTheme={theme} onPress={() => handleNavigation('Login')}>
+                  <Icon name="sign-in" size={16} color={theme === 'dark' ? '#ffffff' : '#000000'} />
                   <MenuText currentTheme={theme} isMenuIcon={false}>{t('Login')}</MenuText>
                 </MenuItem>
                 <MenuItem currentTheme={theme} onPress={() => handleNavigation('Register')}>
+                  <Icon name="user-plus" size={16} color={theme === 'dark' ? '#ffffff' : '#000000'} />
                   <MenuText currentTheme={theme} isMenuIcon={false}>{t('Register')}</MenuText>
                 </MenuItem>
               </>
             )}
 
             <MenuItem currentTheme={theme} onPress={() => handleNavigation('Config')}>
+              <Icon name="cog" size={16} color={theme === 'dark' ? '#ffffff' : '#000000'} />
               <MenuText currentTheme={theme} isMenuIcon={false}>{t('Settings')}</MenuText>
             </MenuItem>
+
+            {isLoggedIn && (
+              <LogoutButton currentTheme={theme} onPress={handleLogout}>
+                <LogoutText currentTheme={theme}> {t('Logout')}</LogoutText>
+              </LogoutButton>
+            )}
           </MenuContainer>
         )}
       </Nav>
