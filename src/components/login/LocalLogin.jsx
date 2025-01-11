@@ -52,7 +52,7 @@ export default function LocalLogin() {
     },
     input: (hasError) => ({
       backgroundColor: hasError ? `${themes[theme].colors.error}20` : themes[theme].colors.white,
-      color: hasError ? themes[theme].colors.error : themes[theme].colors.text,
+      color: hasError ? themes[theme].colors.error : '#000000',
       padding: themes[theme].spacing.medium,
       marginBottom: themes[theme].spacing.small,
       borderRadius: themes[theme].borderRadius.medium,
