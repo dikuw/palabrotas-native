@@ -177,7 +177,9 @@ const resources = {
       "Theme": "Theme",
       "Light": "Light",
       "Dark": "Dark",
-      "No tags yet!" : "No tags yet!"
+      "No tags yet!" : "No tags yet!",
+      "Create Account" : "Create Account",
+      "Back to Login" : "Back to Login",
     }
   },
   es: {
@@ -355,7 +357,9 @@ const resources = {
       "Theme": "Tema",
       "Light": "Claro",
       "Dark": "Oscuro",
-      "No tags yet!" : "No hay etiquetas aún!"
+      "No tags yet!" : "No hay etiquetas aún!",
+      "Create Account" : "Crear Cuenta",
+      "Back to Login" : "Volver a Iniciar Sesión",
     }
   }
 };
