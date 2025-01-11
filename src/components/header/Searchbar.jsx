@@ -30,43 +30,79 @@ export default function SearchBar() {
     },
     inputWrapper: {
       width: '100%',
-      gap: themes[theme].spacing.medium,
+      gap: 15,
+    },
+    searchBarContainer: {
+      position: 'relative',
+      width: '100%',
+      height: 46,
+    },
+    searchBarBackground: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: -7,
+      bottom: -7,
+      borderWidth: 2,
+      borderStyle: 'dashed',
+      borderColor: '#000',
+      borderRadius: 20,
+      backgroundColor: 'transparent',
+      zIndex: 1,
     },
     searchBarInner: {
+      position: 'relative',
       flexDirection: 'row',
       alignItems: 'center',
       borderWidth: 1,
-      borderColor: themes[theme].colors.border,
+      borderColor: '#000',
       borderRadius: 20,
-      padding: '5px 10px',
-      backgroundColor: themes[theme].colors.white,
-      ...Platform.select({
-        ios: {
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.1,
-          shadowRadius: 2,
-        },
-        android: {
-          elevation: 2,
-        },
-      }),
+      height: 46,
+      padding: '5px 15px',
+      backgroundColor: 'white',
+      zIndex: 2,
     },
     input: {
       flex: 1,
       padding: 5,
-      fontSize: themes[theme].typography.regular,
+      fontSize: 14,
       color: '#000000',
     },
     iconWrapper: {
       padding: 5,
     },
-    dropdownStyle: {
+    dropdownContainer: {
+      position: 'relative',
+      width: '100%',
+      height: 46,
+      marginBottom: 0,
+    },
+    dropdownBackground: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: -7,
+      bottom: -10,
+      borderWidth: 2,
+      borderStyle: 'dashed',
+      borderColor: '#000',
       borderRadius: 20,
-      borderColor: themes[theme].colors.border,
+      backgroundColor: 'transparent',
+      zIndex: 1,
+    },
+    dropdownStyle: {
+      position: 'relative',
+      borderWidth: 1,
+      borderColor: '#000',
+      borderRadius: 20,
+      height: 46,
+      backgroundColor: 'white',
+      zIndex: 2,
+      padding: '5px 15px',
     },
     dropdownContainerStyle: {
-      marginTop: 10,
+      marginTop: 0,
+      marginBottom: 0,
     },
     dropdownTextStyle: {
       fontSize: 14,
@@ -137,6 +173,35 @@ export default function SearchBar() {
     removable: true,
     showArrowIcon: true,
     closeOnBackPressed: true,
+    customItemContainerStyle: {
+      backgroundColor: 'white',
+    },
+    ArrowUpIconComponent: ({ style }) => (
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{
+          height: '90%',
+          width: 1.5,
+          borderLeftWidth: 1.5,
+          borderLeftColor: '#000',
+          borderStyle: 'dashed',
+          marginRight: 10,
+        }} />
+        <Icon name="chevron-up" size={14} color="#000" />
+      </View>
+    ),
+    ArrowDownIconComponent: ({ style }) => (
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <View style={{
+          height: '90%',
+          width: 1.5,
+          borderLeftWidth: 1.5,
+          borderLeftColor: '#000',
+          borderStyle: 'dashed',
+          marginRight: 10,
+        }} />
+        <Icon name="chevron-down" size={14} color="#000" />
+      </View>
+    ),
     badgeProps: {
       closeIconStyle: {
         color: themes[theme].colors.white,
@@ -158,65 +223,74 @@ export default function SearchBar() {
   return (
     <View style={styles.container}>
       <View style={styles.inputWrapper}>
-        <View style={styles.searchBarInner}>
-          <TextInput
-            style={styles.input}
-            placeholder={t("Search...")}
-            value={searchTerm}
-            onChangeText={handleTextChange}
-            returnKeyType="search"
-            clearButtonMode="while-editing"
-            placeholderTextColor={themes[theme].colors.textSecondary}
-            underlineColorAndroid="transparent"
-          />
-          {searchTerm ? (
-            <TouchableOpacity 
-              style={styles.iconWrapper} 
-              onPress={() => {
-                setSearchTerm('');
-                clearSearch();
-              }}
-            >
-              <Icon name="times" size={20} color={themes[theme].colors.textSecondary} />
-            </TouchableOpacity>
-          ) : null}
+        <View style={styles.searchBarContainer}>
+          <View style={styles.searchBarBackground} />
+          <View style={styles.searchBarInner}>
+            <TextInput
+              style={styles.input}
+              placeholder={t("Search...")}
+              value={searchTerm}
+              onChangeText={handleTextChange}
+              returnKeyType="search"
+              clearButtonMode="while-editing"
+              placeholderTextColor={themes[theme].colors.textSecondary}
+              underlineColorAndroid="transparent"
+            />
+            {searchTerm ? (
+              <TouchableOpacity 
+                style={styles.iconWrapper} 
+                onPress={() => {
+                  setSearchTerm('');
+                  clearSearch();
+                }}
+              >
+                <Icon name="times" size={20} color={themes[theme].colors.textSecondary} />
+              </TouchableOpacity>
+            ) : null}
+          </View>
         </View>
 
-        <DropDownPicker
-          open={countryOpen}
-          setOpen={setCountryOpen}
-          value={selectedCountries}
-          setValue={setSelectedCountries}
-          items={countryOptions}
-          multiple={true}
-          min={0}
-          placeholder={t("Select countries...")}
-          onChangeValue={handleCountryChange}
-          style={styles.dropdownStyle}
-          containerStyle={styles.dropdownContainerStyle}
-          textStyle={styles.dropdownTextStyle}
-          zIndex={3000}
-          theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
-          {...dropdownProps}
-        />
+        <View style={styles.dropdownContainer}>
+          <View style={styles.dropdownBackground} />
+          <DropDownPicker
+            open={countryOpen}
+            setOpen={setCountryOpen}
+            value={selectedCountries}
+            setValue={setSelectedCountries}
+            items={countryOptions}
+            multiple={true}
+            min={0}
+            placeholder={t("Select countries...")}
+            onChangeValue={handleCountryChange}
+            style={styles.dropdownStyle}
+            containerStyle={styles.dropdownContainerStyle}
+            textStyle={styles.dropdownTextStyle}
+            zIndex={3000}
+            theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
+            {...dropdownProps}
+          />
+        </View>
 
-        <DropDownPicker
-          open={tagOpen}
-          setOpen={setTagOpen}
-          value={selectedTags}
-          setValue={setSelectedTags}
-          items={tagOptions}
-          multiple={true}
-          min={0}
-          placeholder={t("Select tags...")}
-          onChangeValue={handleTagChange}
-          style={styles.dropdownStyle}
-          containerStyle={styles.dropdownContainerStyle}
-          textStyle={styles.dropdownTextStyle}
-          zIndex={2000}
-          theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
-          {...dropdownProps}
-        />
+        <View style={styles.dropdownContainer}>
+          <View style={styles.dropdownBackground} />
+          <DropDownPicker
+            open={tagOpen}
+            setOpen={setTagOpen}
+            value={selectedTags}
+            setValue={setSelectedTags}
+            items={tagOptions}
+            multiple={true}
+            min={0}
+            placeholder={t("Select tags...")}
+            onChangeValue={handleTagChange}
+            style={styles.dropdownStyle}
+            containerStyle={styles.dropdownContainerStyle}
+            textStyle={styles.dropdownTextStyle}
+            zIndex={2000}
+            theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
+            {...dropdownProps}
+          />
+        </View>
       </View>
     </View>
   );
