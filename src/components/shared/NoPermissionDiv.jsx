@@ -1,23 +1,28 @@
 import React from 'react';
-import styled from 'styled-components/native';
-
-const NoPermissionContainer = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
-`;
-
-const NoPermissionText = styled.Text`
-  font-size: 16px;
-  color: ${props => props.theme.colors.text};
-  text-align: center;
-`;
+import { View, Text } from 'react-native';
+import { useThemeStore } from '../../store/theme';
+import { themes } from '../../styles/theme';
 
 export default function NoPermission({ message }) {
+  const theme = useThemeStore(state => state.theme);
+
+  const styles = {
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      padding: themes[theme].spacing.large,
+    },
+    text: {
+      fontSize: themes[theme].typography.regular,
+      color: themes[theme].colors.text,
+      textAlign: 'center',
+    },
+  };
+
   return (
-    <NoPermissionContainer>
-      <NoPermissionText>{message}</NoPermissionText>
-    </NoPermissionContainer>
+    <View style={styles.container}>
+      <Text style={styles.text}>{message}</Text>
+    </View>
   );
 }
