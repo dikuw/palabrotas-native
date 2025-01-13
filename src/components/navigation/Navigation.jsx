@@ -62,13 +62,16 @@ const LogoutButton = styled(TouchableOpacity)`
   border-radius: 20px;
   align-items: center;
   align-self: center;
-  min-width: 120px;
+  min-width: 100px;
+  flex-direction: row;
+  justify-content: center;
 `;
 
 const LogoutText = styled.Text`
   font-size: 14px;
   font-weight: bold;
-  color: ${props => themes[props.currentTheme || 'light'].colors.white};
+  color: #ffffff;
+  margin-left: 5px;
 `;
 
 export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
@@ -143,7 +146,7 @@ export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
 
             {isLoggedIn && (
               <LogoutButton currentTheme={theme} onPress={handleLogout}>
-                <LogoutText currentTheme={theme}> {t('Logout')}</LogoutText>
+                <LogoutText>{t('Logout')}</LogoutText>
               </LogoutButton>
             )}
           </MenuContainer>
