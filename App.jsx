@@ -216,7 +216,13 @@ function App() {
             <Stack.Screen 
               name="Config" 
               options={{ title: t('Settings') }}
-              component={Config}
+              children={props => (
+                <Config
+                  {...props}
+                  isLoggedIn={authStatus.isLoggedIn}
+                  logoutUser={logoutUser}
+                />
+              )}
             />
             <Stack.Screen 
               name="AddFeedback" 

@@ -55,26 +55,7 @@ const MenuText = styled.Text`
   margin-left: 10px;
 `;
 
-const LogoutButton = styled(TouchableOpacity)`
-  margin: ${props => themes[props.currentTheme || 'light'].spacing.small}px;
-  padding: ${props => themes[props.currentTheme || 'light'].spacing.small}px ${props => themes[props.currentTheme || 'light'].spacing.small}px;
-  background-color: ${props => themes[props.currentTheme || 'light'].colors.secondary};
-  border-radius: 20px;
-  align-items: center;
-  align-self: center;
-  min-width: 100px;
-  flex-direction: row;
-  justify-content: center;
-`;
-
-const LogoutText = styled.Text`
-  font-size: 14px;
-  font-weight: bold;
-  color: #ffffff;
-  margin-left: 5px;
-`;
-
-export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
+export default function Navigation({ isLoggedIn, isAdmin }) {
   const [isOpen, setIsOpen] = useState(false);
   const navigation = useNavigation();
   const { t } = useTranslation();
@@ -83,12 +64,6 @@ export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
   const handleNavigation = (route) => {
     setIsOpen(false);
     navigation.navigate(route);
-  };
-
-  const handleLogout = async () => {
-    setIsOpen(false);
-    await logoutUser();
-    navigation.navigate('Home');
   };
 
   return (
@@ -143,12 +118,6 @@ export default function Navigation({ isLoggedIn, isAdmin, logoutUser }) {
               <Icon name="cog" size={16} color={theme === 'dark' ? '#ffffff' : '#000000'} />
               <MenuText currentTheme={theme} isMenuIcon={false}>{t('Settings')}</MenuText>
             </MenuItem>
-
-            {isLoggedIn && (
-              <LogoutButton currentTheme={theme} onPress={handleLogout}>
-                <LogoutText>{t('Logout')}</LogoutText>
-              </LogoutButton>
-            )}
           </MenuContainer>
         )}
       </Nav>

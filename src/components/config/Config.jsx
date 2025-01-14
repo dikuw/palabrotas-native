@@ -3,11 +3,13 @@ import { useTranslation } from "react-i18next";
 import { View, Text, TouchableOpacity } from 'react-native';
 import { useThemeStore } from '../../store/theme';
 import { themes } from '../../styles/theme';
+import { useNavigation } from '@react-navigation/native';
 
-export default function Config() {
+export default function Config({ isLoggedIn, logoutUser }) {
   const { t, i18n } = useTranslation();
   const theme = useThemeStore(state => state.theme);
   const setTheme = useThemeStore(state => state.setTheme);
+  const navigation = useNavigation();
   
   // Set default language if none is selected
   useEffect(() => {
@@ -49,6 +51,24 @@ export default function Config() {
       fontSize: themes[theme].typography.medium,
       color: isSelected ? themes[theme].colors.white : themes[theme].colors.text,
     }),
+    logoutButton: {
+      margin: themes[theme].spacing.small,
+      padding: themes[theme].spacing.small,
+      backgroundColor: themes[theme].colors.secondary,
+      borderRadius: 20,
+      alignItems: 'center',
+      alignSelf: 'center',
+      minWidth: 200,
+      flexDirection: 'row',
+      justifyContent: 'center',
+      marginTop: themes[theme].spacing.large,
+    },
+    logoutText: {
+      fontSize: 16,
+      fontWeight: 'bold',
+      color: '#ffffff',
+      marginLeft: 5,
+    },
   };
 
   const languages = [
@@ -67,6 +87,19 @@ export default function Config() {
 
   const handleThemeChange = (themeId) => {
     setTheme(themeId);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      // Only navigate after successful logout
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Home' }],
+      });
+    } catch (error) {
+      console.error('Logout error:', error);
+    }
   };
 
   return (
@@ -102,6 +135,12 @@ export default function Config() {
           </TouchableOpacity>
         ))}
       </View>
+
+      {isLoggedIn && (
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutText}>{t('Logout')}</Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 }
