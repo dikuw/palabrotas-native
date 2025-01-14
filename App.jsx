@@ -31,6 +31,7 @@ import AddFeedback from './src/components/feedback/AddFeedback';
 import AddTag from './src/components/tag/AddTag';
 import Config from './src/components/config/Config';
 import Intro1 from './src/components/intro/Intro1';
+import LoggingOut from './src/components/login/LoggingOut';
 
 const Stack = createNativeStackNavigator();
 
@@ -238,6 +239,11 @@ function App() {
                   isLoggedIn={authStatus.isLoggedIn}
                 />
               )}
+            />
+            <Stack.Screen 
+              name="LoggingOut" 
+              component={LoggingOut}
+              options={{ headerShown: false }}
             />
           </Stack.Navigator>
 

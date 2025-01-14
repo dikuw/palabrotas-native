@@ -91,8 +91,19 @@ export default function Config({ isLoggedIn, logoutUser }) {
 
   const handleLogout = async () => {
     try {
+      // Navigate to logging out screen
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'LoggingOut' }],
+      });
+      
+      // Small delay for visual feedback
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Perform logout
       await logoutUser();
-      // Only navigate after successful logout
+      
+      // Navigate to Home (which will show Intro1 since we're logged out)
       navigation.reset({
         index: 0,
         routes: [{ name: 'Home' }],
