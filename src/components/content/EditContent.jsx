@@ -35,56 +35,105 @@ export default function EditContent({ route }) {
   const [isLoading, setIsLoading] = useState(true);
 
   const styles = {
-    container: {
+    outerContainer: {
       flex: 1,
-      width: '90%',
-      maxWidth: 800,
-      marginLeft: 'auto',
-      marginRight: 'auto',
+      backgroundColor: 'transparent',
       padding: themes[theme].spacing.large,
-      backgroundColor: themes[theme].colors.background,
+      paddingTop: 0,
+      position: 'relative',
     },
     formContainer: {
-      marginBottom: themes[theme].spacing.large,
+      width: '99%',
+      maxWidth: 800,
+      marginHorizontal: 'auto',
+      marginTop: themes[theme].spacing.small,
+      marginBottom: themes[theme].spacing.medium,
+      backgroundColor: themes[theme].colors.white,
+      borderRadius: 9,
+      borderWidth: 1,
+      borderColor: '#000',
+      padding: themes[theme].spacing.large,
+      alignSelf: 'center',
+      zIndex: 3000,
+      position: 'relative',
     },
     input: (hasError) => ({
-      backgroundColor: themes[theme].colors.white,
+      backgroundColor: '#FFF',
       color: '#000000',
       padding: themes[theme].spacing.medium,
       marginBottom: themes[theme].spacing.small,
-      borderRadius: themes[theme].borderRadius.medium,
+      borderRadius: 20,
       fontSize: themes[theme].typography.regular,
-      borderWidth: 1,
-      borderColor: hasError ? themes[theme].colors.error : themes[theme].colors.border,
+      borderWidth: 2,
+      borderColor: hasError ? themes[theme].colors.error : themes[theme].colors.secondary,
+      height: 55,
+      textAlignVertical: 'center',
     }),
-    errorText: {
-      color: themes[theme].colors.error,
-      fontSize: themes[theme].typography.small,
-      marginBottom: themes[theme].spacing.small,
+    buttonsContainer: {
+      marginTop: themes[theme].spacing.large,
     },
-    button: (variant) => ({
-      backgroundColor: variant === 'delete' ? themes[theme].colors.error : themes[theme].colors.primary,
-      padding: themes[theme].spacing.medium,
-      borderRadius: themes[theme].borderRadius.medium,
-      alignItems: 'center',
-      marginTop: themes[theme].spacing.medium,
-      opacity: isSubmitting ? 0.5 : 1,
-    }),
-    buttonText: {
-      color: themes[theme].colors.white,
-      fontSize: themes[theme].typography.medium,
-      fontWeight: 'bold',
+    topButtons: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      gap: themes[theme].spacing.medium,
+      marginBottom: themes[theme].spacing.medium,
     },
-    loadingContainer: {
+    actionButton: (isSubmit) => ({
       flex: 1,
-      justifyContent: 'center',
+      padding: themes[theme].spacing.small,
+      paddingHorizontal: themes[theme].spacing.medium,
+      borderRadius: 24,
+      borderWidth: isSubmit ? 0 : 1,
+      borderStyle: 'dashed',
+      borderColor: '#000',
       alignItems: 'center',
-      backgroundColor: themes[theme].colors.background,
-    },
+      backgroundColor: isSubmit ? themes[theme].colors.primary : themes[theme].colors.white,
+    }),
+    buttonText: (isSubmit) => ({
+      color: isSubmit ? themes[theme].colors.white : themes[theme].colors.text,
+      fontSize: themes[theme].typography.regular,
+      fontWeight: 'bold',
+    }),
+    backgroundCard: (index) => ({
+      position: 'absolute',
+      bottom: 18 + (index * 10),
+      width: '99%',
+      maxWidth: 800,
+      height: 60,
+      borderRadius: 9,
+      borderWidth: 1,
+      borderColor: '#000',
+      backgroundColor: themes[theme].colors.primary,
+      zIndex: 1,
+      alignSelf: 'center',
+    }),
     dropDown: {
-      backgroundColor: themes[theme].colors.white,
-      borderColor: themes[theme].colors.border,
+      backgroundColor: '#FFF',
+      borderColor: themes[theme].colors.secondary,
+      borderWidth: 2,
+      borderRadius: 20,
       marginBottom: themes[theme].spacing.small,
+    },
+    dropDownContainer: {
+      backgroundColor: '#FFF',
+      borderColor: themes[theme].colors.secondary,
+      borderWidth: 2,
+      borderRadius: 20,
+    },
+    deleteButton: {
+      padding: themes[theme].spacing.small,
+      paddingHorizontal: themes[theme].spacing.medium,
+      borderRadius: 24,
+      borderWidth: 1,
+      borderStyle: 'dashed',
+      borderColor: themes[theme].colors.error,
+      alignItems: 'center',
+      backgroundColor: 'transparent',
+    },
+    deleteButtonText: {
+      color: themes[theme].colors.error,
+      fontSize: themes[theme].typography.regular,
+      fontWeight: 'bold',
     },
   };
 
@@ -171,12 +220,18 @@ export default function EditContent({ route }) {
   return (
     <KeyboardAvoidingView 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={{ flex: 1, backgroundColor: themes[theme].colors.background }}
+      style={{ flex: 1, backgroundColor: 'transparent' }}
     >
-      <FlatList
-        data={[{ key: 'form' }]}
-        renderItem={() => (
-          <View style={styles.container}>
+      <View style={styles.outerContainer}>
+        {/* Background cards */}
+        {[0, 1, 2].map((index) => (
+          <View key={index} style={styles.backgroundCard(index)} />
+        ))}
+        
+        <FlatList
+          style={{ zIndex: 3000 }}
+          data={[{ key: 'form' }]}
+          renderItem={() => (
             <View style={styles.formContainer}>
               <TextInput
                 style={styles.input(!!errors.title)}
@@ -194,8 +249,7 @@ export default function EditContent({ route }) {
                 value={formData.description}
                 onChangeText={(text) => handleChange('description', text)}
                 maxLength={MAX_DESCRIPTION_LENGTH}
-                multiline
-                numberOfLines={3}
+                multiline={false}
                 placeholderTextColor="#666666"
               />
               {errors.description && <Text style={styles.errorText}>{errors.description}</Text>}
@@ -211,7 +265,7 @@ export default function EditContent({ route }) {
                 }}
                 placeholder={t("Select a country")}
                 style={styles.dropDown}
-                dropDownContainerStyle={styles.dropDown}
+                dropDownContainerStyle={styles.dropDownContainer}
                 theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
                 zIndex={3000}
                 listMode="SCROLLVIEW"
@@ -232,6 +286,7 @@ export default function EditContent({ route }) {
                 placeholder={t("Hint (optional)")}
                 value={formData.hint}
                 onChangeText={(text) => handleChange('hint', text)}
+                multiline={false}
                 placeholderTextColor="#666666"
               />
 
@@ -240,38 +295,53 @@ export default function EditContent({ route }) {
                 placeholder={t("Example sentence (optional)")}
                 value={formData.exampleSentence}
                 onChangeText={(text) => handleChange('exampleSentence', text)}
-                multiline
-                numberOfLines={2}
+                multiline={false}
                 placeholderTextColor="#666666"
               />
 
-              <TouchableOpacity 
-                style={styles.button()}
-                onPress={handleSubmit}
-                disabled={!isDirty || isSubmitting}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.buttonText}>
-                  {isSubmitting ? t("Updating...") : t("Update Content")}
-                </Text>
-              </TouchableOpacity>
+              <View style={styles.buttonsContainer}>
+                <View style={styles.topButtons}>
+                  <TouchableOpacity 
+                    style={styles.actionButton(true)}
+                    onPress={handleSubmit}
+                    disabled={isSubmitting}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.buttonText(true)}>
+                      {isSubmitting ? t("Updating...") : t("Update")}
+                    </Text>
+                  </TouchableOpacity>
 
-              <TouchableOpacity 
-                style={styles.button('delete')}
-                onPress={handleDelete}
-                disabled={isSubmitting}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.buttonText}>{t("Delete Content")}</Text>
-              </TouchableOpacity>
+                  <TouchableOpacity 
+                    style={styles.actionButton(false)}
+                    onPress={() => navigation.navigate('Home')}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.buttonText(false)}>
+                      {t("Cancel")}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
+
+                <TouchableOpacity 
+                  style={styles.deleteButton}
+                  onPress={handleDelete}
+                  disabled={isSubmitting}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.deleteButtonText}>
+                    {t("Delete")}
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
               {errors.general && <Text style={styles.errorText}>{errors.general}</Text>}
             </View>
-          </View>
-        )}
-        keyboardShouldPersistTaps="handled"
-        removeClippedSubviews={false}
-      />
+          )}
+          keyboardShouldPersistTaps="handled"
+          removeClippedSubviews={false}
+        />
+      </View>
     </KeyboardAvoidingView>
   );
 }
