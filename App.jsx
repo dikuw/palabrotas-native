@@ -142,21 +142,17 @@ function App() {
           <Stack.Navigator screenOptions={{ headerShown: false }}>
             <Stack.Screen name="Home">
               {props => (
-                !authStatus.isLoggedIn ? (
-                  <Intro1 {...props} />
-                ) : (
-                  <View style={{ 
-                    flex: 1, 
-                    backgroundColor: 'transparent'
-                  }}>
-                    <SearchBar />
-                    {isLoading ? (
-                      <LoadingText currentTheme={theme}>{t('Finding latest content...')}</LoadingText>
-                    ) : (
-                      <Grid />
-                    )}
-                  </View>
-                )
+                <View style={{ 
+                  flex: 1, 
+                  backgroundColor: 'transparent'
+                }}>
+                  <SearchBar />
+                  {isLoading ? (
+                    <LoadingText currentTheme={theme}>{t('Finding latest content...')}</LoadingText>
+                  ) : (
+                    <Grid />
+                  )}
+                </View>
               )}
             </Stack.Screen>
 
