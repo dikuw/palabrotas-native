@@ -43,7 +43,7 @@ export default function EditContent({ route }) {
       position: 'relative',
     },
     formContainer: {
-      width: '99%',
+      width: '95%',
       maxWidth: 800,
       marginHorizontal: 'auto',
       marginTop: themes[theme].spacing.small,
@@ -57,20 +57,41 @@ export default function EditContent({ route }) {
       zIndex: 3000,
       position: 'relative',
     },
+    title: {
+      fontSize: themes[theme].typography.medium,
+      fontWeight: 'bold',
+      color: themes[theme].colors.text,
+      marginBottom: themes[theme].spacing.medium,
+      textAlign: 'center',
+    },
     input: (hasError) => ({
       backgroundColor: '#FFF',
       color: '#000000',
       padding: themes[theme].spacing.medium,
       marginBottom: themes[theme].spacing.small,
-      borderRadius: 20,
+      borderRadius: 24,
       fontSize: themes[theme].typography.regular,
       borderWidth: 2,
-      borderColor: hasError ? themes[theme].colors.error : themes[theme].colors.secondary,
-      height: 55,
+      borderColor: hasError ? themes[theme].colors.error : themes[theme].colors.primary,
+      height: 50,
       textAlignVertical: 'center',
     }),
+    dropDown: {
+      backgroundColor: '#FFF',
+      borderColor: themes[theme].colors.primary,
+      borderWidth: 2,
+      borderRadius: 24,
+      marginBottom: themes[theme].spacing.small,
+      height: 55,
+    },
+    dropDownContainer: {
+      backgroundColor: '#FFF',
+      borderColor: themes[theme].colors.primary,
+      borderWidth: 2,
+      borderRadius: 24,
+    },
     buttonsContainer: {
-      marginTop: themes[theme].spacing.large,
+      marginTop: themes[theme].spacing.medium,
     },
     topButtons: {
       flexDirection: 'row',
@@ -87,39 +108,13 @@ export default function EditContent({ route }) {
       borderStyle: 'dashed',
       borderColor: '#000',
       alignItems: 'center',
-      backgroundColor: isSubmit ? themes[theme].colors.primary : themes[theme].colors.white,
+      backgroundColor: isSubmit ? themes[theme].colors.secondary : themes[theme].colors.white,
     }),
     buttonText: (isSubmit) => ({
       color: isSubmit ? themes[theme].colors.white : themes[theme].colors.text,
       fontSize: themes[theme].typography.regular,
       fontWeight: 'bold',
     }),
-    backgroundCard: (index) => ({
-      position: 'absolute',
-      bottom: 18 + (index * 10),
-      width: '99%',
-      maxWidth: 800,
-      height: 60,
-      borderRadius: 9,
-      borderWidth: 1,
-      borderColor: '#000',
-      backgroundColor: themes[theme].colors.primary,
-      zIndex: 1,
-      alignSelf: 'center',
-    }),
-    dropDown: {
-      backgroundColor: '#FFF',
-      borderColor: themes[theme].colors.secondary,
-      borderWidth: 2,
-      borderRadius: 20,
-      marginBottom: themes[theme].spacing.small,
-    },
-    dropDownContainer: {
-      backgroundColor: '#FFF',
-      borderColor: themes[theme].colors.secondary,
-      borderWidth: 2,
-      borderRadius: 20,
-    },
     deleteButton: {
       padding: themes[theme].spacing.small,
       paddingHorizontal: themes[theme].spacing.medium,
@@ -135,6 +130,24 @@ export default function EditContent({ route }) {
       fontSize: themes[theme].typography.regular,
       fontWeight: 'bold',
     },
+    errorText: {
+      color: themes[theme].colors.error,
+      fontSize: themes[theme].typography.small,
+      marginBottom: themes[theme].spacing.small,
+    },
+    backgroundCard: (index) => ({
+      position: 'absolute',
+      bottom: 8 + (index * 10),
+      width: '95%',
+      maxWidth: 800,
+      height: 60,
+      borderRadius: 9,
+      borderWidth: 1,
+      borderColor: '#000',
+      backgroundColor: themes[theme].colors.secondary,
+      zIndex: 1,
+      alignSelf: 'center',
+    }),
   };
 
   useEffect(() => {
@@ -233,6 +246,7 @@ export default function EditContent({ route }) {
           data={[{ key: 'form' }]}
           renderItem={() => (
             <View style={styles.formContainer}>
+              <Text style={styles.title}>{t("Edit Content")}</Text>
               <TextInput
                 style={styles.input(!!errors.title)}
                 placeholder={t("Title")}
