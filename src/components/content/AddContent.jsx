@@ -56,16 +56,23 @@ export default function AddContent() {
       zIndex: 3000,
       position: 'relative',
     },
+    title: {
+      fontSize: themes[theme].typography.medium,
+      fontWeight: 'bold',
+      color: themes[theme].colors.text,
+      marginBottom: themes[theme].spacing.medium,
+      textAlign: 'center',
+    },
     input: (hasError) => ({
       backgroundColor: '#FFF',
       color: '#000000',
       padding: themes[theme].spacing.medium,
       marginBottom: themes[theme].spacing.small,
-      borderRadius: 20,
+      borderRadius: 24,
       fontSize: themes[theme].typography.regular,
       borderWidth: 2,
-      borderColor: hasError ? themes[theme].colors.error : themes[theme].colors.secondary,
-      height: 65,
+      borderColor: hasError ? themes[theme].colors.error : themes[theme].colors.primary,
+      height: 55,
       textAlignVertical: 'center',
     }),
     errorText: {
@@ -88,7 +95,7 @@ export default function AddContent() {
       borderStyle: 'dashed',
       borderColor: '#000',
       alignItems: 'center',
-      backgroundColor: isSubmit ? themes[theme].colors.primary : themes[theme].colors.white,
+      backgroundColor: isSubmit ? themes[theme].colors.secondary : themes[theme].colors.white,
     }),
     buttonText: (isSubmit) => ({
       color: isSubmit ? themes[theme].colors.white : themes[theme].colors.text,
@@ -97,27 +104,28 @@ export default function AddContent() {
     }),
     dropDown: {
       backgroundColor: '#FFF',
-      borderColor: themes[theme].colors.secondary,
+      borderColor: themes[theme].colors.primary,
       borderWidth: 2,
-      borderRadius: 20,
+      borderRadius: 24,
       marginBottom: themes[theme].spacing.small,
+      height: 55,
     },
     dropDownContainer: {
       backgroundColor: '#FFF',
-      borderColor: themes[theme].colors.secondary,
+      borderColor: themes[theme].colors.primary,
       borderWidth: 2,
-      borderRadius: 20,
+      borderRadius: 24,
     },
     backgroundCard: (index) => ({
       position: 'absolute',
-      bottom: 25 + (index * 10),
+      bottom: 30 + (index * 10),
       width: '99%',
       maxWidth: 800,
       height: 60,
       borderRadius: 9,
       borderWidth: 1,
       borderColor: '#000',
-      backgroundColor: themes[theme].colors.primary,
+      backgroundColor: themes[theme].colors.secondary,
       zIndex: 1,
       alignSelf: 'center',
     }),
@@ -176,6 +184,8 @@ export default function AddContent() {
           data={[{ key: 'form' }]}
           renderItem={() => (
             <View style={styles.formContainer}>
+              <Text style={styles.title}>{t("Add Content")}</Text>
+              
               <TextInput
                 style={styles.input(!!errors.title)}
                 placeholder={t("Title")}
@@ -212,6 +222,9 @@ export default function AddContent() {
                 theme={theme === 'dark' ? 'DARK' : 'LIGHT'}
                 zIndex={3000}
                 listMode="SCROLLVIEW"
+                textStyle={{
+                  fontSize: themes[theme].typography.regular,
+                }}
               />
               {errors.country && <Text style={styles.errorText}>{errors.country}</Text>}
 
