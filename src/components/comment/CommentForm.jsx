@@ -39,7 +39,7 @@ const CommentForm = ({ onSubmit }) => {
     },
     buttonText: {
       color: 'white',
-      fontSize: 16,
+      fontSize: 14,
     }
   };
 

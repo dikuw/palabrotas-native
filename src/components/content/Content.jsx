@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Platform, ActivityIndicator, FlatList, View, Text, TouchableOpacity, KeyboardAvoidingView, Keyboard } from 'react-native';
+import { Platform, ActivityIndicator, FlatList, View, Text, TouchableOpacity, KeyboardAvoidingView, Keyboard, ScrollView } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import ReactCountryFlag from "react-native-country-flag";
 import { useThemeStore } from '../../store/theme';
@@ -34,15 +34,22 @@ export default function Content({ route }) {
   };
 
   const styles = {
-    wrapper: {
+    outerContainer: {
       flex: 1,
+      backgroundColor: 'transparent',
+    },
+    contentContainer: {
       width: '90%',
       maxWidth: 800,
-      margin: 0,
-      marginLeft: 'auto',
-      marginRight: 'auto',
+      marginHorizontal: 'auto',
+      marginTop: themes[theme].spacing.small,
+      marginBottom: themes[theme].spacing.medium,
+      backgroundColor: themes[theme].colors.white,
+      borderRadius: 9,
+      borderWidth: 1,
+      borderColor: '#000',
       padding: themes[theme].spacing.large,
-      backgroundColor: themes[theme].colors.background,
+      alignSelf: 'center',
     },
     header: {
       flexDirection: 'row',
@@ -182,90 +189,6 @@ export default function Content({ route }) {
     }
   };
 
-  const renderContent = () => (
-    <>
-      <View style={styles.header}>
-        <Text style={styles.title}>{content.title}</Text>
-        {content.country && (
-          <ReactCountryFlag
-            isoCode={content.country}
-            size={24}
-          />
-        )}
-      </View>
-      
-      <Text style={styles.description}>{content.description}</Text>
-      
-      {content.exampleSentence && (
-        <Text style={styles.exampleSentence}>{content.exampleSentence}</Text>
-      )}
-      
-      <Text style={styles.authorInfo}>{t('Created by')}: {content.author}</Text>
-      
-      <View style={styles.tagContainer}>
-        <TagGrid 
-          contentId={content._id} 
-          refreshTrigger={refreshTrigger} 
-        />
-        <TouchableOpacity 
-          style={styles.addTagButton}
-          onPress={() => setShowTagSelector(true)}
-        >
-          <Text style={styles.addTagText}>{t('+ Add Tag')}</Text>
-        </TouchableOpacity>
-      </View>
-
-      {showTagSelector && (
-        <AddTagToContent 
-          contentId={content._id} 
-          onClose={() => setShowTagSelector(false)} 
-          onSave={handleTagsSaved}
-        />
-      )}
-
-      <View style={styles.commentSection}>
-        <TouchableOpacity 
-          style={styles.toggleButton}
-          onPress={() => setShowComments(!showComments)}
-        >
-          <Text style={styles.toggleIcon}>
-            {showComments ? '▼' : '▶'}
-          </Text>
-          <Text style={styles.toggleText}>
-            {t('Show Comments')} ({comments.length})
-          </Text>
-        </TouchableOpacity>
-
-        {showComments && (
-          <>
-            <View style={styles.commentList}>
-              <FlatList
-                data={comments}
-                renderItem={({ item }) => (
-                  <View style={styles.commentItem}>
-                    <Text style={styles.commentText}>{item.text}</Text>
-                    <Text style={styles.commentMeta}>
-                      {t('Created by')}: {item.owner.name} | {new Date(item.createdAt).toLocaleString()}
-                    </Text>
-                  </View>
-                )}
-                keyExtractor={item => item._id}
-                nestedScrollEnabled
-              />
-            </View>
-            
-            {authStatus.isLoggedIn && (
-              <View style={styles.commentFormContainer}>
-                <CommentForm onSubmit={handleAddComment} />
-              </View>
-            )}
-          </>
-        )}
-      </View>
-      <View style={styles.keyboardSpacer} />
-    </>
-  );
-
   if (!content) {
     return (
       <View style={styles.loadingContainer}>
@@ -281,15 +204,89 @@ export default function Content({ route }) {
       style={{ flex: 1 }}
       keyboardVerticalOffset={Platform.OS === "android" ? 100 : 64}
     >
-      <FlatList
-        style={styles.wrapper}
-        contentContainerStyle={{ flexGrow: 1 }}
-        data={[{ key: 'content' }]}
-        renderItem={() => renderContent()}
-        keyboardShouldPersistTaps="handled"
-        ListFooterComponent={<View style={{ height: 200 }} />}
-        onScrollBeginDrag={Keyboard.dismiss}
-      />
+      <View style={styles.outerContainer}>
+        <View style={styles.contentContainer}>
+          <FlatList
+            data={[{ key: 'content' }]}
+            renderItem={() => (
+              <>
+                <View style={styles.header}>
+                  <Text style={styles.title}>{content.title}</Text>
+                  {content.country && (
+                    <ReactCountryFlag
+                      isoCode={content.country}
+                      size={24}
+                    />
+                  )}
+                </View>
+                
+                <Text style={styles.description}>{content.description}</Text>
+                
+                {content.exampleSentence && (
+                  <Text style={styles.exampleSentence}>{content.exampleSentence}</Text>
+                )}
+                
+                <Text style={styles.authorInfo}>{t('Created by')}: {content.author}</Text>
+                
+                <View style={styles.tagContainer}>
+                  <TagGrid 
+                    contentId={content._id} 
+                    refreshTrigger={refreshTrigger} 
+                  />
+                  <TouchableOpacity 
+                    style={styles.addTagButton}
+                    onPress={() => setShowTagSelector(true)}
+                  >
+                    <Text style={styles.addTagText}>{t('+ Add Tag')}</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {showTagSelector && (
+                  <AddTagToContent 
+                    contentId={content._id} 
+                    onClose={() => setShowTagSelector(false)} 
+                    onSave={handleTagsSaved}
+                  />
+                )}
+
+                <View style={styles.commentSection}>
+                  <TouchableOpacity 
+                    style={styles.toggleButton}
+                    onPress={() => setShowComments(!showComments)}
+                  >
+                    <Text style={styles.toggleIcon}>
+                      {showComments ? '▼' : '▶'}
+                    </Text>
+                    <Text style={styles.toggleText}>
+                      {t('Show Comments')} ({comments.length})
+                    </Text>
+                  </TouchableOpacity>
+
+                  {showComments && (
+                    <>
+                      {comments.map(item => (
+                        <View key={item._id} style={styles.commentItem}>
+                          <Text style={styles.commentText}>{item.text}</Text>
+                          <Text style={styles.commentMeta}>
+                            {t('Created by')}: {item.owner.name} | {new Date(item.createdAt).toLocaleString()}
+                          </Text>
+                        </View>
+                      ))}
+
+                      {authStatus.isLoggedIn && (
+                        <View style={styles.commentFormContainer}>
+                          <CommentForm onSubmit={handleAddComment} />
+                        </View>
+                      )}
+                    </>
+                  )}
+                </View>
+              </>
+            )}
+            keyboardShouldPersistTaps="handled"
+          />
+        </View>
+      </View>
     </KeyboardAvoidingView>
   );
 }
