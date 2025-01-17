@@ -26,61 +26,65 @@ export default function Register() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const styles = {
-    keyboardView: {
+    outerContainer: {
       flex: 1,
-      backgroundColor: themes[theme].colors.background,
-    },
-    scrollView: {
-      flex: 1,
-      backgroundColor: themes[theme].colors.background,
-    },
-    container: {
-      flex: 1,
-      width: '90%',
-      maxWidth: 500,
-      margin: 0,
-      marginLeft: 'auto',
-      marginRight: 'auto',
+      backgroundColor: 'transparent',
       padding: themes[theme].spacing.large,
-      backgroundColor: themes[theme].colors.background,
+      paddingTop: 0,
+    },
+    formContainer: {
+      width: '99%',
+      maxWidth: 800,
+      marginHorizontal: 'auto',
+      marginTop: themes[theme].spacing.small,
+      marginBottom: themes[theme].spacing.medium,
+      backgroundColor: themes[theme].colors.white,
+      borderRadius: 9,
+      borderWidth: 1,
+      borderColor: '#000',
+      padding: themes[theme].spacing.large,
+      alignSelf: 'center',
     },
     title: {
-      fontSize: themes[theme].typography.xlarge,
+      fontSize: themes[theme].typography.large,
       fontWeight: 'bold',
       color: themes[theme].colors.text,
-      textAlign: 'center',
       marginBottom: themes[theme].spacing.large,
+      textAlign: 'center',
     },
     input: (hasError) => ({
-      backgroundColor: hasError ? `${themes[theme].colors.error}20` : themes[theme].colors.white,
-      color: hasError ? themes[theme].colors.error : themes[theme].colors.text,
+      backgroundColor: '#FFF',
+      color: '#000000',
       padding: themes[theme].spacing.medium,
       marginBottom: themes[theme].spacing.small,
-      borderRadius: themes[theme].borderRadius.medium,
+      borderRadius: 24,
       fontSize: themes[theme].typography.regular,
-      borderWidth: 1,
-      borderColor: themes[theme].colors.border,
+      borderWidth: 2,
+      borderColor: hasError ? themes[theme].colors.error : themes[theme].colors.primary,
+      height: 55,
+      textAlignVertical: 'center',
+    }),
+    button: (isSecondary) => ({
+      padding: themes[theme].spacing.small,
+      paddingHorizontal: themes[theme].spacing.medium,
+      borderRadius: 24,
+      borderWidth: isSecondary ? 1 : 0,
+      borderStyle: 'dashed',
+      borderColor: '#000',
+      alignItems: 'center',
+      backgroundColor: isSecondary ? themes[theme].colors.white : themes[theme].colors.secondary,
+      marginTop: themes[theme].spacing.medium,
+    }),
+    buttonText: (isSecondary) => ({
+      color: isSecondary ? themes[theme].colors.text : themes[theme].colors.white,
+      fontSize: themes[theme].typography.regular,
+      fontWeight: 'bold',
     }),
     errorText: {
       color: themes[theme].colors.error,
       fontSize: themes[theme].typography.small,
       marginBottom: themes[theme].spacing.small,
     },
-    button: (variant) => ({
-      backgroundColor: variant === 'secondary' ? 'transparent' : themes[theme].colors.primary,
-      padding: themes[theme].spacing.medium,
-      borderRadius: themes[theme].borderRadius.medium,
-      alignItems: 'center',
-      marginTop: themes[theme].spacing.medium,
-      opacity: isSubmitting ? 0.5 : 1,
-      borderWidth: variant === 'secondary' ? 1 : 0,
-      borderColor: themes[theme].colors.primary,
-    }),
-    buttonText: (variant) => ({
-      color: variant === 'secondary' ? themes[theme].colors.primary : themes[theme].colors.white,
-      fontSize: themes[theme].typography.medium,
-      fontWeight: 'bold',
-    }),
   };
 
   const handleChange = (name, value) => {
@@ -133,10 +137,10 @@ export default function Register() {
   return (
     <KeyboardAvoidingView 
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.keyboardView}
+      style={{ flex: 1 }}
     >
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.container}>
+      <ScrollView style={styles.outerContainer}>
+        <View style={styles.formContainer}>
           <Text style={styles.title}>{t("Create Account")}</Text>
 
           <TextInput
@@ -187,7 +191,7 @@ export default function Register() {
           {errors.confirmPassword && <Text style={styles.errorText}>{errors.confirmPassword}</Text>}
 
           <TouchableOpacity 
-            style={styles.button()}
+            style={styles.button(false)}
             onPress={handleSubmit}
             disabled={isSubmitting}
             activeOpacity={0.7}
@@ -195,16 +199,16 @@ export default function Register() {
             {isSubmitting ? (
               <ActivityIndicator color={themes[theme].colors.white} />
             ) : (
-              <Text style={styles.buttonText()}>{t("Register")}</Text>
+              <Text style={styles.buttonText(false)}>{t("Register")}</Text>
             )}
           </TouchableOpacity>
 
           <TouchableOpacity 
-            style={styles.button('secondary')}
+            style={styles.button(true)}
             onPress={() => navigation.navigate('Login')}
             activeOpacity={0.7}
           >
-            <Text style={styles.buttonText('secondary')}>{t("Back to Login")}</Text>
+            <Text style={styles.buttonText(true)}>{t("Back to Login")}</Text>
           </TouchableOpacity>
 
           {errors.general && <Text style={styles.errorText}>{errors.general}</Text>}
