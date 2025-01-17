@@ -59,7 +59,7 @@ export default function LocalLogin() {
     title: {
       fontSize: themes[theme].typography.large,
       fontWeight: 'bold',
-      color: themes[theme].colors.text,
+      color: '#000000',
       marginBottom: themes[theme].spacing.large,
       textAlign: 'center',
     },
@@ -80,7 +80,7 @@ export default function LocalLogin() {
       marginTop: themes[theme].spacing.medium,
     }),
     buttonText: (isSecondary) => ({
-      color: isSecondary ? themes[theme].colors.text : themes[theme].colors.white,
+      color: isSecondary ? '#000000' : themes[theme].colors.white,
       fontSize: themes[theme].typography.regular,
       fontWeight: 'bold',
     }),

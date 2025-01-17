@@ -19,16 +19,31 @@ export default function Config({ isLoggedIn, logoutUser }) {
   }, [i18n]);
 
   const styles = {
-    container: {
+    outerContainer: {
       flex: 1,
-      backgroundColor: themes[theme].colors.background,
+      backgroundColor: 'transparent',
       padding: themes[theme].spacing.large,
+      paddingTop: 0,
+    },
+    formContainer: {
+      width: '99%',
+      maxWidth: 800,
+      marginHorizontal: 'auto',
+      marginTop: themes[theme].spacing.small,
+      marginBottom: themes[theme].spacing.medium,
+      backgroundColor: themes[theme].colors.white,
+      borderRadius: 9,
+      borderWidth: 1,
+      borderColor: '#000',
+      padding: themes[theme].spacing.large,
+      alignSelf: 'center',
     },
     title: {
-      fontSize: themes[theme].typography.xlarge,
+      fontSize: themes[theme].typography.large,
       fontWeight: 'bold',
-      color: themes[theme].colors.primary,
+      color: '#000000',
       marginBottom: themes[theme].spacing.large,
+      textAlign: 'center',
     },
     section: {
       marginBottom: themes[theme].spacing.large,
@@ -36,38 +51,38 @@ export default function Config({ isLoggedIn, logoutUser }) {
     sectionTitle: {
       fontSize: themes[theme].typography.medium,
       fontWeight: 'bold',
-      color: themes[theme].colors.text,
+      color: '#000000',
       marginBottom: themes[theme].spacing.medium,
     },
     optionButton: (isSelected) => ({
       flexDirection: 'row',
       alignItems: 'center',
       padding: themes[theme].spacing.medium,
-      backgroundColor: isSelected ? themes[theme].colors.primary : themes[theme].colors.almostWhite,
-      borderRadius: themes[theme].borderRadius.medium,
+      backgroundColor: isSelected ? themes[theme].colors.secondary : themes[theme].colors.white,
+      borderRadius: 24,
+      borderWidth: 2,
+      borderColor: themes[theme].colors.secondary,
       marginBottom: themes[theme].spacing.small,
     }),
     optionText: (isSelected) => ({
       fontSize: themes[theme].typography.medium,
-      color: isSelected ? themes[theme].colors.white : themes[theme].colors.text,
+      color: isSelected ? themes[theme].colors.white : '#000000',
     }),
     logoutButton: {
-      margin: themes[theme].spacing.small,
       padding: themes[theme].spacing.small,
-      backgroundColor: themes[theme].colors.secondary,
-      borderRadius: 20,
+      paddingHorizontal: themes[theme].spacing.medium,
+      borderRadius: 24,
+      borderWidth: 1,
+      borderStyle: 'dashed',
+      borderColor: themes[theme].colors.error,
       alignItems: 'center',
-      alignSelf: 'center',
-      minWidth: 200,
-      flexDirection: 'row',
-      justifyContent: 'center',
+      backgroundColor: 'transparent',
       marginTop: themes[theme].spacing.large,
     },
     logoutText: {
-      fontSize: 16,
+      color: themes[theme].colors.error,
+      fontSize: themes[theme].typography.regular,
       fontWeight: 'bold',
-      color: '#ffffff',
-      marginLeft: 5,
     },
   };
 
@@ -114,44 +129,49 @@ export default function Config({ isLoggedIn, logoutUser }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{t("Settings")}</Text>
+    <View style={styles.outerContainer}>
+      <View style={styles.formContainer}>
+        <Text style={styles.title}>{t("Settings")}</Text>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t("Language")}</Text>
-        {languages.map((language) => (
-          <TouchableOpacity
-            key={language.code}
-            style={styles.optionButton(i18n.language?.startsWith(language.code))}
-            onPress={() => handleLanguageChange(language.code)}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t("Language")}</Text>
+          {languages.map((language) => (
+            <TouchableOpacity
+              key={language.code}
+              style={styles.optionButton(i18n.language?.startsWith(language.code))}
+              onPress={() => handleLanguageChange(language.code)}
+            >
+              <Text style={styles.optionText(i18n.language?.startsWith(language.code))}>
+                {language.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>{t("Theme")}</Text>
+          {themeOptions.map((themeOption) => (
+            <TouchableOpacity
+              key={themeOption.id}
+              style={styles.optionButton(theme === themeOption.id)}
+              onPress={() => handleThemeChange(themeOption.id)}
+            >
+              <Text style={styles.optionText(theme === themeOption.id)}>
+                {themeOption.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {isLoggedIn && (
+          <TouchableOpacity 
+            style={styles.logoutButton} 
+            onPress={handleLogout}
           >
-            <Text style={styles.optionText(i18n.language?.startsWith(language.code))}>
-              {language.name}
-            </Text>
+            <Text style={styles.logoutText}>{t('Logout')}</Text>
           </TouchableOpacity>
-        ))}
+        )}
       </View>
-
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>{t("Theme")}</Text>
-        {themeOptions.map((themeOption) => (
-          <TouchableOpacity
-            key={themeOption.id}
-            style={styles.optionButton(theme === themeOption.id)}
-            onPress={() => handleThemeChange(themeOption.id)}
-          >
-            <Text style={styles.optionText(theme === themeOption.id)}>
-              {themeOption.name}
-            </Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
-      {isLoggedIn && (
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutText}>{t('Logout')}</Text>
-        </TouchableOpacity>
-      )}
     </View>
   );
 }
