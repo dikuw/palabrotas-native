@@ -33,7 +33,7 @@ export default function Flashcards() {
       marginVertical: 30,
       marginHorizontal: 'auto',
       padding: 4,
-      backgroundColor: themes[theme].colors.background,
+      backgroundColor: 'transparent',
     },
     header: {
       padding: themes[theme].spacing.large,
@@ -63,7 +63,7 @@ export default function Flashcards() {
       flex: 1,
       justifyContent: 'center',
       alignItems: 'center',
-      backgroundColor: themes[theme].colors.background,
+      backgroundColor: 'transparent',
     },
   };
 
@@ -124,9 +124,6 @@ export default function Flashcards() {
               onNext={handleReviewAndNext}
               totalCards={dueFlashcards.length}
             />
-            <Text style={styles.counter}>
-              {currentIndex + 1} {t('of')} {dueFlashcards.length}
-            </Text>
           </View>
         ) : (
           <Text style={styles.message}>
