@@ -95,7 +95,7 @@ export default function AddTagToContent({ contentId, visible, onClose, onSave })
       padding: 5,
     },
     tagItem: {
-      backgroundColor: themes[theme].colors.primary,
+      backgroundColor: themes[theme].colors.secondary,
       paddingVertical: 5,
       paddingHorizontal: 10,
       marginVertical: 2,

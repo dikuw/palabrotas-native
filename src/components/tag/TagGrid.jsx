@@ -52,7 +52,7 @@ export default function TagGrid({ contentId, refreshTrigger }) {
       left: 0,
       right: 0,
       bottom: 0,
-      backgroundColor: themes[theme].colors.primary,
+      backgroundColor: themes[theme].colors.secondary,
       borderTopLeftRadius: 4,
       borderBottomLeftRadius: 4,
     },
@@ -62,7 +62,7 @@ export default function TagGrid({ contentId, refreshTrigger }) {
       top: 0,
       bottom: 0,
       width: 20,
-      backgroundColor: themes[theme].colors.primary,
+      backgroundColor: themes[theme].colors.secondary,
       transform: [{ skewX: '-15deg' }],
     },
     tagHole: {
