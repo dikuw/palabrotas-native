@@ -27,10 +27,30 @@ export const useAuthStore = create(
         }
       },
       googleLogin: async () => {
-        const res = await fetch(`${API_URL}/api/auth/google`, {
-          method: "GET",
-          credentials: 'include',
-        })
+        try {
+          // Open Google auth URL in browser/webview
+          const res = await fetch(`${API_URL}/api/auth/google`, {
+            method: "GET",
+            credentials: 'include',
+          });
+          const data = await res.json();
+          
+          if (data.authenticated) {
+            set({ 
+              authStatus: { 
+                isLoggedIn: true, 
+                user: data.user, 
+                isLoading: false 
+              } 
+            });
+            return data;
+          } else {
+            throw new Error(data.message || 'Google login failed');
+          }
+        } catch (error) {
+          console.error('Error during Google login:', error);
+          throw error;
+        }
       },
       loginUser: async (credentials) => {
         const res = await fetch(`${API_URL}/api/auth/login`, {

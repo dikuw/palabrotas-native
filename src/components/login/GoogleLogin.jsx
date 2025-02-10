@@ -44,6 +44,7 @@ export default function GoogleLogin() {
       navigation.navigate('Home');
       addNotification(t('Logged in successfully!'), 'success');
     } catch (error) {
+      console.error('Google login error:', error);
       addNotification(t('Login failed. Please try again.'), 'error');
     }
   };
