@@ -28,25 +28,10 @@ export const useAuthStore = create(
       },
       googleLogin: async () => {
         try {
-          // Open Google auth URL in browser/webview
-          const res = await fetch(`${API_URL}/api/auth/google`, {
-            method: "GET",
-            credentials: 'include',
-          });
-          const data = await res.json();
-          
-          if (data.authenticated) {
-            set({ 
-              authStatus: { 
-                isLoggedIn: true, 
-                user: data.user, 
-                isLoading: false 
-              } 
-            });
-            return data;
-          } else {
-            throw new Error(data.message || 'Google login failed');
-          }
+          // Instead of trying to parse JSON, we'll redirect to the Google auth URL
+          window.location.href = `${API_URL}/api/auth/google`;
+          // Note: The actual auth status update will happen when Google redirects back
+          // and getCurrentUser is called
         } catch (error) {
           console.error('Error during Google login:', error);
           throw error;

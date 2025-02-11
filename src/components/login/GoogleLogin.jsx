@@ -1,11 +1,12 @@
 import React from 'react';
-import { TouchableOpacity, Text, View } from 'react-native';
+import { TouchableOpacity, Text, View, Linking } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components/native';
 import Icon from 'react-native-vector-icons/FontAwesome'; // Using FontAwesome instead of Fa6
 import { useAuthStore } from '../../store/auth';
 import { useNotificationStore } from '../../store/notification';
+import { API_URL } from '../../config/env';
 
 const GoogleButton = styled.TouchableOpacity`
   background-color: #4285f4;
@@ -40,9 +41,10 @@ export default function GoogleLogin() {
 
   const handleGoogleLogin = async () => {
     try {
-      await googleLogin();
-      navigation.navigate('Home');
-      addNotification(t('Logged in successfully!'), 'success');
+      // Open the Google auth URL in the device's browser
+      await Linking.openURL(`${API_URL}/api/auth/google`);
+      // Note: The actual navigation and success notification will happen when
+      // Google redirects back to your app via deep linking
     } catch (error) {
       console.error('Google login error:', error);
       addNotification(t('Login failed. Please try again.'), 'error');
