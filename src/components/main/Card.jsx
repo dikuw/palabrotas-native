@@ -129,7 +129,7 @@ export default function Card({ item, showEditIcon }) {
 const styles = StyleSheet.create({
   cardContainer: {
     width: '90%',
-    marginBottom: 20,
+    marginBottom: 10,
     position: 'relative',
     alignSelf: 'center',
     marginHorizontal: 'auto',
