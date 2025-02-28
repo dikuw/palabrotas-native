@@ -87,10 +87,11 @@ export default function Flashcards() {
         useFlashcardStore.setState({ dueFlashcards: updatedDueFlashcards });
         setCurrentIndex(prevIndex => prevIndex % updatedDueFlashcards.length);
       } else {
-        const currentCard = dueFlashcards.find(card => card._id === flashcardId);
-        const remainingCards = dueFlashcards.filter(card => card._id !== flashcardId);
-        const updatedDueFlashcards = [...remainingCards, currentCard];
-        useFlashcardStore.setState({ dueFlashcards: updatedDueFlashcards });
+        // Move the current card to the end of the deck
+        const currentCard = dueFlashcards[currentIndex];
+        const remainingCards = dueFlashcards.filter((_, index) => index !== currentIndex);
+        const reorderedCards = [...remainingCards, currentCard];
+        useFlashcardStore.setState({ dueFlashcards: reorderedCards });
         setCurrentIndex(0);
       }
 
