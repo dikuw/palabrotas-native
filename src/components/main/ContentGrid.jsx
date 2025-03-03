@@ -77,8 +77,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   gridContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 30,
+    paddingHorizontal: 10,
+    paddingVertical: 10,
     backgroundColor: 'transparent',
   },
   gridPattern: {

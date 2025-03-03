@@ -40,7 +40,7 @@ export default function Content({ route }) {
     },
     contentContainer: {
       width: '90%',
-      maxWidth: 800,
+      maxWidth: 850,
       marginHorizontal: 'auto',
       marginTop: themes[theme].spacing.small,
       marginBottom: themes[theme].spacing.medium,
