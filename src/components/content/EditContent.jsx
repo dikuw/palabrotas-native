@@ -111,7 +111,7 @@ export default function EditContent({ route }) {
       backgroundColor: isSubmit ? themes[theme].colors.secondary : themes[theme].colors.white,
     }),
     buttonText: (isSubmit) => ({
-      color: isSubmit ? themes[theme].colors.white : themes[theme].colors.text,
+      color: isSubmit ? themes[theme].colors.white : '#000000',
       fontSize: themes[theme].typography.regular,
       fontWeight: 'bold',
     }),
