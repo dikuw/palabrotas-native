@@ -139,7 +139,37 @@ function App() {
             isAdmin={authStatus.user ? authStatus.user.isAdmin : false}
             logoutUser={logoutUser} 
           />
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Navigator 
+            screenOptions={{ 
+              headerShown: false,
+              presentation: 'card',
+              animation: 'slide_from_right',
+              animationDuration: 200,
+              cardStyle: { backgroundColor: 'transparent' },
+              cardOverlayEnabled: true,
+              cardStyleInterpolator: ({ current, layouts }) => ({
+                cardStyle: {
+                  transform: [
+                    {
+                      translateX: current.progress.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [layouts.screen.width, 0],
+                      }),
+                    },
+                  ],
+                  opacity: current.progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, 1],
+                  }),
+                },
+                overlayStyle: {
+                  opacity: current.progress.interpolate({
+                    inputRange: [0, 1],
+                    outputRange: [0, 0.5],
+                  }),
+                },
+              }),
+            }}>
             <Stack.Screen name="Home">
               {props => (
                 <View style={{ 
