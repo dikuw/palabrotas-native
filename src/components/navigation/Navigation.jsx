@@ -94,12 +94,6 @@ export default function Navigation({ isLoggedIn, isAdmin }) {
                   <Icon name="plus-circle" size={16} color={theme === 'dark' ? '#ffffff' : '#000000'} />
                   <MenuText currentTheme={theme} isMenuIcon={false}>{t('Add Content')}</MenuText>
                 </MenuItem>
-                {isAdmin && (
-                  <MenuItem currentTheme={theme} onPress={() => handleNavigation('Admin')}>
-                    <Icon name="shield" size={16} color={theme === 'dark' ? '#ffffff' : '#000000'} />
-                    <MenuText currentTheme={theme} isMenuIcon={false}>{t('Admin')}</MenuText>
-                  </MenuItem>
-                )}
               </>
             ) : (
               <>
