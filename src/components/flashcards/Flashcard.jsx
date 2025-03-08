@@ -2,24 +2,39 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Animated, PanResponder, Dimensions, Platform, Easing } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { useThemeStore } from '../../store/theme';
+import { useUserStore } from '../../store/user';
+import { useAuthStore } from '../../store/auth';
+import { useNotificationStore } from '../../store/notification';
 import { themes } from '../../styles/theme';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = 0.25 * SCREEN_WIDTH;
 const SWIPE_OUT_DURATION = 250;
 
-export default function Flashcard({ item, onNext, totalCards }) {
+export default function Flashcard({ item, onNext, isLoading, totalCards }) {
   const { t } = useTranslation();
   const theme = useThemeStore(state => state.theme);
+  const { updateStreak } = useUserStore();
+  const { authStatus } = useAuthStore();
+  const addNotification = useNotificationStore(state => state.addNotification);
   const [isFlipped, setIsFlipped] = useState(false);
+  const [showHint, setShowHint] = useState(false);
+  const [currentItem, setCurrentItem] = useState(item);
   const position = new Animated.ValueXY();
 
-  React.useEffect(() => {
+  useEffect(() => {
+    setCurrentItem(item);
+    setIsFlipped(false);
+    setShowHint(false);
     position.setValue({ x: 0, y: 0 });
   }, [item?._id]);
 
-  const front = item?.content?.title || 'Front';
-  const back = item?.content?.description || 'Back';
+  useEffect(() => {
+    if (isLoading) {
+      setIsFlipped(false);
+      setShowHint(false);
+    }
+  }, [isLoading]);
 
   const styles = {
     container: {
@@ -70,6 +85,32 @@ export default function Flashcard({ item, onNext, totalCards }) {
       textAlign: 'center',
       fontWeight: 'bold',
     },
+    hintContainer: {
+      marginTop: themes[theme].spacing.medium,
+      padding: themes[theme].spacing.small,
+      backgroundColor: themes[theme].colors.backgroundSecondary,
+      borderRadius: themes[theme].borderRadius.small,
+    },
+    hintText: {
+      fontSize: themes[theme].typography.small,
+      color: themes[theme].colors.textSecondary,
+      textAlign: 'center',
+    },
+    hintButton: {
+      position: 'absolute',
+      top: themes[theme].spacing.medium,
+      right: themes[theme].spacing.medium,
+      padding: themes[theme].spacing.small,
+      backgroundColor: 'transparent',
+      borderRadius: themes[theme].borderRadius.small,
+      borderWidth: 1,
+      borderColor: themes[theme].colors.primary,
+    },
+    hintButtonText: {
+      color: themes[theme].colors.primary,
+      fontSize: themes[theme].typography.small,
+      fontWeight: 'bold',
+    },
     buttonContainer: {
       flexDirection: 'row',
       justifyContent: 'space-around',
@@ -100,18 +141,40 @@ export default function Flashcard({ item, onNext, totalCards }) {
     },
     onPanResponderRelease: (event, gesture) => {
       if (gesture.dx > SWIPE_THRESHOLD) {
-        forceSwipe('right');
+        handleAnswer('Easy');
       } else if (gesture.dx < -SWIPE_THRESHOLD) {
-        forceSwipe('left');
+        handleAnswer('Again');
       } else {
         resetPosition();
       }
     }
   });
 
+  const handleAnswer = async (quality) => {
+    if (!authStatus.isLoggedIn || !authStatus.user) {
+      console.error('User is not logged in');
+      return;
+    }
+
+    try {
+      if (quality === 'Again') {
+        await onNext(currentItem._id, quality, true);
+      } else {
+        await onNext(currentItem._id, quality, false);
+      }
+
+      const result = await updateStreak(authStatus.user._id);
+      if (result.updated) {
+        addNotification(t('Streak updated! Current streak: {{streak}}', { streak: result.streak }), 'success');
+      }
+    } catch (error) {
+      console.error('Error updating flashcard review:', error);
+      addNotification(t('Error updating flashcard review'), 'error');
+    }
+  };
+
   const forceSwipe = (direction) => {
     const x = direction === 'right' ? SCREEN_WIDTH + 100 : -SCREEN_WIDTH - 100;
-    const quality = direction === 'right' ? 5 : 0;
     
     Animated.timing(position, {
       toValue: { x, y: 0 },
@@ -119,7 +182,7 @@ export default function Flashcard({ item, onNext, totalCards }) {
       useNativeDriver: true
     }).start(() => {
       setIsFlipped(false);
-      onNext(item._id, quality, direction === 'left');
+      handleAnswer(direction === 'right' ? 'Easy' : 'Again');
     });
   };
 
@@ -138,12 +201,15 @@ export default function Flashcard({ item, onNext, totalCards }) {
     };
   };
 
-  const handleHardPress = () => {
-    forceSwipe('left');
+  const handleHint = () => {
+    setShowHint(!showHint);
   };
 
-  const handleEasyPress = () => {
-    forceSwipe('right');
+  const renderHint = () => {
+    if (!currentItem?.content?.hint || currentItem.content.hint.trim() === '') {
+      return <Text style={styles.hintText}>{t("No hint provided")}</Text>;
+    }
+    return <Text style={styles.hintText}>{currentItem.content.hint}</Text>;
   };
 
   return (
@@ -157,18 +223,35 @@ export default function Flashcard({ item, onNext, totalCards }) {
         {...panResponder.panHandlers}
         style={[styles.cardContainer, getCardStyle()]}
       >
+        <TouchableOpacity 
+          style={styles.hintButton}
+          onPress={handleHint}
+        >
+          <Text style={styles.hintButtonText}>{t("Hint")}</Text>
+        </TouchableOpacity>
+
         <View style={styles.cardContent}>
           <Text style={styles.cardText}>
-            {isFlipped ? back : front}
+            {isFlipped ? currentItem?.content?.description : currentItem?.content?.title}
           </Text>
+          {isFlipped && currentItem?.content?.exampleSentence && (
+            <Text style={[styles.cardText, { fontSize: 18, marginTop: 10 }]}>
+              {currentItem.content.exampleSentence}
+            </Text>
+          )}
+          {showHint && !isFlipped && (
+            <View style={styles.hintContainer}>
+              {renderHint()}
+            </View>
+          )}
         </View>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity 
             style={styles.button('hard')}
-            onPress={handleHardPress}
+            onPress={() => forceSwipe('left')}
           >
-            <Text style={styles.buttonText}>{t("Hard")}</Text>
+            <Text style={styles.buttonText}>{t("Again")}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
@@ -180,7 +263,7 @@ export default function Flashcard({ item, onNext, totalCards }) {
 
           <TouchableOpacity 
             style={styles.button('easy')}
-            onPress={handleEasyPress}
+            onPress={() => forceSwipe('right')}
           >
             <Text style={styles.buttonText}>{t("Easy")}</Text>
           </TouchableOpacity>
