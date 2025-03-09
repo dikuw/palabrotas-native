@@ -18,21 +18,18 @@ export default function Flashcard({ item, onNext, isLoading, totalCards }) {
   const { authStatus } = useAuthStore();
   const addNotification = useNotificationStore(state => state.addNotification);
   const [isFlipped, setIsFlipped] = useState(false);
-  const [showHint, setShowHint] = useState(false);
   const [currentItem, setCurrentItem] = useState(item);
   const position = new Animated.ValueXY();
 
   useEffect(() => {
     setCurrentItem(item);
     setIsFlipped(false);
-    setShowHint(false);
     position.setValue({ x: 0, y: 0 });
   }, [item?._id]);
 
   useEffect(() => {
     if (isLoading) {
       setIsFlipped(false);
-      setShowHint(false);
     }
   }, [isLoading]);
 
@@ -83,32 +80,6 @@ export default function Flashcard({ item, onNext, isLoading, totalCards }) {
       fontSize: 24,
       color: '#000000',
       textAlign: 'center',
-      fontWeight: 'bold',
-    },
-    hintContainer: {
-      marginTop: themes[theme].spacing.medium,
-      padding: themes[theme].spacing.small,
-      backgroundColor: themes[theme].colors.backgroundSecondary,
-      borderRadius: themes[theme].borderRadius.small,
-    },
-    hintText: {
-      fontSize: themes[theme].typography.small,
-      color: themes[theme].colors.textSecondary,
-      textAlign: 'center',
-    },
-    hintButton: {
-      position: 'absolute',
-      top: themes[theme].spacing.medium,
-      right: themes[theme].spacing.medium,
-      padding: themes[theme].spacing.small,
-      backgroundColor: 'transparent',
-      borderRadius: themes[theme].borderRadius.small,
-      borderWidth: 1,
-      borderColor: themes[theme].colors.primary,
-    },
-    hintButtonText: {
-      color: themes[theme].colors.primary,
-      fontSize: themes[theme].typography.small,
       fontWeight: 'bold',
     },
     buttonContainer: {
@@ -201,17 +172,6 @@ export default function Flashcard({ item, onNext, isLoading, totalCards }) {
     };
   };
 
-  const handleHint = () => {
-    setShowHint(!showHint);
-  };
-
-  const renderHint = () => {
-    if (!currentItem?.content?.hint || currentItem.content.hint.trim() === '') {
-      return <Text style={styles.hintText}>{t("No hint provided")}</Text>;
-    }
-    return <Text style={styles.hintText}>{currentItem.content.hint}</Text>;
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.cardCounter}>
@@ -223,13 +183,6 @@ export default function Flashcard({ item, onNext, isLoading, totalCards }) {
         {...panResponder.panHandlers}
         style={[styles.cardContainer, getCardStyle()]}
       >
-        <TouchableOpacity 
-          style={styles.hintButton}
-          onPress={handleHint}
-        >
-          <Text style={styles.hintButtonText}>{t("Hint")}</Text>
-        </TouchableOpacity>
-
         <View style={styles.cardContent}>
           <Text style={styles.cardText}>
             {isFlipped ? currentItem?.content?.description : currentItem?.content?.title}
@@ -238,11 +191,6 @@ export default function Flashcard({ item, onNext, isLoading, totalCards }) {
             <Text style={[styles.cardText, { fontSize: 18, marginTop: 10 }]}>
               {currentItem.content.exampleSentence}
             </Text>
-          )}
-          {showHint && !isFlipped && (
-            <View style={styles.hintContainer}>
-              {renderHint()}
-            </View>
           )}
         </View>
 
