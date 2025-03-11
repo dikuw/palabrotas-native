@@ -188,7 +188,7 @@ export default function Flashcard({ item, onNext, isLoading, totalCards }) {
             {isFlipped ? currentItem?.content?.description : currentItem?.content?.title}
           </Text>
           {isFlipped && currentItem?.content?.exampleSentence && (
-            <Text style={[styles.cardText, { fontSize: 18, marginTop: 10 }]}>
+            <Text style={[styles.cardText, { fontSize: 18, marginTop: 10, fontWeight: 'normal' }]}>
               {currentItem.content.exampleSentence}
             </Text>
           )}
