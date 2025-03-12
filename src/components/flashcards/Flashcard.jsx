@@ -92,7 +92,7 @@ export default function Flashcard({ item, onNext, isLoading, totalCards }) {
       padding: themes[theme].spacing.medium,
       borderRadius: themes[theme].borderRadius.medium,
       backgroundColor: 
-        variant === 'easy' ? themes[theme].colors.success :
+        variant === 'good' ? themes[theme].colors.success :
         variant === 'hard' ? themes[theme].colors.error :
         themes[theme].colors.primary,
       minWidth: 80,
@@ -210,10 +210,10 @@ export default function Flashcard({ item, onNext, isLoading, totalCards }) {
           </TouchableOpacity>
 
           <TouchableOpacity 
-            style={styles.button('easy')}
+            style={styles.button('good')}
             onPress={() => forceSwipe('right')}
           >
-            <Text style={styles.buttonText}>{t("Easy")}</Text>
+            <Text style={styles.buttonText}>{t("Good")}</Text>
           </TouchableOpacity>
         </View>
       </Animated.View>
