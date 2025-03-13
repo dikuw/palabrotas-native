@@ -142,7 +142,7 @@ export default function Config({ isLoggedIn, logoutUser }) {
               onPress={() => handleLanguageChange(language.code)}
             >
               <Text style={styles.optionText(i18n.language?.startsWith(language.code))}>
-                {language.name}
+                {t(language.name)}
               </Text>
             </TouchableOpacity>
           ))}
